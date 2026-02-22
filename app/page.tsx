@@ -10,6 +10,7 @@ import { ChatInput } from "@/components/chat-input"
 import { WhiteBirdAnimation } from "@/components/white-bird-animation"
 import { CardRevealOverlay } from "@/components/card-reveal-overlay"
 import type { TarotCardData } from "@/components/tarot-card"
+import { isFortuneRequestInput } from "@/lib/input-guards"
 
 function getCurrentTime() {
   const now = new Date()
@@ -17,31 +18,12 @@ function getCurrentTime() {
 }
 
 /**
- * 「占ってください」と言った、または具体的な悩みを話した時だけ true
+ * 明確に占い依頼がある時だけ true
  */
 function shouldDrawCards(message: string): boolean {
   const t = message.trim()
   if (!t) return false
-
-  if (
-    /占って|占い.*お願い|リーディング|お願いします.*占|占.*お願い|運勢/.test(
-      t
-    )
-  ) {
-    return true
-  }
-  if (
-    /悩んで|困って|不安|心配|どうすれば|聞きたい|教えて.*占|知りたい/.test(t)
-  ) {
-    return true
-  }
-  if (
-    /恋愛|彼氏|彼女|結婚|仕事|転職|健康|金運|人間関係|将来|進路|友達/.test(t)
-  ) {
-    return t.length >= 8
-  }
-
-  return false
+  return isFortuneRequestInput(t)
 }
 
 export default function Page() {
@@ -281,4 +263,3 @@ export default function Page() {
     </main>
   )
 }
-
