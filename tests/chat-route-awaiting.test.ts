@@ -100,12 +100,38 @@ async function callImmediateFortuneRoute(message: string) {
   return response.json();
 }
 
+async function callFortuneOfferConfirmationRoute(message: string) {
+  const request = new Request("http://localhost/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      mode: "chat",
+      message,
+      cards: [
+        { name: "恋人", reversed: false },
+        { name: "女教皇", reversed: false },
+        { name: "節制", reversed: true },
+      ],
+      history: [{ role: "assistant", content: "結婚運を見てみましょうか？" }],
+    }),
+  });
+
+  const response = await POST(request);
+  return response.json();
+}
+
 async function run() {
   const immediate = await callImmediateFortuneRoute("相手の気持ちを占って");
   assert.match(immediate.text, /引いたカード：/);
   assert.match(immediate.text, /お相手様の気持ちを見てみましょう/);
   assert.doesNotMatch(immediate.text, /少しカードを引いてみますね。少しだけお待ちください。/);
   assert.equal(immediate.conversationState.awaitingFortuneResult, false);
+
+  const acceptedOffer = await callFortuneOfferConfirmationRoute("はい");
+  assert.match(acceptedOffer.text, /^引いたカード：/);
+  assert.doesNotMatch(acceptedOffer.text, /見てみましょうか？/);
+  assert.equal(acceptedOffer.cards?.length, 3);
+  assert.equal(acceptedOffer.conversationState.awaitingFortuneResult, false);
 
   const resultQuestion = await callRoute("結果は？");
   assert.match(resultQuestion.text, /^引いたカード：/);
@@ -117,7 +143,7 @@ async function run() {
   assert.doesNotMatch(stillDrawing.text, /少しカードを引いてみますね。少しだけお待ちください。/);
   assert.equal(stillDrawing.conversationState.awaitingFortuneResult, false);
 
-  assert.equal(createCallCount, 3);
+  assert.equal(createCallCount, 4);
 }
 
 run()

@@ -31,6 +31,8 @@ const OFFTOPIC_WORD_RE =
   /^(うどん|生卵|卵|ラーメン|そば|パスタ|カレー|寿司|焼肉|テスト|test)$/i;
 const SHORT_FORTUNE_ACCEPT_RE =
   /^(占って|お願いします|おねがいします|お願い|おねがい|見て|みて)$/;
+const AFFIRMATIVE_RE =
+  /^(はい|うん|お願いします|おねがいします|お願い(します)?|おねがい(します)?|占って|見て|みて|ぜひ|ok)$/i;
 const ACK_RE = /^(はい|うん|そう|そうです|そうですね|なるほど|たぶん|かも)$/;
 const ACK_FOLLOWUP_RE =
   /^(結果|結果は|占ってる|まだ|どうなった|はやく)$/;
@@ -47,7 +49,13 @@ export function isAcknowledgementInput(input: string): boolean {
   const normalized = normalize(input);
   if (!normalized) return false;
   const stripped = stripTrailingMarks(normalized);
-  return ACK_RE.test(stripped) || ACK_FOLLOWUP_RE.test(stripped);
+  return ACK_RE.test(stripped) || AFFIRMATIVE_RE.test(stripped) || ACK_FOLLOWUP_RE.test(stripped);
+}
+
+export function isAffirmativeInput(input: string): boolean {
+  const normalized = normalize(input);
+  if (!normalized) return false;
+  return AFFIRMATIVE_RE.test(stripTrailingMarks(normalized));
 }
 
 function countLooseTokens(input: string): number {
