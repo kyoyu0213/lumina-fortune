@@ -10,20 +10,21 @@ import { ChatInput } from "@/components/chat-input"
 import { WhiteBirdAnimation } from "@/components/white-bird-animation"
 import { CardRevealOverlay } from "@/components/card-reveal-overlay"
 import type { TarotCardData } from "@/components/tarot-card"
-import { isFortuneRequestInput } from "@/lib/input-guards"
 
 function getCurrentTime() {
   const now = new Date()
   return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
 }
 
-/**
- * 明確に占い依頼がある時だけ true
- */
-function shouldDrawCards(message: string): boolean {
-  const t = message.trim()
-  if (!t) return false
-  return isFortuneRequestInput(t)
+type ChatConversationState = {
+  phase?: "idle" | "intent_confirm" | "reading" | "followup"
+  topic?: string | null
+  awaitingConsent?: boolean
+  awaitingTheme?: boolean
+  questionStreak?: number
+  lastTopic?: string | null
+  offtopicStreak?: number
+  awaitingFortuneResult?: boolean
 }
 
 export default function Page() {
@@ -33,6 +34,7 @@ export default function Page() {
   const [birdActive, setBirdActive] = useState(false)
   const [showCards, setShowCards] = useState(false)
   const [currentCards, setCurrentCards] = useState<TarotCardData[]>([])
+  const [conversationState, setConversationState] = useState<ChatConversationState | null>(null)
 
   const addLuminaMessage = useCallback((text: string, cards?: TarotCardData[]) => {
     setIsTyping(true)
@@ -88,7 +90,7 @@ export default function Page() {
           history: [],
         }),
       })
-      let data: { text?: string; error?: string }
+      let data: { text?: string; error?: string; conversationState?: ChatConversationState }
       try {
         data = await res.json()
       } catch {
@@ -96,6 +98,7 @@ export default function Page() {
       }
 
       if (!res.ok) throw new Error(data.error ?? "応答を取得できませんでした")
+      setConversationState(data.conversationState ?? null)
 
       setMessages((prev) =>
         prev.map((m) =>
@@ -153,8 +156,6 @@ export default function Page() {
     ])
     setIsTyping(true)
 
-    const isFortuneMode = shouldDrawCards(text)
-
     const history = messages
       .filter((m) => !m.isTyping && m.text)
       .map((m) => ({
@@ -168,11 +169,17 @@ export default function Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text,
-          mode: isFortuneMode ? "fortune" : "chat",
+          mode: "chat",
           history,
+          conversationState,
         }),
       })
-      let data: { text?: string; error?: string; cards?: TarotCardData[] }
+      let data: {
+        text?: string
+        error?: string
+        cards?: TarotCardData[]
+        conversationState?: ChatConversationState
+      }
       try {
         data = await res.json()
       } catch {
@@ -180,6 +187,7 @@ export default function Page() {
       }
 
       if (!res.ok) throw new Error(data.error ?? "応答を取得できませんでした")
+      setConversationState(data.conversationState ?? null)
 
       setMessages((prev) =>
         prev.map((m) =>
@@ -215,7 +223,7 @@ export default function Page() {
     } finally {
       setIsTyping(false)
     }
-  }, [])
+  }, [conversationState, messages])
 
   const handleDrawCards = useCallback((cards: TarotCardData[]) => {
     setCurrentCards(cards)
@@ -238,6 +246,7 @@ export default function Page() {
     setBirdActive(false)
     setShowCards(false)
     setCurrentCards([])
+    setConversationState(null)
   }, [])
 
   return (

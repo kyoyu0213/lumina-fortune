@@ -25,22 +25,20 @@ export function TarotCard({ card, onClick, className = "" }: TarotCardProps) {
       onClick={onClick}
       role={onClick ? "button" : undefined}
     >
-      <div className="mb-3 aspect-[2.5/4] overflow-hidden rounded-md border border-amber-200 bg-white/80 shadow-sm">
+      <div className="mb-3 flex min-h-[220px] items-center justify-center overflow-hidden rounded-md border border-amber-200 bg-white/80 p-2 shadow-sm">
         <TarotCardArtwork
           imagePath={imageMeta?.imagePath ?? CARD_BACK_IMAGE_PATH}
           alt={imageMeta?.nameJa ?? card.name}
           isReversed={card.reversed}
-          className="h-full w-full object-cover"
-          sizes="(max-width: 640px) 30vw, 180px"
+          className="h-auto max-h-[52vh] w-auto max-w-full object-contain"
+          sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 260px"
         />
       </div>
       <p className="font-medium text-amber-900">{card.name}</p>
+      <p className="mt-1 text-xs font-medium text-amber-700/80">
+        {card.reversed ? "逆位置" : "正位置"}
+      </p>
       <p className="mt-1 text-sm text-amber-800/80">{card.meaning}</p>
-      {card.reversed && (
-        <span className="mt-2 inline-block text-xs text-amber-700/70">
-          逆位置
-        </span>
-      )}
     </div>
   )
 }
