@@ -376,12 +376,27 @@ export async function POST(request: Request) {
     const detectedTheme = detectTarotTheme(trimmedMessage);
     const explicitTarotIntent = isTarotIntentInput(trimmedMessage);
     const affirmativeInput = isAffirmativeInput(trimmedMessage);
-    const stateTopic = incomingConversationState.topic ?? inferThemeFromOfferMessage(lastAssistantMessage);
+    const stateTopic =
+      detectedTheme ??
+      incomingConversationState.topic ??
+      inferThemeFromOfferMessage(lastAssistantMessage);
     let nextConversationState: TarotChatConversationState = {
       ...incomingConversationState,
       topic: stateTopic,
       lastTopic: stateTopic ?? incomingConversationState.lastTopic ?? null,
     };
+    if (detectedTheme === "health") {
+      nextConversationState = {
+        ...nextConversationState,
+        phase: "idle",
+        awaitingConsent: false,
+        awaitingTheme: false,
+        questionStreak: 0,
+        offtopicStreak: 0,
+        topic: "health",
+        lastTopic: "health",
+      };
+    }
     const awaitingFortuneResult = isAwaitingFortuneResultFromHistory(history);
     const awaitingFollowupIntent = awaitingFortuneResult
       ? classifyIntent(trimmedMessage)
