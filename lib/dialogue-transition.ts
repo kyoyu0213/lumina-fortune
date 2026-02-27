@@ -100,7 +100,14 @@ function collectRecentUserFacts(history: ChatHistoryItem[], currentMessage: stri
 
 function buildSummarySentence(facts: string[]): string {
   const joined = facts.join("、");
-  const text = `${joined}んですね。`;
+  let text = "";
+  if (/[。！？]$/.test(joined)) {
+    text = joined;
+  } else if (/(です|ます|でした|ました|ません|ない|ある|いる)$/.test(joined)) {
+    text = `${joined}ね。`;
+  } else {
+    text = `${joined}んですね。`;
+  }
   return text.length <= 60 ? text : `${text.slice(0, 59)}。`;
 }
 

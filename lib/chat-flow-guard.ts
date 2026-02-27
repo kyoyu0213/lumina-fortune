@@ -46,8 +46,14 @@ function summarizeTopic(input: string, topic: ConsultationTopic): string {
   return "お金のことが気になっているんですね。";
 }
 
-function buildOfferLine(topic: ConsultationTopic): string {
-  if (topic === "love") return "お相手の気持ちや恋愛運を見てみましょうか？";
+const NO_PARTNER_LOVE_RE =
+  /(相手がいない|相手はいない|まだ相手がいない|彼氏がいない|彼女がいない|恋人がいない|出会い(が欲しい|ほしい|がない)|フリー)/;
+
+function buildOfferLine(topic: ConsultationTopic, input: string): string {
+  if (topic === "love") {
+    if (NO_PARTNER_LOVE_RE.test(input)) return "出会い運や恋愛運を見てみましょうか？";
+    return "お相手の気持ちや恋愛運を見てみましょうか？";
+  }
   if (topic === "marriage") return "結婚運を見てみましょうか？";
   if (topic === "work") return "仕事運を見てみましょうか？";
   return "金運を見てみましょうか？";
@@ -55,14 +61,14 @@ function buildOfferLine(topic: ConsultationTopic): string {
 
 function buildTopicGuardReply(input: string, topic: ConsultationTopic): string {
   const summary = summarizeTopic(input, topic);
-  const offer = buildOfferLine(topic);
+  const offer = buildOfferLine(topic, input);
   const text = `${summary}${offer}`;
   return text.length <= 120 ? text : `${summary}占いで見てみましょうか？`;
 }
 
 function buildOfftopicReply(lastTopic: ConsultationTopic | null): string {
   if (lastTopic === "love") {
-    return "なるほど。恋愛のことが気になっているんですね。お相手の気持ちや恋愛運を見てみましょうか？";
+    return "なるほど。恋愛のことが気になっているんですね。恋愛運や出会いの流れを見てみましょうか？";
   }
   if (lastTopic === "marriage") {
     return "なるほど。結婚のことが気になっているんですね。結婚運を見てみましょうか？";

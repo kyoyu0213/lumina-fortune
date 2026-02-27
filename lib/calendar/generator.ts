@@ -25,6 +25,40 @@ const openai = new OpenAI({
 });
 
 const generationLocks = new Map<string, Promise<CalendarMonthData>>();
+const GENERATION_TIMEOUT_MS = 15000;
+
+const TAGS = [
+  "整え日",
+  "静養日",
+  "調和の日",
+  "ひらめきの日",
+  "手放しの日",
+  "学びの日",
+  "芽吹きの日",
+] as const;
+
+const MESSAGE_BASES = [
+  "今日は予定を詰め込みすぎず、ひと呼吸おいて順番を整えるほど、心の静けさが戻ってきます。",
+  "小さな違和感を見過ごさず、手元のことを丁寧に進めるほど、流れがゆるやかに整います。",
+  "誰かに合わせすぎず自分の歩幅を守ると、必要な言葉や選択が自然に見えてきます。",
+  "焦って結論を急がず、今できるひとつに集中すると、気持ちと現実のずれが減っていきます。",
+  "完璧さよりも続けられる形を選ぶことで、今日の終わりに穏やかな手応えが残ります。",
+] as const;
+
+const HINTS = [
+  "朝に最優先を1つだけ書き出す",
+  "5分だけ深呼吸して姿勢を整える",
+  "返事の前に一度だけ読み返す",
+  "机の上をひと区画だけ片づける",
+  "予定の間に10分の余白をつくる",
+] as const;
+
+const AFFIRMATIONS = [
+  "私は静かな歩幅で、今日を整えます。",
+  "私は必要なことを、必要な順番で進められます。",
+  "私はやさしい集中で、自分の心を守れます。",
+  "私は小さな選択を重ね、穏やかな一日を育てます。",
+] as const;
 
 function getSchema() {
   const entrySchema = {
@@ -137,29 +171,34 @@ async function generateCalendarMonthDataInternal(month: string): Promise<Calenda
   const dateKeys = getMonthDateKeys(month);
   const prompt = buildPrompt(month, dateKeys);
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    response_format: {
-      type: "json_schema",
-      json_schema: {
-        name: "lumina_calendar_month",
-        schema: getSchema(),
-        strict: true,
+  const completion = await Promise.race([
+    openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "lumina_calendar_month",
+          schema: getSchema(),
+          strict: true,
+        },
       },
-    },
-    temperature: 0.7,
-    messages: [
-      {
-        role: "system",
-        content:
-          "あなたはJSONのみを返す生成器です。説明文は一切返さず、必ずスキーマどおりのJSONのみ返してください。",
-      },
-      {
-        role: "user",
-        content: prompt,
-      },
-    ],
-  });
+      temperature: 0.7,
+      messages: [
+        {
+          role: "system",
+          content:
+            "あなたはJSONのみを返す生成器です。説明文は一切返さず、必ずスキーマどおりのJSONのみ返してください。",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    }),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Calendar generation timed out.")), GENERATION_TIMEOUT_MS)
+    ),
+  ]);
 
   const content = completion.choices[0]?.message?.content;
   if (!content) {
@@ -173,6 +212,40 @@ async function generateCalendarMonthDataInternal(month: string): Promise<Calenda
   const data = toMonthData(parsed, month);
   await saveCalendarMonth(data);
   return data;
+}
+
+function buildFallbackCalendarMonthData(month: string): CalendarMonthData {
+  const days = getMonthDateKeys(month);
+  const byNumber: CalendarMonthData["byNumber"] = {
+    "1": {},
+    "2": {},
+    "3": {},
+    "4": {},
+    "5": {},
+    "6": {},
+    "7": {},
+    "8": {},
+    "9": {},
+  };
+
+  const keys: FortuneNumberKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  for (const key of keys) {
+    for (let i = 0; i < days.length; i += 1) {
+      const offset = i + Number(key);
+      byNumber[key][days[i]] = {
+        tag: TAGS[offset % TAGS.length],
+        message: MESSAGE_BASES[offset % MESSAGE_BASES.length],
+        hint: HINTS[offset % HINTS.length],
+        affirmation: AFFIRMATIONS[offset % AFFIRMATIONS.length],
+      };
+    }
+  }
+
+  return {
+    month,
+    generatedAt: new Date().toISOString(),
+    byNumber,
+  };
 }
 
 export async function getOrGenerateCalendarMonth(month: string, forceRegenerate = false): Promise<CalendarMonthData> {
@@ -189,10 +262,23 @@ export async function getOrGenerateCalendarMonth(month: string, forceRegenerate 
   const current = generationLocks.get(lockKey);
   if (current) return current;
 
-  const promise = generateCalendarMonthDataInternal(month).finally(() => {
-    generationLocks.delete(lockKey);
-  });
+  const promise = (async () => {
+    try {
+      if (!process.env.OPENAI_API_KEY) {
+        const fallback = buildFallbackCalendarMonthData(month);
+        await saveCalendarMonth(fallback);
+        return fallback;
+      }
+      return await generateCalendarMonthDataInternal(month);
+    } catch (error) {
+      console.error("[calendar] fallback activated", error);
+      const fallback = buildFallbackCalendarMonthData(month);
+      await saveCalendarMonth(fallback);
+      return fallback;
+    } finally {
+      generationLocks.delete(lockKey);
+    }
+  })();
   generationLocks.set(lockKey, promise);
   return promise;
 }
-

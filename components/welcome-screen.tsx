@@ -51,6 +51,12 @@ const menuItems = [
     href: "/calendar",
     ctaLabel: "ひらく",
   },
+  {
+    title: "館の書棚",
+    description: "静かな夜に読みたい、心を整えるコラムを集めました。",
+    href: "/columns",
+    ctaLabel: "読む",
+  },
 ] as const
 
 const recommendedLinks = [
