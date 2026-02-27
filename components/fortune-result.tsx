@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import type { FortuneTemplate } from "@/lib/fortune/types";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LuminaButton } from "@/components/ui/button";
 
 type Props = {
   template: FortuneTemplate;
@@ -44,41 +46,39 @@ export default function FortuneResult({
   };
 
   return (
-    <main className="lumina-page min-h-screen px-4 py-8 sm:px-6 sm:py-10">
-      <div className="lumina-shell mx-auto max-w-4xl rounded-3xl p-5 sm:p-8">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Link href={topLinkHref} className="lumina-link text-sm underline-offset-4 hover:underline">
-            {topLinkLabel}
-          </Link>
-          <button
-            type="button"
-            onClick={handleReset}
-            className="btn btn--secondary w-full sm:w-auto"
-          >
-            {resetLabel}
-          </button>
-        </div>
+    <PageShell
+      maxWidth="content"
+      title={pageTitle}
+      backHref={topLinkHref}
+      backLabel={topLinkLabel}
+      headerRight={
+        <LuminaButton type="button" onClick={handleReset} tone="secondary" className="w-full sm:w-auto">
+          {resetLabel}
+        </LuminaButton>
+      }
+    >
+      <GlassCard>
 
-        <header className="lumina-header-panel rounded-2xl p-5">
+        <header className="lumina-header-panel rounded-2xl p-5 hidden">
           <p className="lumina-kicker text-xs font-semibold">{variantLabel}</p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{pageTitle}</h1>
         </header>
 
-        <div className="mt-8 space-y-8">
-          <section className="lumina-card rounded-2xl p-5">
+        <div className="space-y-8">
+          <GlassCard className="p-5">
             <SectionHeading>🕊 導入</SectionHeading>
-            <h2 className="mt-3 text-lg font-semibold text-slate-900 sm:text-xl">{template.introTitle}</h2>
+            <h2 className="mt-3 text-lg font-medium text-[#2e2a26] sm:text-xl">{template.introTitle}</h2>
             <div className="mt-3">
               <MarkdownText text={template.introBody} />
             </div>
-          </section>
+          </GlassCard>
 
-          <section className="rounded-2xl border border-[#d7c894]/70 bg-gradient-to-br from-white/85 via-[#f7f4e8]/70 to-[#eef4ef]/70 p-5 shadow-sm sm:p-6">
+          <section className="rounded-2xl border border-[#d7c894]/60 bg-gradient-to-br from-white/82 via-[#f8f3e7]/68 to-[#eef4ef]/62 p-5 shadow-sm sm:p-6">
             <SectionHeading>🌟 全体テーマ</SectionHeading>
-            <p className="mt-4 text-xl font-bold leading-relaxed text-slate-900 sm:text-2xl">{template.themeCatch}</p>
+            <p className="mt-4 text-xl font-medium leading-relaxed text-[#2e2a26] sm:text-2xl">{template.themeCatch}</p>
           </section>
 
-          <section className="lumina-card rounded-2xl p-5">
+          <GlassCard className="p-5">
             <SectionHeading>{halfYearSectionTitle}</SectionHeading>
             <TwoColumnGrid className="mt-4">
               <InfoCard title={firstHalfTitle}>
@@ -88,9 +88,9 @@ export default function FortuneResult({
                 <MarkdownText text={template.secondHalf} />
               </InfoCard>
             </TwoColumnGrid>
-          </section>
+          </GlassCard>
 
-          <section className="lumina-card rounded-2xl p-5">
+          <GlassCard className="p-5">
             <SectionHeading>💗 恋愛運</SectionHeading>
             <TwoColumnGrid className="mt-4">
               <InfoCard title="シングル" description="出会い・進展・心の整え方のヒント">
@@ -100,7 +100,7 @@ export default function FortuneResult({
                 <MarkdownText text={template.lovePartner} />
               </InfoCard>
             </TwoColumnGrid>
-          </section>
+          </GlassCard>
 
           <TextSection title="💼 仕事・学業運" body={template.work} />
           <TextSection title="🤝 人間関係" body={template.relations} />
@@ -145,7 +145,7 @@ export default function FortuneResult({
             </div>
           </section>
 
-          <section className="lumina-card rounded-2xl p-5">
+          <GlassCard className="p-5">
             <SectionHeading>🔑 キーワード</SectionHeading>
             <div className="mt-4 flex flex-wrap gap-2">
               {template.keywords.slice(0, 3).map((keyword, index) => (
@@ -157,7 +157,7 @@ export default function FortuneResult({
                 </span>
               ))}
             </div>
-          </section>
+          </GlassCard>
 
           <section className="rounded-2xl border border-rose-200/70 bg-rose-50/40 p-5">
             <SectionHeading>✨ ルミナからの祝福</SectionHeading>
@@ -166,23 +166,23 @@ export default function FortuneResult({
             </div>
           </section>
         </div>
-      </div>
-    </main>
+      </GlassCard>
+    </PageShell>
   );
 }
 
 function SectionHeading({ children }: { children: ReactNode }) {
-  return <h2 className="text-base font-semibold tracking-wide text-slate-800">{children}</h2>;
+  return <h2 className="text-base font-medium tracking-wide text-[#2e2a26]">{children}</h2>;
 }
 
 function TextSection({ title, body }: { title: string; body: string }) {
   return (
-    <section className="lumina-card rounded-2xl p-5">
+    <GlassCard className="p-5">
       <SectionHeading>{title}</SectionHeading>
       <div className="mt-4">
         <MarkdownText text={body} />
       </div>
-    </section>
+    </GlassCard>
   );
 }
 
@@ -200,9 +200,9 @@ function InfoCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white/75 p-4">
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
-      {description ? <p className="mt-1 text-xs leading-relaxed text-slate-600/85">{description}</p> : null}
+    <div className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4">
+      <h3 className="text-sm font-medium text-[#2e2a26]">{title}</h3>
+      {description ? <p className="mt-1 text-xs leading-relaxed text-[#544c42]">{description}</p> : null}
       <div className="mt-3">{children}</div>
     </div>
   );
@@ -212,7 +212,7 @@ function MarkdownText({ text }: { text: string }) {
   const blocks = parseMarkdownLikeBlocks(text);
 
   return (
-    <div className="space-y-3 leading-relaxed text-slate-900/90">
+    <div className="space-y-3 leading-relaxed text-[#544c42]">
       {blocks.map((block, index) => {
         if (block.type === "list") {
           return (

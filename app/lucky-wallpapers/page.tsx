@@ -1,25 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { luckyWallpapers } from "@/lib/lucky-wallpapers";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
 
 export default function LuckyWallpapersPage() {
   return (
-    <main className="lumina-page min-h-screen px-4 py-8 sm:px-6 sm:py-10">
-      <div className="lumina-shell mx-auto max-w-5xl rounded-3xl p-5 sm:p-8">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="lumina-link text-sm underline-offset-4 hover:underline">
-            トップへ戻る
-          </Link>
-          <p className="lumina-muted text-sm">スマホの待ち受けに使える開運画像です。</p>
-        </div>
-
-        <header className="lumina-header-panel rounded-2xl p-5">
-          <p className="lumina-kicker text-xs font-semibold">LUMINA WALLPAPER CHARMS</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">光の待ち受けお守り</h1>
-          <p className="lumina-muted mt-2 text-sm leading-relaxed">
-            気分や願いに合わせて選べる、ルミナのやわらかな開運待ち受けです。
-          </p>
-        </header>
+    <PageShell
+      maxWidth="wide"
+      title="光の待ち受けお守り"
+      description="気分や願いに合わせて選べる、ルミナのやわらかな開運待ち受けです。"
+      backHref="/"
+      backLabel="トップへ戻る"
+    >
+      <GlassCard>
+        <p className="lumina-muted text-sm">スマホの待ち受けに使える開運画像です。</p>
 
         <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {luckyWallpapers.map((wallpaper) => (
@@ -45,7 +40,7 @@ export default function LuckyWallpapersPage() {
             </Link>
           ))}
         </section>
-      </div>
-    </main>
+      </GlassCard>
+    </PageShell>
   );
 }

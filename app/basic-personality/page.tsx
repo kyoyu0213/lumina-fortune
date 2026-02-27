@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { FortuneNumberBadge } from "@/components/fortune-number-badge";
 import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
 import type { FortuneNumber } from "@/lib/fortune/types";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LuminaButton } from "@/components/ui/button";
 
 const BIRTHDATE_STORAGE_KEY = "lumina_birthdate";
 
@@ -404,22 +406,18 @@ export default function BasicPersonalityPage() {
   };
 
   return (
-    <main className="lumina-page min-h-screen px-4 py-10">
-      <div className="lumina-shell mx-auto max-w-2xl rounded-3xl p-6 sm:p-8">
-        <div className="mb-4">
-          <Link href="/" className="lumina-link text-sm underline-offset-4 hover:underline">
-            トップへ戻る
-          </Link>
-        </div>
-
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">生年月日で占う（基本性格）</h1>
-        <p className="lumina-muted mt-2 text-base">
-          生年月日から運命数（1-9）を計算し、基本性格を表示します。
-        </p>
+    <PageShell
+      maxWidth="narrow"
+      title="生年月日で占う（基本性格）"
+      description="生年月日から運命数（1-9）を計算し、基本性格を表示します。"
+      backHref="/"
+      backLabel="トップへ戻る"
+    >
+      <GlassCard>
 
         {!checkingStorage && !result ? (
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <label className="block text-base font-medium text-slate-900">
+          <label className="block text-base font-medium text-[#2e2a26]">
             生年月日（YYYY-MM-DD）
             <input
               type="date"
@@ -430,40 +428,40 @@ export default function BasicPersonalityPage() {
             />
           </label>
 
-          <button type="submit" className="btn btn--primary">
+          <LuminaButton type="submit" tone="primary">
             占う
-          </button>
+          </LuminaButton>
           </form>
         ) : null}
 
         {error ? <p className="mt-4 text-base text-red-700">{error}</p> : null}
 
         {result ? (
-          <section className="mt-6 rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur sm:p-6">
+          <section className="mt-6 space-y-4">
             {(() => {
               const basicPersonality = basicPersonalitySections[result.destinyNumber];
               return (
                 <>
-            <div className="rounded-2xl border border-slate-100 bg-white/70 p-4 shadow-sm sm:p-5">
+            <GlassCard className="p-4 sm:p-5">
               <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:text-left">
                 <div className="shrink-0">
-                  <p className="text-sm font-semibold tracking-wide text-slate-500">運命数</p>
+                  <p className="text-sm font-medium tracking-wide text-[#7d6d5a]">運命数</p>
                   <FortuneNumberBadge number={result.destinyNumber} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold tracking-[0.16em] text-[#7A6FB0]">SOUL NAME</p>
-                  <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                  <p className="text-xs font-medium tracking-[0.16em] text-[#847967]">SOUL NAME</p>
+                  <h2 className="mt-1 text-2xl font-medium tracking-tight text-[#2e2a26] sm:text-[1.75rem]">
                     {result.soulName}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">
+                  <p className="mt-2 text-sm leading-relaxed text-[#544c42] sm:text-base">
                     {result.catchCopy}
                   </p>
                 </div>
               </div>
-            </div>
+            </GlassCard>
 
-            <div className="mt-4 rounded-2xl border border-slate-100 bg-white/70 p-4 shadow-sm sm:p-5">
-              <h3 className="text-sm font-semibold tracking-wide text-slate-700">基本性格</h3>
+            <GlassCard className="p-4 sm:p-5">
+              <h3 className="text-sm font-medium tracking-wide text-[#2e2a26]">基本性格</h3>
               <div className="mt-3 space-y-4">
                 {[
                   { title: "あなたの性質", text: basicPersonality.paragraphs[0] },
@@ -472,86 +470,86 @@ export default function BasicPersonalityPage() {
                 ].map((section) => (
                   <div
                     key={section.title}
-                    className="rounded-xl border border-slate-100 bg-white/80 p-4 shadow-sm backdrop-blur"
+                    className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4"
                   >
-                    <h4 className="text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
+                    <h4 className="text-xs font-medium tracking-wide text-[#2e2a26] sm:text-sm">
                       {section.title}
                     </h4>
-                    <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700 sm:text-[15px]">
+                    <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#544c42] sm:text-[15px]">
                       {section.text}
                     </p>
                   </div>
                 ))}
               </div>
+            </GlassCard>
 
-              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="rounded-xl border border-slate-200/80 bg-slate-50/40 p-4">
-                  <p className="text-sm font-semibold tracking-wide text-slate-700">つまずきやすい点</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <GlassCard className="p-4">
+                  <p className="text-sm font-medium tracking-wide text-[#2e2a26]">つまずきやすい点</p>
                   <ul className="mt-3 space-y-2">
                     {basicPersonality.pitfalls.map((item) => (
                       <li
                         key={item}
-                        className="flex items-start gap-2 rounded-lg px-2 py-1.5 text-sm leading-relaxed text-slate-700 transition hover:bg-white/70 sm:text-[15px]"
+                        className="flex items-start gap-2 rounded-lg px-2 py-1.5 text-sm leading-relaxed text-[#544c42] transition hover:bg-white/70 sm:text-[15px]"
                       >
-                        <span aria-hidden="true" className="mt-1 text-[10px] text-[#8E7CFF]">
+                        <span aria-hidden="true" className="mt-1 text-[10px] text-[#958cad]">
                           ✦
                         </span>
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
+                </GlassCard>
 
-                <div className="rounded-xl border border-slate-200/80 bg-slate-50/40 p-4">
-                  <p className="text-sm font-semibold tracking-wide text-slate-700">伸びるポイント</p>
+                <GlassCard className="p-4">
+                  <p className="text-sm font-medium tracking-wide text-[#2e2a26]">伸びるポイント</p>
                   <ul className="mt-3 space-y-2">
                     {basicPersonality.growthPoints.map((item) => (
                       <li
                         key={item}
-                        className="flex items-start gap-2 rounded-lg px-2 py-1.5 text-sm leading-relaxed text-slate-700 transition hover:bg-white/70 sm:text-[15px]"
+                        className="flex items-start gap-2 rounded-lg px-2 py-1.5 text-sm leading-relaxed text-[#544c42] transition hover:bg-white/70 sm:text-[15px]"
                       >
-                        <span aria-hidden="true" className="mt-1 text-[10px] text-[#8E7CFF]">
+                        <span aria-hidden="true" className="mt-1 text-[10px] text-[#958cad]">
                           ✦
                         </span>
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
+                </GlassCard>
               </div>
-            </div>
 
-            <div className="mt-4 rounded-2xl border border-violet-100 bg-white/60 p-4 shadow-sm sm:p-5">
-              <p className="text-sm font-semibold tracking-wide text-slate-700">
+            <GlassCard className="p-4 sm:p-5">
+              <p className="text-sm font-medium tracking-wide text-[#2e2a26]">
                 ルミナからのメッセージ
               </p>
-              <blockquote className="mt-3 rounded-xl border-l-4 border-violet-200 bg-violet-50/50 p-4">
-                <p className="whitespace-pre-line text-[15px] leading-relaxed text-slate-700">
+              <blockquote className="mt-3 rounded-xl border-l-4 border-[#c4b8da] bg-[#f5f0ff]/55 p-4">
+                <p className="whitespace-pre-line text-[15px] leading-relaxed text-[#544c42]">
                   {luminaMessages[result.destinyNumber]}
                 </p>
               </blockquote>
-            </div>
+            </GlassCard>
 
-            <div className="mt-4 rounded-2xl bg-gradient-to-b from-[#F5F2FF] to-[#EEE9FF] p-5 shadow-sm ring-1 ring-[#D9CFFF]/70">
-              <span className="inline-flex items-center rounded-full border border-[#D4C8FF] bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-[#6E5AE8]">
+            <GlassCard className="p-5">
+              <span className="inline-flex items-center rounded-full border border-[#d2c4e7] bg-white/70 px-3 py-1 text-xs font-medium tracking-wide text-[#75658f]">
                 今のあなたへのひとこと
               </span>
-              <p className="mt-3 text-base font-semibold leading-relaxed text-slate-900">
+              <p className="mt-3 text-base font-medium leading-relaxed text-[#2e2a26]">
                 {result.oneWord}
               </p>
-            </div>
+            </GlassCard>
 
-            <div className="mt-4 rounded-2xl border border-slate-100 bg-white/70 p-4 shadow-sm sm:p-5">
-              <h3 className="text-sm font-semibold tracking-wide text-slate-700">開運アクション</h3>
+            <GlassCard className="p-4 sm:p-5">
+              <h3 className="text-sm font-medium tracking-wide text-[#2e2a26]">開運アクション</h3>
               <ul className="mt-3 space-y-2">
                 {result.actions.map((action) => (
                   <li
                     key={action}
-                    className="flex items-start gap-3 rounded-xl px-2 py-2 text-[15px] leading-relaxed text-slate-700 transition hover:bg-slate-50"
+                    className="flex items-start gap-3 rounded-xl px-2 py-2 text-[15px] leading-relaxed text-[#544c42] transition hover:bg-slate-50/40"
                   >
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D7CEFF] bg-[#F4F1FF] text-xs text-[#7D6CF0]"
+                      className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#d2c4e7] bg-[#f5f0ff] text-xs text-[#75658f]"
                     >
                       ✓
                     </span>
@@ -559,19 +557,19 @@ export default function BasicPersonalityPage() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </GlassCard>
 
-            <div className="mt-4">
-              <button type="button" onClick={handleResetBirthdate} className="btn btn--secondary">
+            <div>
+              <LuminaButton type="button" onClick={handleResetBirthdate} tone="secondary">
                 別の生年月日で占う
-              </button>
+              </LuminaButton>
             </div>
                 </>
               );
             })()}
           </section>
         ) : null}
-      </div>
-    </main>
+      </GlassCard>
+    </PageShell>
   );
 }

@@ -1,25 +1,18 @@
 import Link from "next/link";
 import { lightWorks } from "@/lib/light-work";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
 
 export default function LightWorkPage() {
   return (
-    <main className="lumina-page min-h-screen px-4 py-8 sm:px-6 sm:py-10">
-      <div className="lumina-shell mx-auto max-w-4xl rounded-3xl p-5 sm:p-8">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="lumina-link text-sm underline-offset-4 hover:underline">
-            トップへ戻る
-          </Link>
-        </div>
-
-        <header className="lumina-header-panel rounded-2xl p-5">
-          <p className="lumina-kicker text-xs font-semibold">LIGHT WORKS</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">光のワーク</h1>
-          <p className="lumina-muted mt-2 text-sm leading-relaxed">
-            気分や目的に合わせて選べる、短時間で実行しやすいセルフワークです。
-            <br />
-            呼吸とイメージを使って、心と空気感を静かに整えます。
-          </p>
-        </header>
+    <PageShell
+      maxWidth="content"
+      title="光のワーク"
+      description="気分や目的に合わせて選べる、短時間で実行しやすいセルフワークです。呼吸とイメージを使って、心と空気感を静かに整えます。"
+      backHref="/"
+      backLabel="トップへ戻る"
+    >
+      <GlassCard>
 
         <section className="mt-8 grid gap-4">
           {lightWorks.map((work) => (
@@ -40,7 +33,7 @@ export default function LightWorkPage() {
             </Link>
           ))}
         </section>
-      </div>
-    </main>
+      </GlassCard>
+    </PageShell>
   );
 }

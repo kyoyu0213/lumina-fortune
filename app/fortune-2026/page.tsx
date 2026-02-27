@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LuminaButton } from "@/components/ui/button";
 
 const BIRTHDATE_KEY = "fortune2026_birthdate";
 const DESTINY_KEY = "fortune2026_destinyNumber";
@@ -53,30 +55,31 @@ export default function Fortune2026Page() {
 
   if (checkingStorage) {
     return (
-      <main className="lumina-page min-h-screen px-6 py-10">
-        <div className="lumina-shell mx-auto max-w-2xl rounded-2xl p-6">
+      <PageShell
+        maxWidth="narrow"
+        title="生年月日で占う2026年の運勢"
+        description="生年月日から運命数を計算し、2026年の運勢を表示します。"
+        backHref="/"
+        backLabel="トップへ戻る"
+      >
+        <GlassCard>
           <p className="lumina-muted text-sm">読み込み中...</p>
-        </div>
-      </main>
+        </GlassCard>
+      </PageShell>
     );
   }
 
   return (
-    <main className="lumina-page min-h-screen px-6 py-10">
-      <div className="lumina-shell mx-auto max-w-2xl rounded-2xl p-6">
-        <div className="mb-4">
-          <Link href="/" className="lumina-link text-sm underline-offset-4 hover:underline">
-            トップへ戻る
-          </Link>
-        </div>
-
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">生年月日で占う2026年の運勢</h1>
-        <p className="lumina-muted mt-2 text-sm">
-          生年月日から運命数を計算し、2026年の運勢を表示します。
-        </p>
-
+    <PageShell
+      maxWidth="narrow"
+      title="生年月日で占う2026年の運勢"
+      description="生年月日から運命数を計算し、2026年の運勢を表示します。"
+      backHref="/"
+      backLabel="トップへ戻る"
+    >
+      <GlassCard>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-[#2e2a26]">
             生年月日
             <input
               type="date"
@@ -87,16 +90,13 @@ export default function Fortune2026Page() {
             />
           </label>
 
-          <button
-            type="submit"
-            className="btn btn--primary"
-          >
+          <LuminaButton type="submit" tone="primary">
             2026年の運勢を占う
-          </button>
+          </LuminaButton>
         </form>
 
         {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
-      </div>
-    </main>
+      </GlassCard>
+    </PageShell>
   );
 }

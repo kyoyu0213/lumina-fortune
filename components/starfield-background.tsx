@@ -17,19 +17,23 @@ function clamp(value: number, min: number, max: number) {
 
 function createStars(width: number, height: number): Star[] {
   const area = width * height;
-  const count = clamp(Math.round(area / 60000), 25, 45);
+  const count = clamp(Math.round(area / 320000), 2, 4);
 
   return Array.from({ length: count }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
-    radius: 0.5 + Math.random() * 1.2,
-    alpha: 0.08 + Math.random() * 0.14,
-    vx: (Math.random() - 0.5) * 0.018,
-    vy: (Math.random() - 0.5) * 0.018,
+    radius: 0.35 + Math.random() * 0.45,
+    alpha: 0.015 + Math.random() * 0.025,
+    vx: (Math.random() - 0.5) * 0.006,
+    vy: (Math.random() - 0.5) * 0.006,
   }));
 }
 
-export function StarfieldBackground() {
+type StarfieldBackgroundProps = {
+  className?: string;
+};
+
+export function StarfieldBackground({ className = "" }: StarfieldBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -116,5 +120,11 @@ export function StarfieldBackground() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 ${className}`}
+    />
+  );
 }

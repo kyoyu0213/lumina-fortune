@@ -18,7 +18,7 @@ interface SparkleTrailProps {
   className?: string
 }
 
-const MAX_SPARKLES = 30
+const MAX_SPARKLES = 12
 
 export function SparkleTrail({ children, className = "" }: SparkleTrailProps) {
   const [sparkles, setSparkles] = useState<Sparkle[]>([])
@@ -41,23 +41,23 @@ export function SparkleTrail({ children, className = "" }: SparkleTrailProps) {
     if (reducedMotion) return
 
     const now = performance.now()
-    if (now - lastEmitAtRef.current < 40) return
+    if (now - lastEmitAtRef.current < 70) return
     lastEmitAtRef.current = now
 
     const rect = event.currentTarget.getBoundingClientRect()
     const baseX = event.clientX - rect.left
     const baseY = event.clientY - rect.top
-    const burstCount = 1 + Math.floor(Math.random() * 3) // 1-3
+    const burstCount = 1 + Math.floor(Math.random() * 2) // 1-2
 
     const nextSparkles: Sparkle[] = Array.from({ length: burstCount }, () => ({
       id: ++idRef.current,
-      x: baseX + (Math.random() - 0.5) * 16,
-      y: baseY + (Math.random() - 0.5) * 16,
-      size: 3 + Math.random() * 5,
-      dx: (Math.random() - 0.5) * 26,
-      dy: -8 - Math.random() * 18,
-      durationMs: 580 + Math.floor(Math.random() * 260),
-      delayMs: Math.floor(Math.random() * 60),
+      x: baseX + (Math.random() - 0.5) * 12,
+      y: baseY + (Math.random() - 0.5) * 12,
+      size: 2 + Math.random() * 3,
+      dx: (Math.random() - 0.5) * 18,
+      dy: -6 - Math.random() * 12,
+      durationMs: 480 + Math.floor(Math.random() * 180),
+      delayMs: Math.floor(Math.random() * 40),
     }))
 
     setSparkles((prev) => [...prev, ...nextSparkles].slice(-MAX_SPARKLES))
@@ -99,10 +99,10 @@ export function SparkleTrail({ children, className = "" }: SparkleTrailProps) {
           position: absolute;
           border-radius: 9999px;
           background:
-            radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,248,220,0.85) 48%, rgba(255,244,210,0) 100%);
+            radial-gradient(circle, rgba(255,251,238,0.8) 0%, rgba(255,236,198,0.55) 50%, rgba(255,232,194,0) 100%);
           box-shadow:
-            0 0 10px rgba(255, 246, 214, 0.45),
-            0 0 16px rgba(255, 255, 255, 0.28);
+            0 0 8px rgba(255, 229, 182, 0.22),
+            0 0 12px rgba(255, 248, 233, 0.14);
           transform: translate(-50%, -50%);
           opacity: 0;
           animation: sparkleTrailFade var(--sparkle-duration) ease-out var(--sparkle-delay) forwards;
@@ -117,12 +117,12 @@ export function SparkleTrail({ children, className = "" }: SparkleTrailProps) {
           height: 1px;
           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent);
           transform: translate(-50%, -50%);
-          opacity: 0.8;
+          opacity: 0.45;
         }
 
         .sparkle-trail__dot::after {
           transform: translate(-50%, -50%) rotate(90deg);
-          opacity: 0.55;
+          opacity: 0.32;
         }
 
         @keyframes sparkleTrailFade {
@@ -131,7 +131,7 @@ export function SparkleTrail({ children, className = "" }: SparkleTrailProps) {
             transform: translate(-50%, -50%) scale(0.7);
           }
           18% {
-            opacity: 0.9;
+            opacity: 0.62;
           }
           100% {
             opacity: 0;

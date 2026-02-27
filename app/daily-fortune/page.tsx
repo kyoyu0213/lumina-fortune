@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TarotBackArtwork, TarotCardArtwork } from "@/components/tarot-card-artwork";
 import { tarotCards, type TarotCardEntry } from "@/src/data/tarotCards";
 import { getRandomTarotCard } from "@/lib/tarot";
+import { PageShell } from "@/components/ui/page-shell";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LuminaButton } from "@/components/ui/button";
 
 type DrawnCard = TarotCardEntry & {
   reversed: boolean;
@@ -94,6 +96,11 @@ function getCookieValue(name: string): string | null {
 function setCookieValue(name: string, value: string, maxAgeSeconds: number) {
   if (typeof document === "undefined") return;
   document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax`;
+}
+
+function clearCookieValue(name: string) {
+  if (typeof document === "undefined") return;
+  document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
 }
 
 function loadSavedDailyFortuneForToday(): { payload: DailyFortuneCookiePayload; card: DrawnCard } | null {
@@ -202,6 +209,26 @@ export default function DailyFortunePage() {
       flipTimerRef.current = null;
     }
     setReadyToFlip(false);
+    setSelectedCard(null);
+    setIsFlipped(false);
+    setFlipFinished(false);
+    setSummary(null);
+    setFullText(null);
+    setShowResult(false);
+    setIsReading(false);
+    setError(null);
+    setHasTodayResult(false);
+  };
+
+  const handleRedrawToday = () => {
+    clearCookieValue(DAILY_FORTUNE_COOKIE_NAME);
+    requestIdRef.current += 1;
+    flipLockRef.current = false;
+    if (flipTimerRef.current !== null) {
+      window.clearTimeout(flipTimerRef.current);
+      flipTimerRef.current = null;
+    }
+    setReadyToFlip(true);
     setSelectedCard(null);
     setIsFlipped(false);
     setFlipFinished(false);
@@ -340,16 +367,15 @@ export default function DailyFortunePage() {
   };
 
   return (
-    <main className="lumina-page min-h-screen px-5 py-10 text-slate-900">
-      <div className="lumina-shell mx-auto max-w-2xl rounded-3xl p-6">
-        <div className="mb-4">
-          <Link href="/" className="lumina-link text-sm underline-offset-4 hover:underline">
-            トップへ戻る
-          </Link>
-        </div>
-
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">毎日の占い</h1>
-        <p className="lumina-muted mt-2 text-sm">
+    <PageShell
+      maxWidth="narrow"
+      title="毎日の占い"
+      description={`${today}の運勢を、タロット1枚引きで見ます。`}
+      backHref="/"
+      backLabel="トップへ戻る"
+    >
+      <GlassCard>
+        <p className="lumina-muted mt-1 text-sm">
           {today}の運勢を、タロット1枚引きで見ます。
         </p>
         {hasTodayResult ? (
@@ -360,14 +386,14 @@ export default function DailyFortunePage() {
 
         {!readyToFlip ? (
           <div className="mt-6">
-            <button type="button" onClick={handlePrepare} className="btn btn--primary">
+            <LuminaButton type="button" onClick={handlePrepare} tone="primary">
               {hasTodayResult ? "今日の結果を見る" : "今日の運勢を占う"}
-            </button>
+            </LuminaButton>
           </div>
         ) : (
           <section className="mt-6">
             <div className="flex flex-col items-center gap-4">
-              <p className="text-sm text-amber-900/80">
+              <p className="text-sm text-[#6f6556]">
                 {hasTodayResult
                   ? "保存された今日の結果を表示しています。"
                   : "カードをタップして、今日の1枚をめくってください。"}
@@ -421,15 +447,15 @@ export default function DailyFortunePage() {
                 <p className="text-sm text-amber-800/80">カードを読み解いています…</p>
               ) : null}
               {flipFinished && isReading && !showResult ? (
-                <p className="text-sm text-amber-800/80">今日のメッセージを整えています…</p>
+                <p className="text-sm text-[#6f6556]">今日のメッセージを整えています…</p>
               ) : null}
             </div>
 
             <div className={`fortune-result ${showResult ? "is-visible" : ""}`}>
               {selectedCard ? (
-                <section className="mt-6 rounded-2xl border border-amber-200 bg-white/70 p-4 shadow-sm">
+                <section className="mt-6 rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(160deg,rgba(255,252,246,0.88),rgba(248,242,231,0.82))] p-4 shadow-[0_12px_24px_-20px_rgba(82,69,53,0.22)]">
                   <div className="flex items-start gap-4">
-                    <div className="flex h-24 w-16 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-gradient-to-b from-amber-100 to-rose-100 text-2xl shadow-sm">
+                    <div className="flex h-24 w-16 shrink-0 items-center justify-center rounded-xl border border-[#d8c8ab]/72 bg-gradient-to-b from-[#fff8ec] to-[#f6ebda] text-2xl shadow-sm">
                       <TarotCardArtwork
                         imagePath={selectedCard.imagePath}
                         alt={selectedCard.nameJa}
@@ -439,16 +465,16 @@ export default function DailyFortunePage() {
                       />
                     </div>
                     <div className="min-w-0">
-                      <h2 className="text-base font-semibold">
+                      <h2 className="text-base font-medium text-[#2e2a26]">
                         {selectedCard.nameJa}
                         {selectedCard.reversed ? "（逆位置）" : ""}
                       </h2>
                       {summary ? (
-                        <div className="mt-2 rounded-lg border border-amber-100 bg-amber-50/60 p-2">
-                          <p className="text-[11px] font-semibold tracking-wide text-amber-700">
+                        <div className="mt-2 rounded-lg border border-[#e6dac5]/80 bg-white/60 p-2">
+                          <p className="text-[11px] font-medium tracking-wide text-[#7d6d5a]">
                             要約{isReading ? "（先に見えている内容です）" : ""}
                           </p>
-                          <p className="mt-1 text-sm leading-relaxed text-amber-900/85">{summary}</p>
+                          <p className="mt-1 text-sm leading-relaxed text-[#544c42]">{summary}</p>
                         </div>
                       ) : null}
                     </div>
@@ -461,12 +487,12 @@ export default function DailyFortunePage() {
                   ) : null}
 
                   {isReading ? (
-                    <div className="mt-4 rounded-xl border border-amber-200 bg-white/80 p-4">
+                    <div className="mt-4 rounded-xl border border-[#e1d5bf]/75 bg-white/80 p-4">
                       <div className="flex items-center gap-3">
                         <span className="reading-spinner" aria-hidden="true" />
                         <div>
-                          <p className="text-sm font-semibold text-amber-900">リーディング中…</p>
-                          <p className="text-xs text-amber-800/80">
+                          <p className="text-sm font-medium text-[#2e2a26]">リーディング中…</p>
+                          <p className="text-xs text-[#544c42]">
                             カードのメッセージを言葉にしています…
                           </p>
                         </div>
@@ -475,11 +501,11 @@ export default function DailyFortunePage() {
                   ) : null}
 
                   {fullText ? (
-                    <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/70 p-3">
-                      <p className="mb-2 text-xs font-semibold tracking-wide text-amber-700">
+                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-3">
+                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">
                         リーディング全文
                       </p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{fullText}</p>
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fullText}</p>
                     </div>
                   ) : null}
                 </section>
@@ -487,13 +513,19 @@ export default function DailyFortunePage() {
             </div>
 
             <div className="mt-6">
-              <button type="button" onClick={resetState} className="btn btn--primary">
-                {hasTodayResult ? "今日の結果を見直す" : "もう一度占う"}
-              </button>
+              {hasTodayResult ? (
+                <LuminaButton type="button" onClick={handleRedrawToday} tone="primary">
+                  再確認のカードを引く
+                </LuminaButton>
+              ) : (
+                <LuminaButton type="button" onClick={resetState} tone="primary">
+                  もう一度占う
+                </LuminaButton>
+              )}
             </div>
           </section>
         )}
-      </div>
+      </GlassCard>
 
       <style jsx>{`
         .fortune-card-button {
@@ -680,6 +712,6 @@ export default function DailyFortunePage() {
           }
         }
       `}</style>
-    </main>
+    </PageShell>
   );
 }
