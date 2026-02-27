@@ -72,6 +72,17 @@ type WavePoint = {
 };
 
 const BIRTHDATE_STORAGE_KEY = "lumina_birthdate";
+const DESTINY_NUMBER_LABELS: Record<FortuneNumber, string> = {
+  1: "始まりの灯火",
+  2: "調和の守り手",
+  3: "光を運ぶ語り手",
+  4: "静かな礎の人",
+  5: "風をつかむ旅人",
+  6: "慈愛の灯り手",
+  7: "静寂の賢者",
+  8: "現実を編む創造者",
+  9: "包容の祈り手",
+};
 
 export default function CalendarPage() {
   const [monthDate, setMonthDate] = useState(() => new Date());
@@ -153,6 +164,16 @@ export default function CalendarPage() {
     }
     return points;
   }, [grid, monthDays, holidays, destinyNumber]);
+  const chartWidth = Math.max(720, wavePoints.length * 32);
+  const chartHeight = 220;
+  const chartTicks = wavePoints
+    .map((point, index) => ({ ...point, index }))
+    .filter(
+      (point) =>
+        point.index === 0 ||
+        point.index === wavePoints.length - 1 ||
+        (point.day % 5 === 0 && point.day !== wavePoints[wavePoints.length - 1]?.day)
+    );
 
   const handlePrevMonth = () => {
     setSelectedDateKey(null);
@@ -245,7 +266,7 @@ export default function CalendarPage() {
             <p className="text-xs font-medium tracking-wide text-[#847967]">光の波</p>
             <h2 className="mt-1 text-lg font-medium text-[#2e2a26]">
               {destinyNumber
-                ? `運命数${destinyNumber}の感じやすさ補正を重ねた整いやすさ`
+                ? `${DESTINY_NUMBER_LABELS[destinyNumber]}のバイオリズム・グラフ`
                 : "月相と縁起日から見た整いやすさ"}
             </h2>
           </div>
@@ -263,34 +284,81 @@ export default function CalendarPage() {
           </p>
         ) : (
           <p className="mt-3 text-sm text-[#544c42]">
-            月相と縁起日の共通波に、運命数ごとの「感じやすさ」の補正を重ねて表示しています。
+            1ヶ月の運気の波を可視化。調子が良い時期と、慎重になるべき時期を月相と縁起日の共通波に、運命数ごとの「感じやすさ」の補正を重ねてグラフにしました。
           </p>
         )}
 
         <div className="mt-4 rounded-xl border border-[#e1d5bf]/72 bg-white/65 p-3">
-          <svg viewBox="0 0 100 100" className="h-44 w-full" role="img" aria-label="光の波グラフ">
-            <line x1="0" y1="20" x2="100" y2="20" stroke="#e8dcc7" strokeWidth="0.8" />
-            <line x1="0" y1="50" x2="100" y2="50" stroke="#e8dcc7" strokeWidth="0.8" />
-            <line x1="0" y1="80" x2="100" y2="80" stroke="#e8dcc7" strokeWidth="0.8" />
-            <polyline
-              fill="none"
-              stroke="#9e8867"
-              strokeWidth="1.8"
-              points={buildWavePolyline(wavePoints)}
-            />
-            {wavePoints.map((point, idx) => (
-              <circle
-                key={point.dateKey}
-                cx={toWaveX(idx, wavePoints.length)}
-                cy={toWaveY(point.score)}
-                r="1.5"
-                fill="#c5ad88"
+          <div className="overflow-x-auto pb-1">
+            <svg
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              className="h-56"
+              style={{ width: `${chartWidth}px`, minWidth: "100%" }}
+              role="img"
+              aria-label="光の波グラフ"
+            >
+              <line
+                x1={toWaveX(0, Math.max(wavePoints.length, 2), chartWidth)}
+                y1={toWaveY(75, chartHeight)}
+                x2={toWaveX(Math.max(wavePoints.length - 1, 1), Math.max(wavePoints.length, 2), chartWidth)}
+                y2={toWaveY(75, chartHeight)}
+                stroke="#e8dcc7"
+                strokeWidth="1"
               />
-            ))}
-          </svg>
-          <div className="mt-2 flex justify-between text-[11px] text-[#7d6d5a]">
-            <span>1日</span>
-            <span>{wavePoints[wavePoints.length - 1]?.day ?? 0}日</span>
+              <line
+                x1={toWaveX(0, Math.max(wavePoints.length, 2), chartWidth)}
+                y1={toWaveY(50, chartHeight)}
+                x2={toWaveX(Math.max(wavePoints.length - 1, 1), Math.max(wavePoints.length, 2), chartWidth)}
+                y2={toWaveY(50, chartHeight)}
+                stroke="#e8dcc7"
+                strokeWidth="1"
+              />
+              <line
+                x1={toWaveX(0, Math.max(wavePoints.length, 2), chartWidth)}
+                y1={toWaveY(25, chartHeight)}
+                x2={toWaveX(Math.max(wavePoints.length - 1, 1), Math.max(wavePoints.length, 2), chartWidth)}
+                y2={toWaveY(25, chartHeight)}
+                stroke="#e8dcc7"
+                strokeWidth="1"
+              />
+              {chartTicks.map((tick) => {
+                const x = toWaveX(tick.index, wavePoints.length, chartWidth);
+                return (
+                  <g key={`${tick.dateKey}-tick`}>
+                    <line
+                      x1={x}
+                      y1={toWaveY(5, chartHeight)}
+                      x2={x}
+                      y2={toWaveY(95, chartHeight)}
+                      stroke="#eadfcb"
+                      strokeWidth="0.9"
+                      strokeDasharray="3 4"
+                    />
+                    <text x={x} y={chartHeight - 8} textAnchor="middle" fontSize="11" fill="#7d6d5a">
+                      {tick.day}日
+                    </text>
+                  </g>
+                );
+              })}
+              <polyline
+                fill="none"
+                stroke="#9e8867"
+                strokeWidth="2.6"
+                points={buildWavePolyline(wavePoints, chartWidth, chartHeight)}
+              />
+              {wavePoints.map((point, idx) => (
+                <circle
+                  key={point.dateKey}
+                  cx={toWaveX(idx, wavePoints.length, chartWidth)}
+                  cy={toWaveY(point.score, chartHeight)}
+                  r="2.4"
+                  fill="#c5ad88"
+                />
+              ))}
+            </svg>
+          </div>
+          <div className="mt-1 text-[11px] text-[#7d6d5a]">
+            日付ガイド: 5日ごとの縦線 / 最初日と最終日を表示
           </div>
         </div>
       </GlassCard>
@@ -448,18 +516,21 @@ function buildIconTitle(event: DayEvent): string {
   return `${event.label}：${event.description}`;
 }
 
-function toWaveX(index: number, total: number): number {
-  if (total <= 1) return 0;
-  return (index / (total - 1)) * 100;
+function toWaveX(index: number, total: number, width: number): number {
+  const safeTotal = Math.max(total, 2);
+  const innerWidth = Math.max(width - 48, 1);
+  return 24 + (index / (safeTotal - 1)) * innerWidth;
 }
 
-function toWaveY(score: number): number {
-  return 100 - score;
+function toWaveY(score: number, height: number): number {
+  const clamped = Math.max(0, Math.min(100, score));
+  const innerHeight = Math.max(height - 52, 1);
+  return 16 + ((100 - clamped) / 100) * innerHeight;
 }
 
-function buildWavePolyline(points: WavePoint[]): string {
+function buildWavePolyline(points: WavePoint[], width: number, height: number): string {
   if (points.length === 0) return "";
   return points
-    .map((point, idx) => `${toWaveX(idx, points.length)},${toWaveY(point.score)}`)
+    .map((point, idx) => `${toWaveX(idx, points.length, width)},${toWaveY(point.score, height)}`)
     .join(" ");
 }

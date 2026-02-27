@@ -209,3 +209,21 @@ h2 {
 .lumina-btn-secondary:hover {
   background: #f9f3e7;
 }
+
+.lumina-prose {
+  color: #4e453a;
+  font-size: 1rem;
+  line-height: 2;
+}
+
+.lumina-prose p {
+  margin: 1.25rem 0;
+}
+
+.lumina-prose blockquote {
+  margin: 1.75rem 0;
+  border-left: 4px solid rgba(191, 164, 118, 0.8);
+  padding: 0.75rem 1rem;
+  background: rgba(253, 247, 234, 0.88);
+  border-radius: 0.75rem;
+}

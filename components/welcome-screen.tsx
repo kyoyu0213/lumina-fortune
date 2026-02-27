@@ -57,6 +57,12 @@ const menuItems = [
     href: "/columns",
     ctaLabel: "読む",
   },
+  {
+    title: "館の休息室",
+    description: "静かなBGMと短い瞑想ガイドで、心をゆるめる時間を過ごせます。",
+    href: "/healing",
+    ctaLabel: "休む",
+  },
 ] as const
 
 const recommendedLinks = [
