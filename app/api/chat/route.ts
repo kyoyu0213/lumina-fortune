@@ -709,15 +709,17 @@ export async function POST(request: Request) {
 
     let rawText = completion.choices[0].message?.content || "";
     const isHealthThemeFortune =
-      resolvedMode === "fortune" && nextConversationState.topic === "health" && !!tarotSpread;
+      resolvedMode === "fortune" && nextConversationState.topic === "health";
 
     if (
       isHealthThemeFortune &&
       (HEALTH_THEME_FORBIDDEN_OUTPUT_RE.test(rawText) || !hasAllHealthHeaders(rawText))
     ) {
+      const safeTarotSpread = tarotSpread ?? drawTarotSpread();
+      tarotSpread = safeTarotSpread;
       const rewrittenHealthPrompt = buildTarotChatPrompt(
         `${fortunePromptMessage}\n\n追加指示: healthテーマであり恋愛文脈が混入しているので禁止事項を厳守して書き直してください。`,
-        tarotSpread,
+        safeTarotSpread,
         "health"
       );
       const rewriteMessages = [
