@@ -329,17 +329,15 @@ function hasAllHealthHeaders(text: string): boolean {
 
 function normalizeTarotReadingOutputHeadings(text: string): string {
   let normalized = text
-    .replace(/^1\. 引いたカード$/m, "1. 引いたカード（3枚）")
-    .replace(/^2\. カードの象徴$/m, "2. カードの象徴")
-    .replace(/^3\. 今の状況への読み解き$/m, "3. 読み解き（相談内容に合わせて）")
-    .replace(/^4\. 近い未来の可能性$/m, "4. 近い未来の可能性（2〜3個）")
-    .replace(/^5\. 心を整えるアドバイス$/m, "5. 今日からできる一歩")
-    .replace(/^6\. アファメーション$/m, "6. アファメーション（1行）");
+    .replace(/^1\. 引いたカード（3枚）$/m, "1. 引いたカード")
+    .replace(/^2\. カードの象徴$/m, "2. カードの気配")
+    .replace(/^3\. 読み解き（相談内容に合わせて）$/m, "3. 今の状況への読み解き")
+    .replace(/^4\. 近い未来の可能性（2〜3個）$/m, "4. 近い未来の可能性")
+    .replace(/^5\. 今日からできる一歩$/m, "5. 心を整えるヒント")
+    .replace(/^5\. 心を整えるアドバイス$/m, "5. 心を整えるヒント")
+    .replace(/^6\. アファメーション（1行）$/m, "6. アファメーション");
   if (!/^引いたカード：/m.test(normalized)) {
-    normalized = normalized.replace(
-      /^1\. 引いたカード（3枚）\n([^\n]+)/,
-      "引いたカード：$1\n\n1. 引いたカード（3枚）\n$1"
-    );
+    normalized = normalized.replace(/^1\. 引いたカード\n([^\n]+)/, "引いたカード：$1\n\n1. 引いたカード\n$1");
   }
   return normalized;
 }

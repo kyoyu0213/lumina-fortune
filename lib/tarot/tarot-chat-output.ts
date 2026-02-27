@@ -4,10 +4,10 @@ type TarotOutputTheme = "love" | "marriage" | "work" | "money" | "health" | "rel
 
 const REQUIRED_HEADERS = [
   "1. 引いたカード",
-  "2. カードの象徴",
+  "2. カードの気配",
   "3. 今の状況への読み解き",
   "4. 近い未来の可能性",
-  "5. 心を整えるアドバイス",
+  "5. 心を整えるヒント",
   "6. アファメーション",
 ] as const;
 
@@ -56,23 +56,23 @@ function fallbackTemplate(cards: DrawnTarotCard[]): string {
     `1. 引いたカード`,
     cardLine(cards),
     ``,
-    `2. カードの象徴`,
+    `2. カードの気配`,
     symbolLines(cards),
     ``,
     `3. 今の状況への読み解き`,
-    "今のあなたは、状況を動かしたい気持ちと慎重に見極めたい気持ちの両方を抱えやすい流れです。どこから整えると進みやすくなるでしょうか？ たとえばLINEの返信を急ぐ前に、先に伝えたい要点を一つだけ決めると迷いが減ります。",
+    "今のあなたは、気持ちを丁寧に扱いながらも、少し肩に力が入りやすい状態です。少しだけ力を抜いたほうが、言葉は自然に届きやすくなります。",
     ``,
     `4. 近い未来の可能性`,
-    "- 話し合いのタイミングを少し整えると、誤解が減って進展しやすくなる可能性があります。",
-    "- 予定や優先順位を先に見直すことで、気持ちの余裕が戻る可能性もあります。",
+    "- 軽い一言がきっかけになって、距離が近づく流れがあります。",
+    "- 安心できる場に身を置くほど、関係が整いやすくなる可能性が見えます。",
     ``,
-    `5. 心を整えるアドバイス`,
-    "- 送る前のLINEは一度読み返し、主語と要件を短く整えてください。",
-    "- 予定表に10分の見直し時間を入れて、判断を急ぎすぎない流れを作ってください。",
-    "- 仕事では最初の一手を小さく決めてから着手してください。",
+    `5. 心を整えるヒント`,
+    "- \"ちゃんとしなきゃ\" を少しゆるめてみてください。",
+    "- 感情を分析しすぎず、まずはそのまま感じてみてください。",
+    "- 落ち着ける相手や場所との時間を大切にしてください。",
     ``,
     `6. アファメーション`,
-    "私は落ち着いて選び、必要な流れを育てていけます。",
+    "私は、落ち着いた愛を受け取り、やさしい関係を育てていきます。",
   ].join("\n");
 }
 
@@ -168,13 +168,37 @@ function ensureAffirmation(text: string): string {
   return lines.join("\n");
 }
 
+function applyLuminaVoiceRules(text: string): string {
+  return text
+    .replace(/カードの象徴/g, "カードの気配")
+    .replace(/心を整えるアドバイス/g, "心を整えるヒント")
+    .replace(/描かれています/g, "気配があります")
+    .replace(/示しています/g, "伝えています")
+    .replace(/必ず/g, "近づく流れがあります")
+    .replace(/絶対に/g, "その可能性が見えます")
+    .replace(/LINEで[^。]*。/g, "軽い一言がきっかけになります。")
+    .replace(/今週[^。]*(イベント|参加)[^。]*。/g, "安心できる場に身を置いてみてください。");
+}
+
+function ensureCalmClosing(text: string): string {
+  const closingLines = [
+    "あなたは、もう十分に整っています。",
+    "焦らなくて大丈夫です。",
+    "光は静かに近づいています。",
+  ];
+  if (closingLines.every((line) => text.includes(line))) return text;
+  return `${text}\n${closingLines.join("\n")}`;
+}
+
 function normalizeLegacyDailyLabels(text: string): string {
   return text
     .replace(/^引いたカード：/m, "1. 引いたカード\n")
-    .replace(/^カードの象徴:/m, "2. カードの象徴")
+    .replace(/^カードの象徴:/m, "2. カードの気配")
+    .replace(/^カードの気配:/m, "2. カードの気配")
     .replace(/^今日の読み:/m, "3. 今の状況への読み解き")
     .replace(/^注意点:/m, "4. 近い未来の可能性")
-    .replace(/^今日の行動ヒント:/m, "5. 心を整えるアドバイス")
+    .replace(/^今日の行動ヒント:/m, "5. 心を整えるヒント")
+    .replace(/^心を整えるアドバイス:/m, "5. 心を整えるヒント")
     .replace(/^ひと言:/m, "6. アファメーション");
 }
 
@@ -205,14 +229,16 @@ export function ensureTarotChatOutputFormat(
     text = text.replace(/1\. 引いたカード\s*\n(?:.*\n)?/, `1. 引いたカード\n${cardLine(cards)}\n`);
   }
 
-  if (!/2\. カードの象徴[\s\S]*?(描|人物|絵|姿)/.test(text)) {
-    text = text.replace(/2\. カードの象徴[\s\S]*?(?=\n3\. 今の状況への読み解き)/, `2. カードの象徴\n${symbolLines(cards)}\n`);
+  if (!/2\. カードの気配[\s\S]*?(描|人物|絵|姿|気配|伝え)/.test(text)) {
+    text = text.replace(/2\. カードの気配[\s\S]*?(?=\n3\. 今の状況への読み解き)/, `2. カードの気配\n${symbolLines(cards)}\n`);
   }
 
   text = ensureQuestion(text);
   text = ensureAffirmation(text);
+  text = applyLuminaVoiceRules(text);
   text = capMimetics(text);
   text = softenEndingRuns(text);
+  text = ensureCalmClosing(text);
 
   return text.replace(/\n{3,}/g, "\n\n").trim();
 }
