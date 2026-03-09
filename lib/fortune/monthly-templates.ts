@@ -1995,11 +1995,45 @@ function generateMonthlyTemplate(month: FortuneMonth, fortuneNumber: FortuneNumb
       `- 注意点：${monthMeta.decisionTips.hesitation}で迷ったまま増やしすぎること\n` +
       `- 次月への準備：続けることを1つ言葉にする`,
     loveSingle:
-      `${loveSingleLead}${profile.loveStyle}流れなので、会話の温度感を大事にしてみてください。\n` +
-      `たとえば${loveSceneB}や${loveSceneC}で話した相手に、その日のうちに短くお礼を送るだけでも縁がつながりやすくなります。${monthMeta.decisionTips.decisionKey}を恋愛にも応用すると、相性の見極めがしやすくなります。\n\n` +
-      `- 出会いやすい場面：${formatList(monthMeta.loveScenes)}\n` +
-          "諢帶ュ陦ｨ迴ｾ・・縲・蟷ｴ髢薙√♀逍ｲ繧梧ｧ倥阪→縺・≧險闡峨ｒ豺ｻ縺医◆縲√Μ繝ｩ繝・け繧ｹ縺ｧ縺阪ｋ遨ｺ髢薙・貍泌・繧・∵э螟匁ｧ縺ｮ縺ゅｋ繝励メ繧ｮ繝輔ヨ縲・,
-        work:
+      `${loveSingleLead}${profile.loveStyle}流れなので、会話の温度感を大事にしてみてください。
+たとえば${loveSceneB}や${loveSceneC}で話した相手に、その日のうちに短くお礼を送るだけでも縁がつながりやすくなります。${monthMeta.decisionTips.decisionKey}を恋愛にも応用すると、相性の見極めがしやすくなります。
+
+- 出会いやすい場面：${formatList(monthMeta.loveScenes)}
+- 行動のヒント：会話が弾んだ相手には、その日のうちに短い感謝のメッセージを送る
+- 注意点：迷いが長引くと距離ができやすいので、気になる相手には素直な一言を早めに返す`,
+    lovePartner: `${monthLabel}の恋愛運（パートナーあり）は、生活リズムを整える会話の質が関係の安定につながる月です。
+${loveSceneA}や${loveSceneB}のような何気ない時間ほど、本音を短く言葉にすると安心感が育ちます。相手を思いやる気持ちと同じくらい、自分の希望も具体的に伝えることが大切です。
+
+- 話してみたいテーマ：今月の過ごし方、会いたい頻度、安心できる連絡ペース
+- すれ違い回避：察してもらう前提を手放し、お願いは短く具体的に伝える
+- 愛情表現のコツ：小さな約束を守り、言葉と行動をそろえる`,
+    work: `${workLead}${workSceneC}まで含めて見通しを持つと、忙しい時期でも落ち着いて判断しやすくなります。
+特に${dailyExampleA}のような出来事が起きた時は、${monthMeta.decisionTips.decisionKey}を基準に「今やること」と「後でよいこと」を分けるのが有効です。
+
+- 伸ばしたいこと：${profile.workStyle}力を活かした段取りづくり
+- 時期の使い方：前半で整理、後半で実行と微調整
+- 起きやすい場面：${formatList(monthMeta.workScenes)}
+- 具体的なアクション：一日の最初に優先順位を3つだけ書き出す`,
+    relations: `${relationsLead}${relationsSceneB}や${relationsSceneC}でも、伝え方を少し整えるだけで空気がやわらぎます。
+優しさだけで抱え込まず、${monthMeta.decisionTips.hesitation}を感じた時ほど${monthMeta.decisionTips.decisionKey}を思い出してください。
+
+- 意識したいこと：相手の気持ちを受け止めつつ、自分の都合も先に共有する
+- 起きやすい場面：${formatList(monthMeta.relationsScenes)}
+- 関係を整えるコツ：返信を遅らせる時は一言だけ先に伝える
+- 注意点：無理をして引き受けすぎない`,
+    actions: [
+      `${MONTH_LUCKY_COLORS[month]}を小物か服にひとつ取り入れる`,
+      `朝1分、${monthInfo.focus}に合わせて今日の優先順位を書き出す`,
+      monthMeta.actionChallenge,
+    ],
+    powerSpots: monthMeta.powerSpots,
+    keywords: profile.keywords,
+    blessing: `${monthLabel}は、あなたの${profile.core}が静かに実力を発揮しやすい月です。
+焦って答えを急がなくても大丈夫です。今の自分に合う速度を選び、丁寧に積み重ねた分だけ運は味方します。`,
+  };
+}
+
+/*
           "蟷ｴ蠎ｦ譛ｫ縺ｮ豺ｷ荵ｱ繧・・繝ｬ繝・す繝｣繝ｼ縺ｧ蜻ｨ蝗ｲ縺後ぐ繧ｹ繧ｮ繧ｹ縺励ｄ縺吶＞譎よ悄縺ｧ縺吶′縲∝捉繧翫↓豬√＆繧後★縲∬・蛻・・繝壹・繧ｹ縺ｧ騾ｲ繧縺ｻ縺ｩ謌先棡縺悟・繧・☆縺・怦縺ｧ縺吶・n\n" +
           "蜈ｷ菴鍋噪縺ｫ襍ｷ縺阪ｄ縺吶＞蝣ｴ髱｢・・陦晉ｪ√＠縺昴≧縺ｪ諢剰ｦ九・譚ｿ謖溘∩縺ｫ縺ｪ縺｣縺滄圀縲√≠縺ｪ縺溘′荳ｭ遶狗噪縺ｧ譟碑ｻ溘↑隗｣豎ｺ遲悶ｒ謠千､ｺ縺吶ｋ縺薙→縺ｧ縲√メ繝ｼ繝蜈ｨ菴薙′謨代ｏ繧後ｋ縲・n\n" +
           "辟ｦ縺｣縺溘→縺阪・豕ｨ諢擾ｼ・繧ｹ繝斐・繝峨ｈ繧翫ｂ縲悟捉蝗ｲ縺ｨ縺ｮ蜷域э縲阪→縲御ｸ∝ｯｧ縺ｪ莉穂ｸ翫￡縲阪ｒ蜆ｪ蜈医☆繧九％縺ｨ縺後∫ｵ先棡逧・↓譛螟ｧ縺ｮ隧穂ｾ｡縺ｫ郢九′繧翫∪縺吶・n\n" +
@@ -5253,73 +5287,7 @@ function generateMonthlyTemplate(month: FortuneMonth, fortuneNumber: FortuneNumb
         ? `${monthLabel}縺ｮ莠ｺ髢馴未菫ゅ・縲・{monthMeta.seasonTheme}繧峨＠縺・{relationsSceneA}繧・{relationsSceneB}縺ｧ險闡峨・鬆・分繧呈紛縺医ｋ縺ｨ遨ｺ豌励′繧・ｏ繧峨℃縺ｾ縺吶Ａ
         : `${monthLabel}縺ｮ莠ｺ髢馴未菫ゅ・縲・{monthMeta.seasonTheme}縺ｧ${relationsSceneA}縺瑚ｵｷ縺阪ｄ縺吶＞縺ｶ繧薙∽ｼ昴∴譁ｹ繧貞ｰ代＠蟾･螟ｫ縺吶ｋ縺ｨ髢｢菫ゅ′螳牙ｮ壹＠繧・☆縺上↑繧翫∪縺吶Ａ;
 
-  /*
-   * 逕滓・繧ｵ繝ｳ繝励Ν・域栢邊・/ 驕句多謨ｰ5・・
-   * 4譛・loveSingle:
-   *   縲梧眠逕滓ｴｻ縺ｮ繝ｪ繧ｺ繝繧剃ｽ懊ｋ縲阪・蠖ｱ髻ｿ縺ｧ縲∬・蝣ｴ繧・ｭｦ譬｡縺ｮ莨第・譎る俣繧・眠縺励＞蠎励↓遶九■蟇・▲縺滓凾...
-   *   - 蜃ｺ莨壹＞繧・☆縺・ｴ髱｢・夐壼共騾壼ｭｦ縺ｮ譁ｰ繝ｫ繝ｼ繝茨ｼ剰・蝣ｴ繧・ｭｦ譬｡縺ｮ莨第・譎る俣・乗眠縺励＞蠎励↓遶九■蟇・▲縺滓凾・丞酔縺俶凾髢灘ｸｯ縺ｫ鬘斐ｒ蜷医ｏ縺帙ｋ蝣ｴ謇
-   * 5譛・loveSingle:
-   *   縲悟､悶∈蠎・′繧句兇縺・ｒ謨ｴ縺医ｋ縲阪・蠖ｱ髻ｿ縺ｧ縲・□蜃ｺ縺ｮ騾比ｸｭ繧・暑莠ｺ邨檎罰縺ｮ邏ｹ莉・..
-   *   - 蜃ｺ莨壹＞繧・☆縺・ｴ髱｢・壹う繝吶Φ繝井ｼ壼ｴ・城□蜃ｺ縺ｮ騾比ｸｭ・丞暑莠ｺ邨檎罰縺ｮ邏ｹ莉具ｼ丞ｱ句､悶・髮・∪繧翫ｄ繝輔ぉ繧ｹ
-   */
-
-  return {
-    fortuneNumber,
-    introTitle,
-    introBody:
-      `${introLead}${profile.strengthScene}繧呈昴＞蜃ｺ縺励※縺ｿ縺ｦ縺上□縺輔＞縲・n` +
-      `縺薙・縺上ｉ縺・〒縺・＞繧・→豬√＠縺ｦ縺・∪縺帙ｓ縺具ｼ・${monthInfo.focus}繧呈э隴倥＠縺ｦ謨ｴ縺医ｋ縺ｻ縺ｩ縲・{monthInfo.mood}譁ｹ蜷代∈騾ｲ縺ｿ繧・☆縺上↑繧翫∪縺吶Ａ,
-    themeCatch: `${monthLabel}縺ｮ繝・・繝槭・縲・{monthInfo.focus}縲阪→縲・{titleName}繧峨＠縺輔・豢ｻ逕ｨ縲港,
-    firstHalf:
-      `${firstHalfLead}${relationsSceneA}縺ｧ縺ｯ縲・{profile.caution}縺悟・繧・☆縺上↑繧九°繧ゅ＠繧後∪縺帙ｓ縲・n` +
-      `萓九∴縺ｰ${dailyExampleText}縺ｮ繧医≧縺ｪ譌･蟶ｸ縺ｫ縲√◎縺ｮ譛医・隱ｲ鬘後→蠑ｷ縺ｿ縺瑚｡ｨ繧後ｄ縺吶￥縺ｪ繧翫∪縺吶りｿｷ縺・ｄ縺吶＞縺ｮ縺ｯ縲・{monthMeta.decisionTips.hesitation}縲阪・蝣ｴ髱｢縺ｧ縺吶・n\n` +
-      `- 蜑榊濠縺ｮ骰ｵ・・{monthInfo.focus}縺ｮ蜆ｪ蜈磯・ｽ阪ｒ豎ｺ繧√ｋ\n` +
-      `- 諢剰ｭ倥＠縺溘＞蟋ｿ蜍｢・・{monthInfo.mood}\n` +
-      `- 隕玖誠縺ｨ縺励ｄ縺吶＞繧ｵ繧､繝ｳ・・{monthMeta.decisionTips.overlookedSign}`,
-    secondHalf:
-      `${secondHalfLead}莠亥ｮ壼､画峩繧・嶌隲・′蜈･縺｣縺ｦ繧ゅ・{monthMeta.decisionTips.decisionKey}繧呈э隴倥＠縺ｦ驕ｸ謚櫁い繧呈戟縺､縺ｨ豬√ｌ繧剃ｿ昴■繧・☆縺・〒縺吶・n` +
-      `${profile.relationKey}繧呈э隴倥＠縺､縺､縲・{relationsSceneC}縺ｮ繧医≧縺ｪ蝣ｴ髱｢縺ｧ險縺・婿繧呈紛縺医ｋ縺ｨ辟｡逅・・縺ｪ縺・燕騾ｲ縺後＠繧・☆縺上↑繧翫∪縺吶・n\n` +
-      `- 莨ｸ縺ｳ繧玖｡悟虚・夂洒縺・嶌隲・∝・譛峨∫｢ｺ隱構n` +
-      `- 豕ｨ諢冗せ・・{monthMeta.decisionTips.hesitation}縺ｧ霑ｷ縺｣縺溘∪縺ｾ蠅励ｄ縺励☆縺弱ｋ縺薙→\n` +
-      `- 谺｡譛医∈縺ｮ貅門ｙ・夂ｶ壹￠繧九％縺ｨ繧・縺､險闡峨↓縺吶ｋ`,
-    loveSingle:
-      `${loveSingleLead}${profile.loveStyle}豬√ｌ縺ｪ縺ｮ縺ｧ縲∽ｼ夊ｩｱ縺ｮ貂ｩ蠎ｦ諢溘ｒ螟ｧ莠九↓縺励※縺ｿ縺ｦ縺上□縺輔＞縲・n` +
-      `縺溘→縺医・${loveSceneB}繧・{loveSceneC}縺ｧ隧ｱ縺励◆逶ｸ謇九↓縲√◎縺ｮ譌･縺ｮ縺・■縺ｫ遏ｭ縺上♀遉ｼ繧帝√ｋ縺縺代〒繧らｸ√′縺､縺ｪ縺後ｊ繧・☆縺上↑繧翫∪縺吶・{monthMeta.decisionTips.decisionKey}繧呈°諢帙↓繧ょｿ懃畑縺吶ｋ縺ｨ縲∫嶌諤ｧ縺ｮ隕区･ｵ繧√′縺励ｄ縺吶￥縺ｪ繧翫∪縺吶・n\n` +
-      `- 蜃ｺ莨壹＞繧・☆縺・ｴ髱｢・・{formatList(monthMeta.loveScenes)}\n` +
-      `- 陦悟虚縺ｮ繝偵Φ繝茨ｼ夊・蛻・°繧我ｸ險縺縺第ｬ｡縺ｫ縺､縺ｪ縺後ｋ險闡峨ｒ騾√ｋ\n` +
-      `- 豕ｨ諢冗せ・・{monthMeta.decisionTips.hesitation}繧呈°諢帙〒郢ｰ繧願ｿ斐＠縲∝愛譁ｭ繧貞・蟒ｶ縺ｰ縺励↓縺励↑縺Я,
-    lovePartner:
-      `${monthLabel}縺ｮ諱区・驕具ｼ医ヱ繝ｼ繝医リ繝ｼ縺ゅｊ・峨・縲・未菫ゅｒ謨ｴ縺医ｋ莨夊ｩｱ縺ｮ雉ｪ縺後・繧､繝ｳ繝医〒縺吶ょｿ吶＠縺・凾縺ｻ縺ｩ縲惹ｻ翫←縺・─縺倥※縺・ｋ縺九上ｒ遏ｭ縺丞・譛峨☆繧九→縲√☆繧碁＆縺・ｒ蟆上＆縺上〒縺阪∪縺吶・n` +
-      `縺ｵ繧上▲縺ｨ縺励◆荳榊ｮ峨ｒ謾ｾ鄂ｮ縺帙★縲∬ｨ闡峨↓縺吶ｋ縺ｨ螳牙ｿ・─縺梧綾繧翫ｄ縺吶￥縺ｪ繧翫∪縺吶・n\n` +
-      `- 莨夊ｩｱ繝・・繝橸ｼ壻ｻ頑怦縺ｮ蜆ｪ蜈磯・ｽ阪∽ｼ壹≧譎る俣縲∵ｰ玲戟縺｡縺ｮ貂ｩ蠎ｦ\n` +
-      `- 縺吶ｌ驕輔＞蝗樣∩・夂ｵ占ｫ悶・蜑阪↓豌玲戟縺｡繧貞・譛峨☆繧欺n` +
-      `- 諢帶ュ陦ｨ迴ｾ・壼・菴鍋噪縺ｪ莠亥ｮ壹ｄ陦悟虚縺ｧ螳牙ｿ・ｒ貂｡縺兪,
-    work:
-      `${workLead}貅門ｙ縺ｮ雉ｪ縺後≠縺ｨ縺ｧ螟ｧ縺阪￥蜉ｹ縺・※縺阪∪縺吶・n` +
-      `縺・▲縺九ｊ辟ｦ縺｣縺ｦ蜈医↓蜍輔″縺溘￥縺ｪ繧区律縺ｻ縺ｩ縲√・{dailyExampleA}縲阪・繧医≧縺ｪ繧ｺ繝ｬ縺悟・繧・☆縺・・縺ｧ縲・{workSceneB}繧・{workSceneC}縺ｮ蜑阪↓遒ｺ隱阪ｒ荳縺､蜈･繧後ｋ縺ｨ螳牙ｮ壹＠縺ｾ縺吶よｱｺ譁ｭ縺ｮ繧ｳ繝・・縲・{monthMeta.decisionTips.decisionKey}縲阪〒縺吶・n\n` +
-      `- 莨ｸ縺ｰ縺励◆縺・せ・壼━蜈磯・ｽ阪→蜈ｱ譛峨・譏守｢ｺ縺表n` +
-      `- 蜉帙ｒ蜈･繧後◆縺・凾譛滂ｼ壼燕蜊翫・謨ｴ縺茨ｼ句ｾ悟濠縺ｮ螳溯｡圭n` +
-      `- 襍ｷ縺阪ｄ縺吶＞蝣ｴ髱｢・・{formatList(monthMeta.workScenes)}\n` +
-      `- 陦悟虚・壻ｻ頑律縺ｮ譛驥崎ｦ・莉ｶ繧貞・縺ｫ豎ｺ繧√ｋ`,
-    relations:
-      `${relationsLead}${relationsSceneB}繧・{relationsSceneC}縺ｧ繧ゅ∬ｨ闡峨ｒ蟆代＠謨ｴ縺医ｋ縺縺代〒遨ｺ豌励′螟峨ｏ繧翫∪縺吶・n` +
-      `萓九∴縺ｰ縲惹ｻ頑律縺ｯ髮｣縺励＞縺ｧ縺吶′縲∵・譌･縺ｪ繧芽ｿ斐○縺ｾ縺吶上・繧医≧縺ｫ驕ｸ謚櫁い繧堤､ｺ縺吶→縲∫嶌謇九ｂ蜿励￠蜿悶ｊ繧・☆縺上↑繧翫∪縺吶・{monthMeta.decisionTips.hesitation}縺ｧ霑ｷ縺・凾縺ｻ縺ｩ縲・{monthMeta.decisionTips.decisionKey}縺悟柑縺阪∪縺吶・n\n` +
-      `- 霍晞屬諢溘・謨ｴ縺域婿・壻ｼ壹≧鬆ｻ蠎ｦ繝ｻ霑比ｿ｡騾溷ｺｦ縺ｮ蝓ｺ貅悶ｒ謖√▽\n` +
-      `- 襍ｷ縺阪ｄ縺吶＞蝣ｴ髱｢・・{formatList(monthMeta.relationsScenes)}\n` +
-      `- 莨昴∴譁ｹ・夂洒縺上・譏弱ｋ縺上・蜈ｷ菴鍋噪縺ｫ\n` +
-      `- 豕ｨ諢冗せ・夂夢繧後※縺・ｋ譎ゅ↓辟｡逅・↑邏・據繧偵＠縺ｪ縺Я,
-    actions: [
-      `${MONTH_LUCKY_COLORS[month]}繧貞ｰ冗黄縺ｧ1轤ｹ蜿悶ｊ蜈･繧後ｋ`,
-      `騾ｱ1蝗槭・{monthInfo.focus}縺ｫ蜷医ｏ縺帙※莠亥ｮ壹ｒ隕狗峩縺呎凾髢薙ｒ菴懊ｋ`,
-      monthMeta.actionChallenge,
-    ],
-    powerSpots: monthMeta.powerSpots,
-    keywords: profile.keywords,
-    blessing:
-      `${monthLabel}縺ｯ縲√≠縺ｪ縺溘・${profile.core}繧堤┌逅・↑縺乗ｴｻ縺九☆縺ｻ縺ｩ謨ｴ縺・ｄ縺吶＞譛医〒縺吶ゅ≧縺ｾ縺上＞縺九↑縺・椪髢薙′縺ゅ▲縺ｦ繧ゅ√◎繧後・隱ｿ謨ｴ縺ｮ繝√Ε繝ｳ繧ｹ縺ｨ縺励※菴ｿ縺医∪縺吶・n` +
-      `縺ゅ↑縺溘・驕ｸ縺ｳ譁ｹ縺ｫ縺ｯ縲√■繧・ｓ縺ｨ諢丞袖縺後≠繧翫∪縺吶Ａ,
-  };
-}
+*/
 
 function buildAllMonthlyTemplates(): Record<FortuneMonth, Record<FortuneNumber, FortuneMonthlyTemplate>> {
   const result = {} as Record<FortuneMonth, Record<FortuneNumber, FortuneMonthlyTemplate>>;
