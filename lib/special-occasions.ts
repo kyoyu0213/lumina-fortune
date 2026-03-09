@@ -159,8 +159,9 @@ export function getSpecialOccasionEvent(birthDate?: string | null): SpecialOccas
   const seasonalEvents = SPECIAL_SEASONAL_EVENTS.filter((event) =>
     isMonthDayInRange(todayMonthDay, event.startMonthDay, event.endMonthDay)
   );
+  type OccasionCandidate = NonNullable<typeof birthdayEvent> | (typeof seasonalEvents)[number];
 
   return [birthdayEvent, ...seasonalEvents]
-    .filter((event): event is SpecialOccasionEvent => event !== null)
+    .filter((event): event is OccasionCandidate => event !== null)
     .sort((left, right) => right.priority - left.priority)[0] ?? null;
 }

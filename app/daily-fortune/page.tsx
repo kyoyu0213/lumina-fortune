@@ -503,6 +503,18 @@ function usePrefersReducedMotion() {
 export default function DailyFortunePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const profile = useMemo(() => loadProfileForDailyFortune(), []);
+  const specialEvent: SpecialFortuneEvent & { card: BirthdayBlessingCard } = {
+    key: "disabled",
+    badge: "",
+    title: "",
+    message: "",
+    priority: 0,
+    card: {
+      id: "disabled",
+      title: "",
+      message: "",
+    },
+  };
   const [readyToFlip, setReadyToFlip] = useState(false);
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
