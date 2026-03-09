@@ -1,6 +1,8 @@
 import FortuneMonthlyClient from "@/app/fortune-monthly/fortune-monthly-client";
 import { getServerProfileBirthdate } from "@/lib/profile/server-birthdate";
 
+export const dynamic = "force-dynamic";
+
 type FortuneMonthlyPageProps = {
   searchParams: Promise<{
     edit?: string;

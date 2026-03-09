@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { createContext, useContext } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,9 @@ import { BRAND } from "@/lib/brand";
 import { getInitialBirthdate } from "@/lib/profile/getProfile";
 import { getSpecialOccasionEvent, type SpecialOccasionEvent } from "@/lib/special-occasions";
 import { getJstDateKey, getVisitStreakForVisitor, makeVisitorKey, updateVisitStreakForVisitor, type VisitStreakRecord } from "@/lib/visit-streak";
+
+const TAROT_HREF = "/?start=tarot";
+const TarotContext = createContext<(() => void) | undefined>(undefined);
 
 const PROFILE_STORAGE_KEY = "lumina_profile";
 const DEFAULT_WHISPER_MESSAGE = `今日は「整えること」が鍵になる日。
@@ -44,7 +48,7 @@ const groupedMenus: MenuGroup[] = [
     image: "/gazou/IMG_4213.webp",
     items: [
       { title: "基本性格", description: "生年月日からあなたの本質を読み解きます。", href: "/basic-personality", ctaLabel: "見る" },
-      { title: "光の導きタロット占い", description: "いまの流れをカードで静かに読み解きます。", href: "/", ctaLabel: "ひらく" },
+      { title: "光の導きタロット占い", description: "いまの流れをカードで静かに読み解きます。", href: "/?start=tarot", ctaLabel: "ひらく" },
       { title: "毎日の占い", description: "今日の流れに寄り添うメッセージを受け取れます。", href: "/daily-fortune", ctaLabel: "見る" },
       { title: "毎月の運勢", description: "今月のテーマと過ごし方を確認できます。", href: "/fortune-monthly", ctaLabel: "開く" },
       { title: "2026年の運勢", description: "一年の流れを静かに見通します。", href: "/fortune-2026", ctaLabel: "開く" },
@@ -66,7 +70,7 @@ const groupedMenus: MenuGroup[] = [
   {
     heading: "光の書庫",
     sub: "静かな時間を受け取る",
-    image: "/gazou/IMG_4216.webp",
+    image: "/gazou/IMG_4219.webp",
     items: [
       { title: "白の庭の記録（物語）", description: "白の館とルミナの物語を辿ります。", href: "/library/records", ctaLabel: "読む" },
       { title: "館の書棚（コラム）", description: "心を整えるための短い読み物です。", href: "/columns", ctaLabel: "読む" },
@@ -104,7 +108,7 @@ const mapCards = [
     tag: "相談室",
     title: "光の導きタロット占い",
     description: "カードを通して、いまの流れを静かに読み解きます。",
-    href: "/",
+    href: "/?start=tarot",
     ctaLabel: "占いをひらく",
   },
 ];
@@ -138,17 +142,33 @@ function BridgeSocialIcon({ name }: { name: (typeof bridgeSocialLinks)[number]["
   );
 }
 
+function SmartLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
+  const onStartTarot = useContext(TarotContext);
+  if (href === TAROT_HREF && onStartTarot) {
+    return (
+      <button type="button" onClick={onStartTarot} className={className}>
+        {children}
+      </button>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
+
 function MenuCardItem({ item }: { item: MenuCard }) {
   return (
     <article className="rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(162deg,rgba(255,252,246,0.9),rgba(248,242,231,0.86))] p-4 shadow-[0_12px_22px_-20px_rgba(82,69,53,0.22)]">
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-lg font-medium leading-tight text-[#2e2a26]">{item.title}</h3>
-        <Link
+        <SmartLink
           href={item.href}
           className="inline-flex h-9 shrink-0 items-center justify-center rounded-md border border-[#baa98d]/72 bg-[#fdf8ee] px-3 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
         >
           {item.ctaLabel}
-        </Link>
+        </SmartLink>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{item.description}</p>
     </article>
@@ -187,9 +207,10 @@ const featherCardClassName =
 type WelcomeScreenProps = {
   initialDailyWhisper?: string;
   serverBirthdate?: string | null;
+  onStartTarot?: () => void;
 };
 
-export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: WelcomeScreenProps) {
+export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onStartTarot }: WelcomeScreenProps) {
   const dailyWhisper = initialDailyWhisper?.trim() || DEFAULT_WHISPER_MESSAGE;
   const [mobileFortuneExpanded, setMobileFortuneExpanded] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(false);
@@ -245,7 +266,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
       : `白が落としていく羽は、あと${remainingDays}枚でそろいます。`;
   const mobileQuickMenus = [
     { label: "今日の占い", href: "/daily-fortune" },
-    { label: "光の導きタロット", href: "/" },
+    { label: "光の導きタロット", href: "/?start=tarot" },
     { label: "白の庭の記録", href: "/library/records" },
     { label: "個人鑑定", href: "/consultation" },
   ];
@@ -259,6 +280,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
   );
 
   return (
+    <TarotContext.Provider value={onStartTarot}>
     <div className="relative min-h-screen overflow-hidden px-4 py-8 sm:py-10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_16%,rgba(255,255,247,0.2),transparent_46%),radial-gradient(circle_at_78%_14%,rgba(246,233,202,0.16),transparent_50%),radial-gradient(circle_at_36%_74%,rgba(223,242,226,0.12),transparent_56%)]" />
 
@@ -308,13 +330,13 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
       <section className="relative mx-auto mt-4 w-full max-w-5xl md:hidden">
         <div className="grid grid-cols-2 gap-2">
           {mobileQuickMenus.map((item) => (
-            <Link
+            <SmartLink
               key={item.href}
               href={item.href}
               className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[#baa98d]/72 bg-[#fdf8ee] px-3 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
             >
               {item.label}
-            </Link>
+            </SmartLink>
           ))}
         </div>
       </section>
@@ -420,12 +442,12 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
                 <p className="text-xs tracking-[0.1em] text-[#8b7e6b]">{card.tag}</p>
                 <h3 className="mt-1 text-lg font-medium text-[#2e2a26]">{card.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{card.description}</p>
-                <Link
+                <SmartLink
                   href={card.href}
                   className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
                 >
                   + {card.ctaLabel} →
-                </Link>
+                </SmartLink>
               </article>
             ))}
           </div>
@@ -453,12 +475,12 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
                   >
                     <h3 className="text-base font-medium text-[#2e2a26]">{item.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{item.description}</p>
-                    <Link
+                    <SmartLink
                       href={item.href}
                       className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
                     >
                       {item.ctaLabel} →
-                    </Link>
+                    </SmartLink>
                   </article>
                 ))}
               </div>
@@ -496,12 +518,12 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
                         <article key={`mobile-item-${item.href}`} className="rounded-xl border border-[#e1d5bf]/75 bg-white/75 p-3">
                           <div className="flex items-start justify-between gap-2">
                             <h4 className="text-sm font-medium text-[#2e2a26]">{item.title}</h4>
-                            <Link
+                            <SmartLink
                               href={item.href}
                               className="inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-[#baa98d]/72 bg-[#fdf8ee] px-2.5 text-xs font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
                             >
                               {item.ctaLabel}
-                            </Link>
+                            </SmartLink>
                           </div>
                           <p className="mt-1 text-xs leading-relaxed text-[#544c42]">{item.description}</p>
                         </article>
@@ -529,9 +551,9 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
               key={group.heading}
               className="relative overflow-hidden rounded-3xl border border-[#e1d5bf]/72 bg-[linear-gradient(165deg,rgba(255,252,246,0.76),rgba(248,242,231,0.68))] p-4 shadow-[0_10px_20px_-22px_rgba(82,69,53,0.2)] sm:p-5"
             >
-              <div className="pointer-events-none absolute inset-0 opacity-38">
+              <div className="pointer-events-none absolute inset-0 opacity-55">
                 <Image src={group.image} alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 960px" />
-                <div className="absolute inset-0 bg-[rgba(255,252,246,0.74)]" />
+                <div className="absolute inset-0 bg-[rgba(255,252,246,0.52)]" />
               </div>
               <div className="relative z-10 mb-3 flex items-end justify-between gap-3">
                 <h2 className="text-lg font-medium text-[#3c352d]">{group.heading}</h2>
@@ -574,5 +596,6 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null }: W
       </section>
 
     </div>
+    </TarotContext.Provider>
   );
 }

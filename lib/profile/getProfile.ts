@@ -1,25 +1,9 @@
-export const PROFILE_STORAGE_KEY = "lumina_profile";
-export const BIRTHDATE_STORAGE_KEY = "lumina_birthdate";
+import { BIRTHDATE_STORAGE_KEY, getStoredProfileBirthdate, PROFILE_STORAGE_KEY } from "@/lib/profile/profile-store";
 
-type StoredProfile = {
-  birthdate?: unknown;
-};
+export { BIRTHDATE_STORAGE_KEY, PROFILE_STORAGE_KEY };
 
 export function getClientProfileBirthdate(): string {
-  if (typeof window === "undefined") return "";
-
-  try {
-    const direct = localStorage.getItem(BIRTHDATE_STORAGE_KEY)?.trim() ?? "";
-    if (direct) return direct;
-
-    const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
-    if (!rawProfile) return "";
-
-    const parsed = JSON.parse(rawProfile) as StoredProfile;
-    return typeof parsed.birthdate === "string" ? parsed.birthdate.trim() : "";
-  } catch {
-    return "";
-  }
+  return getStoredProfileBirthdate();
 }
 
 export function getInitialBirthdate(serverBirthdate: string | null): string {

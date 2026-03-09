@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import type { FortuneTemplate } from "@/lib/fortune/types";
+import { fortuneNumberNames } from "@/lib/fortune/names";
+import type { FortuneNumber, FortuneTemplate } from "@/lib/fortune/types";
 import UnmeiVisual from "@/components/unmei/UnmeiVisual";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -57,8 +59,8 @@ export default function FortuneResult({
       backHref={topLinkHref}
       backLabel={topLinkLabel}
       headerRight={
-        <LuminaButton type="button" onClick={handleReset} tone="secondary" className="w-full sm:w-auto">
-          {resetLabel}
+        <LuminaButton asChild tone="secondary" className="w-full sm:w-auto">
+          <Link href="/profile">プロフィールを変更する</Link>
         </LuminaButton>
       }
     >
@@ -67,7 +69,7 @@ export default function FortuneResult({
           <UnmeiVisual
             number={template.fortuneNumber}
             variant="hero"
-            title={`運命数${template.fortuneNumber}の2026年運勢`}
+            title={`${fortuneNumberNames[template.fortuneNumber as FortuneNumber]}の2026年運勢`}
             subtitle="一年の流れを静かに見通す準備"
             priority
           />

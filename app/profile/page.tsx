@@ -7,12 +7,15 @@ import { useEffect, useState } from "react";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
-
-const PROFILE_STORAGE_KEY = "lumina_profile";
-const BIRTHDATE_STORAGE_KEY = "lumina_birthdate";
-const PROFILE_BIRTHDATE_COOKIE_KEY = "lumina_profile_birthdate";
-const BIRTHDATE_COOKIE_KEY = "lumina_birthdate";
-const PROFILE_COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
+import {
+  BIRTHDATE_COOKIE_KEY,
+  BIRTHDATE_STORAGE_KEY,
+  MONTHLY_BIRTH_COOKIE_KEY,
+  PROFILE_BIRTHDATE_COOKIE_KEY,
+  PROFILE_COOKIE_MAX_AGE,
+  PROFILE_STORAGE_KEY,
+  PROFILE_UPDATED_AT_COOKIE_KEY,
+} from "@/lib/profile/profile-store";
 
 type LoveStatus = "single" | "married" | "complicated" | "unrequited";
 
@@ -21,6 +24,7 @@ type StoredProfile = {
   birthdate: string;
   job?: string;
   loveStatus: LoveStatus;
+  updatedAt?: string;
 };
 
 type LightRecord = {
@@ -132,6 +136,7 @@ export default function ProfilePage() {
       nickname: trimmedNickname,
       birthdate,
       loveStatus,
+      updatedAt: new Date().toISOString(),
       ...(trimmedJob ? { job: trimmedJob } : {}),
     };
 
@@ -141,6 +146,8 @@ export default function ProfilePage() {
     const cookieBase = `path=/; samesite=lax; max-age=${PROFILE_COOKIE_MAX_AGE}`;
     document.cookie = `${PROFILE_BIRTHDATE_COOKIE_KEY}=${encodedBirthdate}; ${cookieBase}`;
     document.cookie = `${BIRTHDATE_COOKIE_KEY}=${encodedBirthdate}; ${cookieBase}`;
+    document.cookie = `${MONTHLY_BIRTH_COOKIE_KEY}=${encodedBirthdate}; ${cookieBase}`;
+    document.cookie = `${PROFILE_UPDATED_AT_COOKIE_KEY}=${encodeURIComponent(profile.updatedAt ?? "")}; ${cookieBase}`;
     setErrorMessage("");
     setSavedMessage("あなたの灯りを受け取りました。これからは、あなたに合わせて言葉を紡ぎます。");
     setIsSaving(true);

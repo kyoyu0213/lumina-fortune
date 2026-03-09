@@ -56,7 +56,7 @@ export default function UnmeiVisual({ number, variant, title, subtitle, priority
   }
 
   const styles = variantStyles[variant];
-  const alt = title ?? `運命数${number}のキービジュアル`;
+  const alt = title ?? `${number}のキービジュアル`;
 
   return (
     <div className={styles.frame}>

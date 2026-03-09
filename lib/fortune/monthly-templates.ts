@@ -1,4 +1,6 @@
 ﻿import { fortuneNumberNames } from "@/lib/fortune/names";
+import { priorityMonthlyOverrides } from "@/lib/fortune/monthly-priority-overrides";
+import { staticMonthlyOverrides } from "@/lib/fortune/monthly-static-overrides";
 import {
   isFortuneMonth,
   isFortuneNumber,
@@ -340,6 +342,7 @@ function createTemplate(
   return {
     fortuneNumber,
     introTitle,
+    manualOverride: true,
     ...partial,
   };
 }
@@ -657,8 +660,7 @@ const januaryTemplates: Record<FortuneNumber, FortuneMonthlyTemplate> = {
   }),
   7: createTemplate(7, "静寂の賢者タイプへ贈る、1月の運勢", {
     introBody:
-      "はじめに\n" +
-      "今月のテーマは「静寂から生まれる、純粋な志」です。\n\n" +
+            "今月のテーマは「静寂から生まれる、純粋な志」です。\n\n" +
       "新年の喧騒や「今年の抱負」を煽る空気の中で、少し気疲れしていませんか？\n" +
       "1月は、世間のスピードに合わせる必要はありません。凍てつく空気の中で思考を研ぎ澄まし、あなたの魂が本当に求めている「真実の一歩」を見極める時期です。\n\n" +
       "意識すること：\n" +
@@ -839,9 +841,64 @@ const januaryTemplates: Record<FortuneNumber, FortuneMonthlyTemplate> = {
 
 const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, FortuneMonthlyTemplate>>> = {
   2: {
-    ...Object.fromEntries(
-      ([2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(2, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[2] ?? {}),
+    6: createTemplate(6, makeJanuaryTitle(6), {
+      introBody:
+        "今月のテーマは**「感受性の開花と、丁寧な関係づくり」**です。\n\n" +
+        "季節の移ろいとともに、あなたの心もいつも以上に繊細に、豊かになっている時期です。身近な人の変化にいち早く気づき、そっと手を差し伸べられるあなたの優しさが、多くの人を救うことになるでしょう。衝動的に動きたくなる気持ちと、大きな目標が同時に湧いてくる時期です。\n\n" +
+        "意識すること： 人のサポートに回るのと同時に、自分自身の感性を満たす「美しいもの」に触れる時間を意識的に作ること。",
+      themeCatch: "受け取る力を磨き、周囲との優しい繋がりを深めることで、心の平穏と成果を両立させる",
+      firstHalf:
+        "前半：内なる感性の調整と、小さな発見\n" +
+        "起きやすい場面：\n\n" +
+        "- 家族や親しい友人との何気ない会話の中に、今後の活動に繋がる「大切なヒント」を見つける。\n" +
+        "- 自分の好きなこと、心地よいと感じる空間を整えることに、いつも以上の喜びと没頭感を覚える。\n" +
+        "- 感受性が高まり、映画や音楽、アートから深いインスピレーションを受け、心の色が鮮やかになる。\n\n" +
+        "迷いやすいポイント： 周囲の感情を拾いすぎて、自分の本当の願いが見えにくくなってしまうこと。\n\n" +
+        "前半のポイント：\n" +
+        "- 鍵： 「自分への慈しみ」。一人の時間を聖域として守り、内なる声に耳を傾ける。\n" +
+        "- 意識： 4月に向けた本格的な始動の準備として、まずは自分の「心の器」を整える。\n" +
+        "- 注意点： 乾燥や冷えが感情の不安定さに繋がりやすい時期。温かいお風呂で心身を緩めて。",
+      secondHalf:
+        "後半：物事が動き出し、あなたが前に立つ場面が増える時期です。\n" +
+        "前半からの変化： あなたが整えた「心地よい空気感」に惹かれ、具体的な相談事や新しい役割の依頼が舞い込み始めます。\n\n" +
+        "意識すること： 控えめな調整役で終わるのではなく、あなたの持つ「理想のビジョン」を共有し、周囲を導く。\n\n" +
+        "ポイント：\n" +
+        "- 行動： 2月の最終週に、今後の活動を共に支え合うパートナーと、未来に向けた「約束」を交わす。\n" +
+        "- 注意点： 責任感の強さから、一人で全部を背負わないこと。信頼して「任せる」ことも愛の形です。\n" +
+        "- 来月への準備： 3月の「変化の月」に向け、不要になった古い考え方や持ち物を手放し、スペースを空ける。",
+      loveSingle:
+        "シングル：\n\n" +
+        "- 出会いのヒント： 植物の多い公園、落ち着いた雰囲気のカフェ、あるいは「世話好きな友人」からの心温まる紹介。\n" +
+        "- 行動： 派手な演出よりも、あなたの「育む力」や「細やかな気配り」が、誠実な相手の心に響きます。飾らない笑顔が最大の武器に。\n" +
+        "- 注意点： 最初から「尽くしすぎ」ないこと。まずは相手の人間性を、冷静に見守って。",
+      lovePartner:
+        "パートナーあり：\n\n" +
+        "- 会話テーマ： 二人の「理想の暮らし」や、お互いの価値観を尊重し合うための具体的なルールについて。\n" +
+        "- すれ違い回避： 「わかってくれるはず」という期待を手放し、感謝も要望も柔らかな言葉にして伝える。\n" +
+        "- 愛情表現： 相手の健康を考えた手料理や、疲れを癒やす贈り物を。献身的な愛を形にすることが吉。",
+      work:
+        "年度末を前に周囲が焦りや競争心に駆られやすい時期ですが、周りに流されず、自分のペースで進むほど成果が出やすい月です。\n\n" +
+        "- 具体的に起きやすい場面： チーム内の不協和音をあなたが察知し、さりげないフォローで調整することで、全体のパフォーマンスが劇的に向上する。\n" +
+        "- 焦ったときの注意： スピードよりも「人間関係の円滑さ」を重視することで、結果的に最短ルートで目標に到達できます。\n" +
+        "- 具体的なアクション： 2月中に、自分のワークライフバランスを見直し、「絶対に譲れない休息の時間」を確定させる。",
+      relations:
+        "コミュニティ内での信頼が深まる中で、あなたの判断や行動が、周りに影響を与えやすい月です。\n\n" +
+        "- 距離感の整え方： 全員に平等に接しようとせず、今のあなたが「守りたい」と感じる人々との時間を最優先にする。\n" +
+        "- 起きやすい場面： 困難な状況にある誰かに対し、あなたが差し出した「一言の手助け」が、その人の大きな勇気になる。\n" +
+        "- 伝え方： 「〜すべき」という正論ではなく、「〜だと私は嬉しい」というアイ・メッセージで伝える。\n" +
+        "- 注意点： おせっかいにならないよう、相手が助けを求めてくるまで「信じて待つ」余裕を持って。",
+      actions: [
+        "パステルグリーンの小物を持ち歩く：心身の調和を保ち、あなたの穏やかな成長をサポートしてくれます。",
+        "朝の「ハーブティー」を楽しむ：香りの力で直感力を研ぎ澄ませ、穏やかで明るいスタートを切れるように。",
+        "「身の回りの布製品」を新調する：ハンカチやタオルを新しくすることで、良い運気の入り口を作ります。",
+      ],
+      powerSpots: ["温室のある植物園", "歴史を感じさせる重厚な建築物", "アロマの香るリラクゼーションサロン"],
+      keywords: ["萌芽（Sprouting）", "受容（Acceptance）", "共鳴（Resonance）"],
+      blessing:
+        "2月、運命数6のあなたは、雪の下で春を待つ蕾を見守る「太陽」のような存在です。あなたが自分自身を慈しみ、満たされている時、その温かさは自然と周囲を包み込み、幸運の種を芽吹かせます。\n" +
+        "まずは自分を一番大切に。あなたが笑顔でいることが、周りの人々にとって最大のギフトになるのですよ。",
+    }),
     1: createTemplate(1, "はじまりの灯火のあなたへ。", {
       introBody:
         "今月のテーマは「地固めと、真の信頼構築」です。\n\n" +
@@ -962,8 +1019,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、2月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「知の共鳴と、静かなるアウトリーチ」です。\n\n" +
+                "今月のテーマは「知の共鳴と、静かなるアウトリーチ」です。\n\n" +
         "自分の殻に閉じこもって、考えを温めすぎてはいませんか？\n" +
         "今月は、あなたが一人で導き出した答えを、信頼できる誰かに「そっと共有してみる」時期です。外からの小さな刺激が、あなたの知性に新しい風を吹き込みます。\n\n" +
         "意識すること：\n" +
@@ -1090,9 +1146,64 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   // 3月だけ差し替えた例（運命数1と7を手書き）
   3: {
-    ...Object.fromEntries(
-      ([2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(3, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[3] ?? {}),
+    6: createTemplate(6, makeJanuaryTitle(6), {
+      introBody:
+        "今月のテーマは**「調和の完成と、新たな繋がりへの橋渡し」**です。\n\n" +
+        "卒業や異動など、別れと出会いが交差する時期。あなたは周囲の人々の不安や寂しさを敏感に感じ取り、無意識に場を和ませようと動いているのではないでしょうか。衝動的に動きたくなる気持ちと、大きな目標が同時に湧いてくる時期です。\n\n" +
+        "意識すること： 周囲のケアに奔走する一方で、自分自身の「1年間の頑張り」を誰よりも自分自身が認め、労ってあげること。",
+      themeCatch: "周囲の声を丁寧に汲み取り、調和を生み出すことで、自分自身の新しい居場所を確立する",
+      firstHalf:
+        "前半：感謝の循環と、心の整理\n" +
+        "起きやすい場面：\n\n" +
+        "- 1年間の締めくくりとして、あなたのこれまでの貢献に対し、思わぬ人から深い感謝や高い評価を伝えられる。\n" +
+        "- 離れていく人、新しく来る人との間で、あなたが「繋ぎ役」として重要なポジションを任される。\n" +
+        "- 自分の居場所（自宅やデスク）を徹底的に整理し、清々しい気持ちで4月を迎えたいという意欲が高まる。\n\n" +
+        "迷いやすいポイント： 変化を寂しく思い、現状を維持したいという気持ちから、新しい一歩をためらってしまうこと。\n\n" +
+        "前半のポイント：\n" +
+        "- 鍵： 「手放す勇気」。過去の役割に固執せず、感謝とともにスペースを空けることで、新しい幸運が舞い込みます。\n" +
+        "- 意識： 4月から始まる「新しい物語」のプロローグを楽しみに待つ。\n" +
+        "- 注意点： 精神的な疲れが「胃腸」に出やすい時期。消化に良い温かい食事を心がけて。",
+      secondHalf:
+        "後半：物事が動き出し、あなたが前に立つ場面が増える時期です。\n" +
+        "前半からの変化： あなたが整えた「調和の土台」の上に、新しい計画やプロジェクトが具体的に動き出し、あなたの判断が求められるようになります。\n\n" +
+        "意識すること： 全体の意見をまとめつつも、最後に決めるのは「自分」であるという軸を持つ。\n\n" +
+        "ポイント：\n" +
+        "- 行動： 3月の最終週に、今後の活動を共に歩む大切なメンバーと、未来に向けた「本音の対話」の場を設ける。\n" +
+        "- 注意点： 誰にでもいい顔をしようとせず、自分の価値観に合わないものには優しく「NO」を伝える。\n" +
+        "- 来月への準備： 4月の「出会いの季節」に向け、自分を表現する言葉や装いをアップデートしておく。",
+      loveSingle:
+        "シングル：\n\n" +
+        "- 出会いのヒント： 送別会や謝恩会など、感謝を伝え合う場。あるいは、長年信頼している友人からの「意外な紹介」。\n" +
+        "- 行動： 派手なアピールよりも、去り際に見せる「丁寧な挨拶」や「凛とした振る舞い」が、誰かの心を強く惹きつけます。\n" +
+        "- 注意点： 寂しさを埋めるための関係に走らないよう、自分の「自尊心」を大切に。",
+      lovePartner:
+        "パートナーあり：\n\n" +
+        "- 会話テーマ： この1年で二人が乗り越えたことの振り返りと、4月からの新しい生活リズムについての具体的な相談。\n" +
+        "- すれ違い回避： 忙しさで余裕がない時こそ、あえて立ち止まって「ありがとう」を言葉にする時間を。\n" +
+        "- 愛情表現： 「1年間お疲れ様」という気持ちを込めた、リラックスできる空間（温泉やマッサージなど）の共有。",
+      work:
+        "年度末の混乱やプレッシャーで周囲がギスギスしやすい時期ですが、周りに流されず、自分のペースで進むほど成果が出やすい月です。\n\n" +
+        "- 具体的に起きやすい場面： 衝突しそうな意見の板挟みになった際、あなたが中立的で柔軟な解決策を提示することで、チーム全体が救われる。\n" +
+        "- 焦ったときの注意： 早く結果を出そうとする周囲のペースに惑わされず、あなたは「丁寧な仕上げ」と「確認」を徹底して。\n" +
+        "- 具体的なアクション： 3月中に、自分のこれまでの「成果」を可視化し、自分だけの強みを再定義する。",
+      relations:
+        "大きな節目の月において、あなたの判断や行動が、周りに影響を与えやすい月です。\n\n" +
+        "- 距離感の整え方： 全員に好かれようとするのをやめ、心から信頼できる「少数の精鋭」との絆を深めることに集中する。\n" +
+        "- 起きやすい場面： あなたの何気ない「一言の発想」が、停滞していた場の議論を活気づけ、新しい方向性を示すきっかけになる。\n" +
+        "- 伝え方： 指示ではなく「こうすれば全員が幸せになれる」というビジョンを語ることで、周囲の共感を得る。\n" +
+        "- 注意点： 人の感情を拾いすぎると、夜にどっと疲れが出ます。一人のリセット時間を死守して。",
+      actions: [
+        "ラベンダーやペールパープルの小物を身につける：精神的な落ち着きを与え、あなたの持つ優美な魅力を引き出します。",
+        "朝の「窓を開けての換気」：停滞した空気を入れ替え、新しい季節の運気を呼び込みます。",
+        "「大切な人への手紙やメッセージ」を送る：感謝を文字にすることで、あなたの運気の土壌が豊かになります。",
+      ],
+      powerSpots: ["桜の蕾が膨らんでいる並木道", "清らかな水の流れる神社", "見晴らしの良いカフェのテラス席"],
+      keywords: ["昇華（Sublimation）", "橋渡し（Bridging）", "慈愛（Benevolence）"],
+      blessing:
+        "3月のあなたは、冬を終えて春の訪れを告げる柔らかな風のような存在です。あなたが誠実に積み上げてきた愛情は、今、あなたを支える確かな「土台」となりました。\n" +
+        "自分を誇ってください。そして、その温かさを携えたまま、4月という新しい大地へ、軽やかに一歩を踏み出しましょう。",
+    }),
     1: createTemplate(1, "はじまりの灯火のあなたへ。", {
       introBody:
         "今月のテーマは「決着と、次なる野心の種まき」です。\n\n" +
@@ -1264,8 +1375,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、3月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「魂の棚卸しと、静かなる完結」です。\n\n" +
+                "今月のテーマは「魂の棚卸しと、静かなる完結」です。\n\n" +
         "2025年度の終盤、やり残したことへの焦りや、周囲の「変化」の空気に飲み込まれそうになっていませんか？\n" +
         "今月は、外側の騒音から距離を置き、この一年で得た「知識」を「知恵」へと昇華させるための大切な準備期間です。\n\n" +
         "意識すること：\n" +
@@ -1336,11 +1446,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "今はその傷を癒やし、次の航海に向けて荷物を軽くしてください。\n" +
         "4月にあなたが新しく積み込むものは、今のあなたには想像もつかないほど輝かしいものになりますよ。",
     }),
+    ...(priorityMonthlyOverrides[3] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   4: {
-    ...Object.fromEntries(
-      ([2, 3, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(4, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[4] ?? {}),
     1: createTemplate(1, "はじまりの灯火のあなたへ。", {
       introBody:
         "今月のテーマは「まっさらな大地に、最初の杭を打つ」です。\n\n" +
@@ -1458,7 +1567,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "4月のあなたは、新しい大地に降り立った開拓者のような、鋭くも美しい輝きを放っています。あなたがこれまで積み上げてきた実力は、今、新しい世界の「基準」になろうとしています。\n" +
         "遠慮はいりません。その情熱を、世界に見せつけてやりましょう。あなたの時代は、ここから一気に加速していきます。",
     }),
-    4: generateMonthlyTemplate(4, 4),
+    4: staticMonthlyOverrides[4]?.[4],
     9: createTemplate(9, makeJanuaryTitle(9), {
       introBody:
         "今月のテーマは「純粋な好奇心と、新天地での慈愛」です。\n\n" +
@@ -1514,8 +1623,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、4月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「境界線の引き直しと、静かなる始動」です。\n\n" +
+                "今月のテーマは「境界線の引き直しと、静かなる始動」です。\n\n" +
         "新しい環境や人間関係が押し寄せてきて、「早く馴染まなければ」と無理をしていませんか？\n" +
         "4月は、周囲のペースに合わせるのではなく、自分だけの「聖域」を守りながら、ゆっくりとエンジンをかける時期です。\n\n" +
         "意識すること：\n" +
@@ -1585,11 +1693,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "無理に大輪の花を咲かせようと急ぐ必要はありません。今は、新しい土壌の質を確認し、根を張る場所を決めるだけで十分です。\n" +
         "あなたが「自分」であることを守り抜くことが、何よりの成功への近道になりますよ。",
     }),
+    ...(priorityMonthlyOverrides[4] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   5: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(5, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[5] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「力の集約と、盤石な基盤の完成」です。\n\n" +
@@ -1698,8 +1805,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、5月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「直感のアンテナを磨き直す」です。\n\n" +
+                "今月のテーマは「直感のアンテナを磨き直す」です。\n\n" +
         "新年度のバタバタが少し落ち着き、ふと「自分はこの方向で合っているのだろうか？」と立ち止まりたくなっていませんか？\n" +
         "5月は、理論や理屈ではなく、あなたの身体が感じる「快・不快」のサインを信じて動く時期です。\n\n" +
         "意識すること：\n" +
@@ -1770,11 +1876,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "今は無理に太陽を追いかけず、自分の根を深く張ることに専念してください。\n" +
         "大地はあなたが思う以上に、あなたを支えていますよ。",
     }),
+    ...(priorityMonthlyOverrides[5] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   6: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(6, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[6] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「上半期の集大成と、次なる覇権への布石」です。\n\n" +
@@ -1883,8 +1988,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、6月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「情報の整理と、心の聖域づくり」です。\n\n" +
+                "今月のテーマは「情報の整理と、心の聖域づくり」です。\n\n" +
         "周囲の期待や、あふれる情報に振り回されて「自分らしさ」を見失いかけていませんか？\n" +
         "今月は、外側のノイズをシャットアウトし、自分の内面にある「純粋な好奇心」を取り戻す時期です。\n\n" +
         "意識すること：\n" +
@@ -1954,11 +2058,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "今は無理に地上に降りて走り回る必要はありません。上から見える景色をしっかり記録し、自分だけの「地図」を作ってください。\n" +
         "その地図が、7月以降のあなたの歩みを確かなものにしてくれますよ。",
     }),
+    ...(priorityMonthlyOverrides[6] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   7: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(7, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[7] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「圧倒的な爆発力と、新境地の完全制圧」です。\n\n" +
@@ -2067,8 +2170,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、7月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「内なる羅針盤の再設定」です。\n\n" +
+                "今月のテーマは「内なる羅針盤の再設定」です。\n\n" +
         "周囲が夏休みのムードで賑やかになる中、どこか「自分だけが立ち止まっている」ような感覚に陥っていませんか？ 今月は、あえてその「立ち止まり」を味方につける時期です。\n\n" +
         "意識すること：\n" +
         "「外側の正解」を捨て、「自分の納得感」だけを基準にする。",
@@ -2137,11 +2239,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "あなたが今月見つける「気づき」は、下半期全体の大きな支えとなります。\n" +
         "孤独を恐れず、自分という最高の相棒と対話を楽しんでくださいね。",
     }),
+    ...(priorityMonthlyOverrides[7] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   8: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(8, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[8] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「絶対的な自信の確立と、理想の現実化」です。\n\n" +
@@ -2250,8 +2351,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、8月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「静寂の中で磨かれる、本質的な輝き」です。\n\n" +
+                "今月のテーマは「静寂の中で磨かれる、本質的な輝き」です。\n\n" +
         "世の中が開放感に満ち、イベントやレジャーで沸き立つ中、どこか「自分だけは冷静でいたい」という気持ちが強まっていませんか？\n" +
         "今月は、無理に外側の盛り上がりに同調する必要はありません。むしろ、その静かな視点が、混乱の中にある周囲を救う光となります。\n\n" +
         "意識すること：\n" +
@@ -2322,11 +2422,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "その揺るぎない姿に、救われる人が必ずいます。\n" +
         "夏の盛りこそ、あなたの「涼やかな知性」を存分に発揮してくださいね。",
     }),
+    ...(priorityMonthlyOverrides[8] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   9: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(9, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[9] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「知的な再構築と、内なる美学の追求」です。\n\n" +
@@ -2435,8 +2534,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、9月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「知恵の収穫と、次なる種まき」です。\n\n" +
+                "今月のテーマは「知恵の収穫と、次なる種まき」です。\n\n" +
         "夏の間、一人でじっくりと深めてきた考えや計画を、いよいよ現実の形にする準備はできていますか？\n" +
         "今月は、自分の中に蓄積された「点」と「点」が結びつき、大きな「納得」へと変わる収穫の時期です。\n\n" +
         "意識すること：\n" +
@@ -2507,11 +2605,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "あなたの知恵は、正しく使えば誰かの迷いを断ち切る力になります。\n" +
         "自信を持って、その磨き上げた「言葉」を世に送り出してくださいね。",
     }),
+    ...(priorityMonthlyOverrides[9] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   10: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(10, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[10] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「実りの享受と、次なるステージへの招待」です。\n\nあなたがこれまで誠実に、かつ情熱を持って取り組んできたことが、周囲からの高い評価や具体的な報酬となって返ってくる時期です。衝動的に動きたくなる気持ちと、大きな目標が同時に湧いてくる時期です。\n\n意識すること: 自分の手にした成果を堂々と受け取り、それを次の大きな飛躍のための「軍資金」や「実績」として活用すること。",
@@ -2592,8 +2689,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、10月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「知の構造化と、静かなるリーダーシップ」です。\n\n" +
+                "今月のテーマは「知の構造化と、静かなるリーダーシップ」です。\n\n" +
         "周囲が忙しなく動き回る中で、あなただけは「本質」を見抜き、冷静に対処できているのではありませんか？\n" +
         "今月は、あなたがこれまで培ってきた深い思考を「システム」や「ルール」に落とし込み、自分も周りも楽にする仕組みを作る月です。\n\n" +
         "意識すること：\n" +
@@ -2664,11 +2760,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "その城は、あなたを守るだけでなく、迷える人々を導く灯台のような役割も果たすでしょう。\n" +
         "自信を持って、あなたの信じる「正しさ」を形にしていってくださいね。",
     }),
+    ...(priorityMonthlyOverrides[10] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   11: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(11, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[11] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「情熱の洗練と、盤石な体制への移行」です。\n\n圧倒的な実行力で多くの成果を手にしてきたあなたに、今月は「誰と共に高みを目指すか」という賢明な視点が加わります。衝動的に動きたくなる気持ちと、大きな目標が同時に湧いてくる時期です。\n\n意識すること: 自分のエネルギーを分散させず、最もリターンが大きく、かつ信頼できる場所へ集中して注ぐこと。",
@@ -2749,8 +2844,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、11月の運勢", {
       introBody:
-        "はじめに\n" +
-        "晩秋から初冬へと移ろう11月。空気の澄み渡るこの時期は、運命数7の方にとって「精神性の極み」に到達するような、非常に深く静かなエネルギーが満ちてきます。\n\n" +
+                "晩秋から初冬へと移ろう11月。空気の澄み渡るこの時期は、運命数7の方にとって「精神性の極み」に到達するような、非常に深く静かなエネルギーが満ちてきます。\n\n" +
         "2026年11月の運勢を、ルミナが読み解きます。\n\n" +
         "今月のテーマは「深淵へのダイブと、魂の再発見」です。\n\n" +
         "外の世界が年末に向けて慌ただしくなり始める中、あなた自身の意識は「もっと深い場所」へと向かっていませんか？\n" +
@@ -2823,11 +2917,10 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "今感じている「孤独」は、あなたが神聖な領域に近づいている証拠。\n" +
         "その静寂を恐れず、自分という名の深淵を優しく愛してあげてくださいね。",
     }),
+    ...(priorityMonthlyOverrides[11] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
   12: {
-    ...Object.fromEntries(
-      ([1, 2, 3, 4, 5, 6, 8, 9] as FortuneNumber[]).map((n) => [n, generateMonthlyTemplate(12, n)])
-    ) as Record<FortuneNumber, FortuneMonthlyTemplate>,
+    ...(staticMonthlyOverrides[12] ?? {}),
     8: createTemplate(8, makeJanuaryTitle(8), {
       introBody:
         "今月のテーマは「栄光の完結と、新たなる地平への咆哮」です。\n\n1年の終わりを迎え、あなたの心には感謝とともに「次はもっと高くへ」という静かな野心が宿っていませんか？12月は、これまで周囲を率いてきた力を、自分自身のさらなる飛躍のために使う時期です。衝動的に動きたくなる気持ちと、大きな目標が同時に湧いてくる時期です。\n\n意識すること: 過去の成功に安住せず、得られた人脈や実績を次のステージへの「強力な足場」に変える。",
@@ -2856,8 +2949,7 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
     }),
     7: createTemplate(7, "静寂の賢者タイプへ贈る、12月の運勢", {
       introBody:
-        "はじめに\n" +
-        "今月のテーマは「智慧の完成と、次なる光への祈り」です。\n\n" +
+                "今月のテーマは「智慧の完成と、次なる光への祈り」です。\n\n" +
         "周囲が「終わりよければすべてよし」と奔走する中で、あなたはすでに「次のサイクル」の予兆を感じ取っていませんか？\n" +
         "今月は、この一年で積み上げたすべての経験を一つの「物語」として完結させ、余計な荷物をすべて降ろして、真っさらな自分に戻る時期です。\n\n" +
         "意識すること：\n" +
@@ -2928,10 +3020,12 @@ const monthlyOverrides: Partial<Record<FortuneMonth, Record<FortuneNumber, Fortu
         "今月、あなたが手にする智慧は、これからの人生という航海において、決して消えることのない「北極星」となります。\n" +
         "どうぞ自分を誇りに思い、穏やかな年末をお過ごしください。",
     }),
+    ...(priorityMonthlyOverrides[12] ?? {}),
   } as Record<FortuneNumber, FortuneMonthlyTemplate>,
 };
 
 function generateMonthlyTemplate(month: FortuneMonth, fortuneNumber: FortuneNumber): FortuneMonthlyTemplate {
+  console.warn("Monthly template fallback generation used", { month, fortuneNumber });
   const monthInfo = MONTH_THEMES[month];
   const monthMeta = MONTH_META[month];
   const profile = NUMBER_PROFILES[fortuneNumber];
@@ -3548,7 +3642,7 @@ ${loveSceneA}や${loveSceneB}のような何気ない時間ほど、本音を短
         "4譛医・縺ゅ↑縺溘・縲∵丼縺ｮ髯ｽ蜈峨ｒ蜿励￠縺ｦ遨上ｄ縺九↓豬√ｌ繧句ｰ丞ｷ昴・繧医≧縺ｧ縺吶ゅ≠縺ｪ縺溘・蟄伜惠縺昴・繧ゅ・縺後∵眠縺励＞迺ｰ蠅・↓螳牙ｿ・─繧偵ｂ縺溘ｉ縺励※縺・∪縺吶・n" +
         "莉翫・辟｡逅・ｒ縺励※閾ｪ蛻・ｒ螟峨∴繧句ｿ・ｦ√・縺ゅｊ縺ｾ縺帙ｓ縲ゅ≠縺ｪ縺溘・謖√▽縲悟━縺励＆縲阪→縲檎ｴｰ繧・°縺輔阪％縺昴′縲∵眠縺励＞謇峨ｒ髢九￥骰ｵ縺ｫ縺ｪ繧翫∪縺吶り・蛻・ｒ菫｡縺倥※縲√ｆ縺｣縺溘ｊ縺ｨ縺励◆蠢・〒騾ｲ繧薙〒縺上□縺輔＞縺ｭ縲・,
     }),
-    4: generateMonthlyTemplate(4, 4),
+    4: staticMonthlyOverrides[4]?.[4] ?? createTemplate(4, makeJanuaryTitle(4), {
     ...( { 3: createTemplate(3, makeJanuaryTitle(3), {
       introBody:
         "莉頑怦縺ｮ繝・・繝槭・**縲梧眠縺励＞豕｢縺ｫ荵励ｊ縲∝ｿ・慍繧医＞螻・ｴ謇繧貞卸繧九・*縺ｧ縺吶・n\n" +
@@ -6254,6 +6348,7 @@ ${loveSceneA}や${loveSceneB}のような何気ない時間ほど、本音を短
 };
 
 function generateMonthlyTemplate(month: FortuneMonth, fortuneNumber: FortuneNumber): FortuneMonthlyTemplate {
+  console.warn("Monthly template fallback generation used", { month, fortuneNumber });
   const monthInfo = MONTH_THEMES[month];
   const monthMeta = MONTH_META[month];
   const profile = NUMBER_PROFILES[fortuneNumber];
@@ -6351,21 +6446,20 @@ function buildAllMonthlyTemplates(): Record<FortuneMonth, Record<FortuneNumber, 
 
 export const fortuneMonthlyTemplates = buildAllMonthlyTemplates();
 
+export function hasManualMonthlyTemplate(month: number, number: number): boolean {
+  if (!isFortuneMonth(month) || !isFortuneNumber(number)) {
+    return false;
+  }
+
+  return fortuneMonthlyTemplates[month][number]?.manualOverride === true;
+}
+
 export function getFortuneMonthlyTemplate(month: number, number: number): FortuneMonthlyTemplate | null {
   if (!isFortuneMonth(month) || !isFortuneNumber(number)) {
     return null;
   }
 
-  if (month === 1) {
-    return januaryTemplates[number];
-  }
-
-  const override = month >= 2 ? monthlyOverrides[month]?.[number] : undefined;
-  if (override != null) {
-    return override;
-  }
-
-  return generateMonthlyTemplate(month, number);
+  return fortuneMonthlyTemplates[month][number];
 }
 
 export { isFortuneMonth };

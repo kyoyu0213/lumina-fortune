@@ -3,39 +3,30 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
+import { getInitialBirthdate } from "@/lib/profile/getProfile";
+import {
+  BIRTHDATE_STORAGE_KEY,
+  MONTHLY_BIRTH_COOKIE_KEY,
+  PROFILE_COOKIE_MAX_AGE,
+} from "@/lib/profile/profile-store";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton } from "@/components/ui/button";
-
-const BIRTHDATE_STORAGE_KEY = "lumina_birthdate";
-const MONTHLY_BIRTH_COOKIE_NAME = "lumina_birth";
-const MONTHLY_BIRTH_COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
 
 type FortuneMonthlyClientProps = {
   isEditMode: boolean;
   serverBirthdate: string | null;
 };
 
-function loadInitialBirthdate(serverBirthdate: string | null): string {
-  if (serverBirthdate) return serverBirthdate;
-  if (typeof window === "undefined") return "";
-
-  try {
-    return localStorage.getItem(BIRTHDATE_STORAGE_KEY) ?? "";
-  } catch {
-    return "";
-  }
-}
-
 function setMonthlyBirthCookie(birthDate: string, persist: boolean) {
   const encodedBirthDate = encodeURIComponent(birthDate);
-  const base = `${MONTHLY_BIRTH_COOKIE_NAME}=${encodedBirthDate}; path=/; samesite=lax`;
-  document.cookie = persist ? `${base}; max-age=${MONTHLY_BIRTH_COOKIE_MAX_AGE}` : base;
+  const base = `${MONTHLY_BIRTH_COOKIE_KEY}=${encodedBirthDate}; path=/; samesite=lax`;
+  document.cookie = persist ? `${base}; max-age=${PROFILE_COOKIE_MAX_AGE}` : base;
 }
 
 export default function FortuneMonthlyClient({ isEditMode, serverBirthdate }: FortuneMonthlyClientProps) {
   const router = useRouter();
-  const [birthDate, setBirthDate] = useState(() => loadInitialBirthdate(serverBirthdate));
+  const [birthDate, setBirthDate] = useState(() => getInitialBirthdate(serverBirthdate));
   const [error, setError] = useState("");
   const [viewWithoutSaving, setViewWithoutSaving] = useState(false);
 

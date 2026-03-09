@@ -5,6 +5,7 @@ export type FortuneMonth = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 export type FortuneTemplate = {
   fortuneNumber: FortuneNumber;
   introTitle: string;
+  manualOverride?: boolean;
   introBody: string;
   themeCatch: string;
   firstHalf: string;

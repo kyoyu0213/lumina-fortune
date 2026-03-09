@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { WishAnimationOverlay } from "@/components/WishAnimationOverlay";
 import { HakuWhisperCard } from "@/components/haku-whisper-card";
@@ -143,8 +144,6 @@ export default function WishGardenPage() {
 
       <GlassCard className="lumina-glow-card">
         <p className="text-sm leading-relaxed text-[#544c42]">
-          ここには、小さな願いや祈りが置かれていきます。
-          <br />
           叶えたいこと、心に浮かんだ言葉。
           <br />
           誰かへの優しい想い。
@@ -152,6 +151,17 @@ export default function WishGardenPage() {
           あなたの光も、静かにここへ残してみてください。
         </p>
       </GlassCard>
+
+      <div className="mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+        <Image
+          src="/gazou/negai.png"
+          alt="光の願いの庭"
+          width={960}
+          height={400}
+          className="h-auto w-full object-cover"
+          priority
+        />
+      </div>
 
       <GlassCard className="mt-4">
         <h2 className="text-lg font-medium text-[#2e2a26]">願いを書く（匿名）</h2>
@@ -175,10 +185,10 @@ export default function WishGardenPage() {
         </form>
       </GlassCard>
 
-      <section className="relative mt-4 overflow-hidden rounded-3xl border border-[#e1d5bf]/75 bg-[rgba(255,252,246,0.7)] p-4">
+      <section className="relative mt-4 overflow-hidden rounded-3xl border border-[#e1d5bf]/75 bg-[rgba(255,252,246,0.45)] p-4 sm:p-6">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="h-full w-full bg-[url('/gazou/negai2.png')] bg-cover bg-center opacity-72 [filter:contrast(1.04)_saturate(1.03)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(165deg,rgba(255,252,246,0.42),rgba(248,242,231,0.34))]" />
+          <div className="h-full w-full bg-[url('/gazou/negainoniwa.png')] bg-cover bg-center opacity-90 [filter:contrast(1.02)_saturate(1.02)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(165deg,rgba(255,252,246,0.18),rgba(248,242,231,0.12))]" />
         </div>
         <h2 className="px-1 text-lg font-medium text-[#2e2a26]">最新の願い</h2>
         {isLoading ? (
@@ -190,18 +200,17 @@ export default function WishGardenPage() {
             <p className="text-sm text-[#544c42]">まだ願いはありません。最初のひとつを置いてみてください。</p>
           </GlassCard>
         ) : (
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
             {wishes.map((wish, index) => (
               <motion.article
                 key={wish.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, delay: Math.min(index * 0.04, 0.28) }}
-                className="lumina-glow-card rounded-2xl border border-[#e1d5bf]/80 bg-[linear-gradient(162deg,rgba(255,252,246,0.94),rgba(248,242,231,0.88))] p-4 shadow-[0_12px_22px_-20px_rgba(82,69,53,0.26)]"
+                className="rounded-xl border border-[#e1d5bf]/60 bg-[rgba(255,252,246,0.72)] px-3 py-2.5 shadow-[0_6px_14px_-10px_rgba(82,69,53,0.18)] backdrop-blur-sm"
               >
-                <p className="text-xs tracking-[0.14em] text-[#847967]">匿名の願い</p>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-[#4f473d]">{wish.message}</p>
-                <p className="mt-3 text-xs text-[#8b7e6b]">{formatDateTime(wish.createdAt)}</p>
+                <p className="whitespace-pre-wrap text-xs leading-relaxed text-[#4f473d] sm:text-sm">{wish.message}</p>
+                <p className="mt-1.5 text-[10px] text-[#8b7e6b] sm:text-xs">{formatDateTime(wish.createdAt)}</p>
               </motion.article>
             ))}
           </div>

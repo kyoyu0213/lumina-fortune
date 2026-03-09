@@ -40,6 +40,7 @@ const FALLBACK_CHAT =
 
 export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientProps) {
   const searchParams = useSearchParams()
+  const initialAutoStartRef = useRef(false)
   const [started, setStarted] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -47,7 +48,6 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
   const [showCards, setShowCards] = useState(false)
   const [currentCards, setCurrentCards] = useState<TarotCardData[]>([])
   const [conversationState, setConversationState] = useState<ChatConversationState | null>(null)
-  const autoStartedRef = useRef(false)
 
   const handleStart = useCallback(async () => {
     setStarted(true)
@@ -236,11 +236,12 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
   }, [])
 
   useEffect(() => {
-    if (autoStartedRef.current || started) return
-    if (searchParams.get("start") !== "tarot") return
-    autoStartedRef.current = true
-    void handleStart()
-  }, [searchParams, started, handleStart])
+    if (initialAutoStartRef.current) return
+    if (searchParams.get("start") === "tarot") {
+      initialAutoStartRef.current = true
+      void handleStart()
+    }
+  }, [searchParams, handleStart])
 
   return (
     <main className="relative min-h-screen">
@@ -255,7 +256,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4 }}
           >
-            <WelcomeScreen initialDailyWhisper={initialDailyWhisper} serverBirthdate={serverBirthdate} />
+            <WelcomeScreen initialDailyWhisper={initialDailyWhisper} serverBirthdate={serverBirthdate} onStartTarot={handleStart} />
           </motion.div>
         ) : (
           <motion.div

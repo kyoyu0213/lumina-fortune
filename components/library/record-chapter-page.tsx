@@ -10,6 +10,10 @@ type Props = {
 
 const CHAPTER_HERO_IMAGES: Partial<Record<RecordChapter["slug"], string>> = {
   origin: "/gazou/column/kigen.png",
+  mansion: "/gazou/yakata.jpg",
+  lumina: "/gazou/column/lumina.png",
+  haku: "/gazou/column/haku.png",
+  cards: "/gazou/column/card.png",
 };
 
 const PLACEHOLDER_BODY = `本文は準備中です。
@@ -393,8 +397,15 @@ export function RecordChapterPage({ slug }: Props) {
         <span className="text-[#544c42]">{chapter.title}</span>
       </nav>
 
+      <GlassCard>
+        <h2 className="text-xl font-medium text-[#2e2a26]">
+          {chapter.icon} {chapter.title}
+        </h2>
+        <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#544c42]">{chapterBody}</p>
+      </GlassCard>
+
       {CHAPTER_HERO_IMAGES[slug] ? (
-        <div className="mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+        <div className="mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
           <Image
             src={CHAPTER_HERO_IMAGES[slug]!}
             alt={chapter.title}
@@ -405,13 +416,6 @@ export function RecordChapterPage({ slug }: Props) {
           />
         </div>
       ) : null}
-
-      <GlassCard>
-        <h2 className="text-xl font-medium text-[#2e2a26]">
-          {chapter.icon} {chapter.title}
-        </h2>
-        <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#544c42]">{chapterBody}</p>
-      </GlassCard>
 
       <GlassCard className="mt-4">
         <h2 className="text-lg font-medium text-[#2e2a26]">章の見出し</h2>

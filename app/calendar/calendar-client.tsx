@@ -81,7 +81,7 @@ type WavePoint = {
 };
 
 const DESTINY_NUMBER_LABELS: Record<FortuneNumber, string> = {
-  1: "始まりの灯火",
+  1: "はじまりの灯火",
   2: "月影の調律者",
   3: "祝福の歌い手",
   4: "大地の守り手",
@@ -89,7 +89,7 @@ const DESTINY_NUMBER_LABELS: Record<FortuneNumber, string> = {
   6: "愛を育てる灯",
   7: "静寂の賢者",
   8: "現実を築く王",
-  9: "包容の祈り手",
+  9: "終わりなき慈愛",
 };
 
 function toDestinyNumberFromBirthdate(birthdate: string): FortuneNumber | null {
@@ -327,7 +327,7 @@ export default function CalendarPage({ serverBirthdate }: CalendarClientProps) {
             <UnmeiVisual
               number={destinyNumber}
               variant="inline"
-              title={`運命数${destinyNumber}のバイオリズム`}
+              title={`${DESTINY_NUMBER_LABELS[destinyNumber]}のバイオリズム`}
               subtitle="日々の波を静かに読む"
             />
           </div>

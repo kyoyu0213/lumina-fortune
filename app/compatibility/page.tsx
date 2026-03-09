@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
+import { fortuneNumberNames } from "@/lib/fortune/names";
 import type { FortuneNumber } from "@/lib/fortune/types";
 import { getSoulNameByNumber } from "@/lib/fortune/soul-names";
 import { getCompatibilityReading } from "@/lib/fortune/compatibility-map";
@@ -145,14 +146,14 @@ export default function CompatibilityPage() {
             <div className="rounded-xl border border-[#e1d5bf]/72 bg-white/65 p-4">
               <p className="text-xs tracking-wide text-[#847967]">あなた</p>
               <p className="mt-1 text-lg font-medium text-[#2e2a26]">
-                {myNickname || "あなた"}: 運命数 {result.myNumber}
+                {myNickname || "あなた"}: {fortuneNumberNames[result.myNumber]}
               </p>
               <p className="mt-1 text-sm text-[#544c42]">魂の名: {result.mySoulName}</p>
             </div>
             <div className="rounded-xl border border-[#e1d5bf]/72 bg-white/65 p-4">
               <p className="text-xs tracking-wide text-[#847967]">お相手</p>
               <p className="mt-1 text-lg font-medium text-[#2e2a26]">
-                {partnerNickname || "お相手"}: 運命数 {result.partnerNumber}
+                {partnerNickname || "お相手"}: {fortuneNumberNames[result.partnerNumber]}
               </p>
               <p className="mt-1 text-sm text-[#544c42]">魂の名: {result.partnerSoulName}</p>
             </div>

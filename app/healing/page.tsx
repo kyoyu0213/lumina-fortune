@@ -46,9 +46,13 @@ function formatTime(seconds: number): string {
 
 export default function HealingPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const shouldAutoplayOnTrackChangeRef = useRef(false);
+  const hasMountedTrackRef = useRef(false);
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.6);
@@ -65,6 +69,17 @@ export default function HealingPage() {
     return (currentTime / duration) * 100;
   }, [currentTime, duration]);
 
+  const getRandomTrackIndex = (currentIndex: number) => {
+    if (TRACKS.length <= 1) return currentIndex;
+
+    let nextIndex = currentIndex;
+    while (nextIndex === currentIndex) {
+      nextIndex = Math.floor(Math.random() * TRACKS.length);
+    }
+
+    return nextIndex;
+  };
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -74,7 +89,15 @@ export default function HealingPage() {
       setDuration(audio.duration || 0);
       setAudioError(null);
     };
-    const onEnded = () => setIsPlaying(false);
+    const onEnded = () => {
+      if (isShuffle) {
+        shouldAutoplayOnTrackChangeRef.current = true;
+        setTrackIndex((prev) => getRandomTrackIndex(prev));
+        return;
+      }
+
+      setIsPlaying(false);
+    };
     const onError = () => {
       setAudioError("音源を読み込めませんでした。/public/audio/ のファイルをご確認ください。");
       setIsPlaying(false);
@@ -91,13 +114,58 @@ export default function HealingPage() {
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("error", onError);
     };
-  }, []);
+  }, [isShuffle]);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = volume;
   }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.loop = isLooping;
+  }, [isLooping]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (!hasMountedTrackRef.current) {
+      hasMountedTrackRef.current = true;
+      return;
+    }
+
+    audio.pause();
+    audio.load();
+    audio.currentTime = 0;
+    const frame = window.requestAnimationFrame(() => {
+      setCurrentTime(0);
+      setDuration(0);
+      setAudioError(null);
+      if (!shouldAutoplayOnTrackChangeRef.current) {
+        setIsPlaying(false);
+      }
+    });
+
+    if (!shouldAutoplayOnTrackChangeRef.current) {
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    shouldAutoplayOnTrackChangeRef.current = false;
+
+    void (async () => {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch {
+        setIsPlaying(false);
+      }
+    })();
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [trackIndex]);
 
   useEffect(() => {
     if (!isMeditating) return;
@@ -135,26 +203,9 @@ export default function HealingPage() {
     }
   };
 
-  const handleTrackSelect = async (index: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const shouldResume = isPlaying;
+  const handleTrackSelect = (index: number) => {
+    shouldAutoplayOnTrackChangeRef.current = isPlaying;
     setTrackIndex(index);
-    setCurrentTime(0);
-    setDuration(0);
-    setAudioError(null);
-    audio.pause();
-    audio.load();
-    if (shouldResume) {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch {
-        setIsPlaying(false);
-      }
-    } else {
-      setIsPlaying(false);
-    }
   };
 
   const handleSeek = (nextPercent: number) => {
@@ -193,6 +244,12 @@ export default function HealingPage() {
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <LuminaButton type="button" onClick={handleTogglePlay}>
               {isPlaying ? "停止" : "再生"}
+            </LuminaButton>
+            <LuminaButton type="button" tone={isLooping ? "primary" : "secondary"} onClick={() => setIsLooping((prev) => !prev)}>
+              {isLooping ? "ループON" : "ループOFF"}
+            </LuminaButton>
+            <LuminaButton type="button" tone={isShuffle ? "primary" : "secondary"} onClick={() => setIsShuffle((prev) => !prev)}>
+              {isShuffle ? "ランダムON" : "ランダムOFF"}
             </LuminaButton>
             <span className="text-sm text-[#6f6556]">
               {formatTime(currentTime)} / {formatTime(duration)}

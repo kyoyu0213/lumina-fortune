@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
@@ -97,6 +98,14 @@ export default function LetterPage() {
     setSubmitted(true);
   };
 
+  const handleWriteAgain = () => {
+    setSubmitted(false);
+    setLuminaReply("");
+    setPendingReply("");
+    setHakuMessage("");
+    setError(null);
+  };
+
   return (
     <PageShell
       maxWidth="content"
@@ -106,15 +115,31 @@ export default function LetterPage() {
       backLabel="トップへ戻る"
       className="font-serif"
     >
+      <div className="mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+        <Image
+          src="/gazou/tarotkanteiheya.jpg"
+          alt="ルミナへの手紙"
+          width={720}
+          height={400}
+          className="h-auto w-full object-cover"
+          priority
+        />
+      </div>
+
       {submitted ? (
         <GlassCard className="rounded-3xl space-y-4">
           <p className="text-base leading-relaxed text-[#544c42] whitespace-pre-line">
             {luminaReply || "あなたの言葉は確かに受け取りました。無理しすぎず、今日はひとつだけ心がほどける時間を作ってみてください。"}
           </p>
           {hakuMessage ? <HakuWhisperCard message={hakuMessage} className="p-4 sm:p-5" /> : null}
-          <LuminaButton asChild className="rounded-xl px-6">
-            <Link href="/consultation">個人鑑定を依頼する</Link>
-          </LuminaButton>
+          <div className="flex flex-wrap gap-3">
+            <LuminaButton type="button" tone="secondary" className="rounded-xl px-6" onClick={handleWriteAgain}>
+              もう一度書く
+            </LuminaButton>
+            <LuminaButton asChild className="rounded-xl px-6">
+              <Link href="/consultation">個人鑑定を依頼する</Link>
+            </LuminaButton>
+          </div>
         </GlassCard>
       ) : (
         <GlassCard className="rounded-3xl">

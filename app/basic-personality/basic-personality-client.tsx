@@ -1,9 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { FortuneNumberBadge } from "@/components/fortune-number-badge";
 import UnmeiVisual from "@/components/unmei/UnmeiVisual";
 import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
+import { fortuneNumberNames } from "@/lib/fortune/names";
 import type { FortuneNumber } from "@/lib/fortune/types";
 import { BIRTHDATE_STORAGE_KEY, getInitialBirthdate } from "@/lib/profile/getProfile";
 import { PageShell } from "@/components/ui/page-shell";
@@ -24,7 +27,7 @@ const personalityProfiles: Record<
   Omit<PersonalityResult, "destinyNumber">
 > = {
   1: {
-    soulName: "始まりの灯火",
+    soulName: "はじまりの灯火",
     catchCopy: "あなたは、静かに先頭に立てる人。",
     description:
       "人に見せないところで強く踏ん張ってきたこと、ちゃんと伝わっています。今のあなたは『自分らしく進む』ことを、どこまで許せていますか？あなたの決断力は、周りを照らす確かな光です。",
@@ -88,7 +91,7 @@ const personalityProfiles: Record<
     actions: ["今日のゴールを数字で1つ決める", "終わった作業を見える形でチェックする", "一区切りごとに肩の力を抜く"],
   },
   9: {
-    soulName: "包容の祈り手",
+    soulName: "終わりなき慈愛",
     catchCopy: "あなたは、広い視野で人を包み込める人。",
     description:
       "いろいろな立場を理解できるぶん、心が忙しくなることもありますよね。今は誰かの期待より、自分の本音を優先できていますか？あなたの包容力は、人にも自分にも深い癒やしをもたらします。",
@@ -451,10 +454,20 @@ export default function BasicPersonalityPage({ serverBirthdate }: BasicPersonali
             <UnmeiVisual
               number={result.destinyNumber}
               variant="hero"
-              title={`運命数${result.destinyNumber}の基本性格`}
+              title={`${fortuneNumberNames[result.destinyNumber]}の基本性格`}
               subtitle="あなたの魂の名前と、整え方のヒント"
               priority
             />
+            <div className="overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+              <Image
+                src={`/gazou/unmei/unmei${result.destinyNumber}.png`}
+                alt={`${fortuneNumberNames[result.destinyNumber]}のイラスト`}
+                width={720}
+                height={400}
+                className="h-auto w-full object-cover"
+                priority
+              />
+            </div>
             <GlassCard className="p-4 sm:p-5">
               <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:text-left">
                 <div className="shrink-0">
@@ -573,8 +586,8 @@ export default function BasicPersonalityPage({ serverBirthdate }: BasicPersonali
             </GlassCard>
 
             <div>
-              <LuminaButton type="button" onClick={handleResetBirthdate} tone="secondary">
-                別の生年月日で占う
+              <LuminaButton asChild tone="secondary">
+                <Link href="/profile">プロフィールを変更する</Link>
               </LuminaButton>
             </div>
                 </>
