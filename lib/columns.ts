@@ -7,6 +7,7 @@ export type ColumnArticle = {
   category: ColumnCategory;
   lead: string;
   readMinutes?: number;
+  heroImage?: string;
   preview: string[];
   full: string[];
   requiresMembership: boolean;
@@ -441,10 +442,11 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
   "for-you-who-wants-to-manifest": {
     slug: "for-you-who-wants-to-manifest",
     title: "📖 引き寄せたい願いがあるあなたへ",
-    category: "鬘倥＞",
+    category: "願い",
     lead:
       "願いは、あなたのエネルギーが現実を形づくります。引き寄せの本質を知ることは、願いを叶えるより先に、自分を整えることでもあります。",
     readMinutes: 3,
+    heroImage: "/gazou/column/hikiyose.png",
     preview: [
       "引き寄せの法則という言葉を、一度は耳にしたことがあるかもしれません。「思えば叶う」「ポジティブに考えれば現実が変わる」そんなふうに語られることも多いですが、実際にはもう少し深い仕組みがあります。",
       "引き寄せとは、ただ強く願うことではなく、あなたが放つエネルギーと同じ周波数のものが現実に引き寄せられてくることです。",
@@ -497,6 +499,7 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
     lead:
       "今日の失敗を、明日の力に変えるために。落ち込んだ夜に読んでほしい、回復と再起のためのコラムです。",
     readMinutes: 5,
+    heroImage: "/gazou/column/sigoto.png",
     preview: [
       "今日、失敗してしまった。あの場面、もっとうまくやれたはずなのに。こんな自分が、情けない。",
       "今夜、そんな言葉を胸に抱えてここにたどり着いた方へ。",
@@ -544,6 +547,7 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
     lead:
       "失恋は、あなたが輝くための序章だった。その痛みを、次の自分への力に変えるために、今の心へそっと灯りをともすコラムです。",
     readMinutes: 5,
+    heroImage: "/gazou/column/situren.jpg",
     preview: [
       "終わってしまった。あれほど大切だったのに、どうして。この痛みの先に、本当に明るい未来があるんだろうか。今、そんな言葉を胸に抱えてここにたどり着いた方へ。",
       "まずひとつだけ、伝えさせてください。あなたが今感じているその痛みは、終わりではありません。それは、次のあなたが始まるための、最初の一ページです。",
@@ -594,6 +598,7 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
     lead:
       "理由のないざわつきに胸が落ち着かない夜へ。不安を責めず、やさしくほどいていくための言葉を届けるコラムです。",
     readMinutes: 5,
+    heroImage: "/gazou/column/huan.png",
     preview: [
       "不安を感じるのは、心がちゃんと動いている証拠です。",
       "今夜は「大丈夫じゃなくていい」と、自分に許可を出してみてください。",
@@ -651,6 +656,7 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
     lead:
       "叶わなかった願いは、あなたを否定するために来たものではありません。このコラムでは、諦めきれない祈りを次の一歩へ変えるための視点を、静かに整えていきます。",
     readMinutes: 5,
+    heroImage: "/gazou/column/kanawanu2.png",
     preview: [
       "叶わなかった願いは、あなたの努力が無駄だった証拠ではありません。",
       "諦めきれない気持ちの中には、次の扉を開くための羅針盤が隠れています。",
@@ -705,6 +711,7 @@ const COLUMN_ARTICLE_OVERRIDES: Record<string, ColumnArticle> = {
     lead:
       "占いが当たるかどうかは、占い師や占術だけでなく、受け取る側の姿勢や心の状態にも大きく左右されます。",
     readMinutes: 5,
+    heroImage: "/gazou/column/uranai.png",
     preview: [
       "「占ってもらったけど、全然当たらなかった」\n「あの人はいつも占いが当たるのに、私はどうして……」",
       "そんな経験をしたことはありませんか？",

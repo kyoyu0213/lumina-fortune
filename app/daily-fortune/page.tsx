@@ -1175,7 +1175,7 @@ export default function DailyFortunePage() {
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fullText}</p>
                     </div>
                   ) : null}
-                  {fullText ? (
+                  {false && fullText ? (
                     <section className="mt-4 rounded-2xl border border-[#d9ccb3]/80 bg-[linear-gradient(160deg,rgba(255,251,245,0.94),rgba(246,237,223,0.9))] p-4 shadow-[0_14px_24px_-20px_rgba(96,80,60,0.22)] sm:p-5">
                       <p className="text-xs tracking-[0.18em] text-[#8a7a64]">館の奥の灯り</p>
                       <div className="mt-2 space-y-3 text-sm leading-relaxed text-[#544c42]">
@@ -1191,6 +1191,23 @@ export default function DailyFortunePage() {
                         href="/consultation"
                         tone="secondary"
                         className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:w-auto"
+                      >
+                        個人鑑定を依頼する
+                      </LuminaLinkButton>
+                    </section>
+                  ) : null}
+                  {fullText ? (
+                    <section className="mt-4 rounded-2xl border border-[#d9ccb3]/80 bg-[linear-gradient(160deg,rgba(255,251,245,0.94),rgba(246,237,223,0.9))] p-4 shadow-[0_14px_24px_-20px_rgba(96,80,60,0.22)] sm:p-5">
+                      <p className="text-xs tracking-[0.18em] text-[#8a7a64]">今日のひとこと</p>
+                      <div className="mt-2 text-sm leading-relaxed text-[#544c42]">
+                        <p className="whitespace-pre-line">
+                          {"今日の言葉が、\nあなたの歩みに小さな光を灯しますように。"}
+                        </p>
+                      </div>
+                      <LuminaLinkButton
+                        href="/consultation"
+                        tone="primary"
+                        className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:mx-auto sm:w-auto"
                       >
                         個人鑑定を依頼する
                       </LuminaLinkButton>

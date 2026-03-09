@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -56,6 +57,7 @@ function shouldShowAffirmationConsultationButton(slug: string, paragraph: string
     slug !== "work-failure-night" &&
     slug !== "when-anxiety-wont-stop" &&
     slug !== "when-wishes-dont-come-true" &&
+    slug !== "when-wishes-feel-far" &&
     slug !== "why-fortune-telling-feels-accurate" &&
     slug !== "for-you-who-wants-to-manifest"
   ) {
@@ -136,6 +138,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
       if (
         slug !== "when-anxiety-wont-stop" &&
         slug !== "when-wishes-dont-come-true" &&
+        slug !== "when-wishes-feel-far" &&
         slug !== "why-fortune-telling-feels-accurate" &&
         slug !== "for-you-who-wants-to-manifest"
       ) {
@@ -182,6 +185,19 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           <p className="mt-4 text-base leading-relaxed text-[#544c42]">{article.lead}</p>
           <div className="mt-5 h-px bg-gradient-to-r from-[#deccb1]/80 via-[#e8dbc7]/85 to-transparent" />
         </section>
+
+        {article.heroImage ? (
+          <div className="overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+            <Image
+              src={article.heroImage}
+              alt={article.title}
+              width={720}
+              height={400}
+              className="h-auto w-full object-cover"
+              priority
+            />
+          </div>
+        ) : null}
 
         <GlassCard className="border border-[#e1d5bf]/74 bg-white/68 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
           <blockquote className="rounded-xl border-l-4 border-[#bfa476] bg-[#fdf7ea]/90 px-4 py-3 text-base leading-relaxed text-[#4e453a]">

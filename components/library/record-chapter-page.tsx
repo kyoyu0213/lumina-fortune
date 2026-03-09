@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
@@ -5,6 +6,10 @@ import { getAdjacentRecordChapters, getRecordChapter, type RecordChapter } from 
 
 type Props = {
   slug: RecordChapter["slug"];
+};
+
+const CHAPTER_HERO_IMAGES: Partial<Record<RecordChapter["slug"], string>> = {
+  origin: "/gazou/column/kigen.png",
 };
 
 const PLACEHOLDER_BODY = `本文は準備中です。
@@ -387,6 +392,19 @@ export function RecordChapterPage({ slug }: Props) {
         <span className="px-2 text-[#9f9588]">{">"}</span>
         <span className="text-[#544c42]">{chapter.title}</span>
       </nav>
+
+      {CHAPTER_HERO_IMAGES[slug] ? (
+        <div className="mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+          <Image
+            src={CHAPTER_HERO_IMAGES[slug]!}
+            alt={chapter.title}
+            width={720}
+            height={400}
+            className="h-auto w-full object-cover"
+            priority
+          />
+        </div>
+      ) : null}
 
       <GlassCard>
         <h2 className="text-xl font-medium text-[#2e2a26]">

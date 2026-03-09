@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/situren*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/huan*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/kanawanu*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/hikiyose*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/uranai*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/hondana*)",
+      "Bash(ls c:/Users/yuri3/lumina-fortune/public/gazou/column/kigen*)"
+    ]
+  }
+}

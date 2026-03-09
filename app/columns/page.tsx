@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -29,7 +30,18 @@ export default function ColumnsPage() {
       backHref="/"
       backLabel="トップへ戻る"
     >
-      <GlassCard>
+      <div className="overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+        <Image
+          src="/gazou/column/hondana.png"
+          alt="館の書棚"
+          width={960}
+          height={400}
+          className="h-auto w-full object-cover"
+          priority
+        />
+      </div>
+
+      <GlassCard className="mt-4">
         <div className="flex flex-wrap items-center gap-2">
           <LuminaButton
             type="button"

@@ -182,7 +182,7 @@ function FeatherIcon({ size = "small", dimmed = false, alt = "" }: FeatherIconPr
 }
 
 const featherCardClassName =
-  "rounded-2xl border border-[#d3d4c8]/78 bg-[linear-gradient(180deg,#dfe9e2_0%,#edf3ee_60%,#f6f7f3_100%)] px-5 py-4 text-left";
+  "rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(180deg,#f0e8da_0%,#f5efe4_60%,#faf6ef_100%)] px-5 py-4 text-left shadow-[0_10px_22px_-22px_rgba(82,69,53,0.18)]";
 
 type WelcomeScreenProps = {
   initialDailyWhisper?: string;
