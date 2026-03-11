@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import type { PrivacySection } from "@/lib/types/content";
 
 const establishedAt = "2026年3月8日";
 
-const privacySections = [
+const sections: PrivacySection[] = [
   {
     title: "第1条（収集する情報）",
     body: ["本サービスでは、以下の情報を収集する場合があります。"],
@@ -106,7 +107,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        {privacySections.map((section) => (
+        {sections.map((section) => (
           <section key={section.title} className="space-y-3 border-t border-[#e7dcc7]/70 pt-5">
             <h3 className="text-base font-medium text-[#2e2a26]">{section.title}</h3>
             {section.body.map((paragraph) => (

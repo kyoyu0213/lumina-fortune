@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Geist_Mono, Noto_Serif_JP, Playfair_Display } from "next/font/google";
+import { Suspense } from "react";
 import { StarfieldBackground } from "@/components/starfield-background";
 import { BRAND } from "@/lib/brand";
 import "./globals.css";
@@ -46,7 +47,9 @@ export default function RootLayout({
         </div>
         <div className="relative z-10">
           {children}
-          <Footer />
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
         </div>
       </body>
     </html>

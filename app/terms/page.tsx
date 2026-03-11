@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import type { TermsSection } from "@/lib/types/content";
 
 const establishedAt = "2026年3月11日";
 
-const termsSections = [
+const sections: TermsSection[] = [
   {
     title: "第1条（サービスの内容）",
     body: [
@@ -85,7 +86,7 @@ const termsSections = [
     title: "第10条（お問い合わせ）",
     body: ["本規約に関するお問い合わせは、本サービス内のお問い合わせフォームよりご連絡ください。"],
   },
-] as const;
+];
 
 export const metadata: Metadata = {
   title: "利用規約 | 白の魔女ルミナの占い",
@@ -113,7 +114,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        {termsSections.map((section) => (
+        {sections.map((section) => (
           <section key={section.title} className="space-y-3 border-t border-[#e7dcc7]/70 pt-5">
             <h3 className="text-base font-medium text-[#2e2a26]">{section.title}</h3>
             {section.hasPrivacyLink ? (

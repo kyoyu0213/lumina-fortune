@@ -1,9 +1,8 @@
 import * as React from "react";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import Link from "next/link";
-
-type ButtonTone = "primary" | "secondary";
+import type { ButtonBaseProps, ButtonTone } from "@/lib/types/ui";
 
 type BaseProps = {
   children: ReactNode;
@@ -11,10 +10,7 @@ type BaseProps = {
   className?: string;
 };
 
-type LuminaButtonProps = BaseProps &
-  ButtonHTMLAttributes<HTMLButtonElement> & {
-    asChild?: boolean;
-  };
+type LuminaButtonProps = BaseProps & ButtonBaseProps;
 type LuminaLinkButtonProps = BaseProps & {
   href: string;
 };

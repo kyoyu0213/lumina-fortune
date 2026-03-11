@@ -225,7 +225,11 @@ export function ChatMessages({ messages, onDrawCards, onSaveFavorite }: ChatMess
                           <button
                             type="button"
                             className="rounded-lg border border-[#baa98d]/72 bg-[#fdf8ee] px-3 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-                            onClick={() => onDrawCards(msg.cards)}
+                            onClick={() => {
+                              if (msg.cards) {
+                                onDrawCards(msg.cards);
+                              }
+                            }}
                           >
                             カードを見る
                           </button>
@@ -276,7 +280,11 @@ export function ChatMessages({ messages, onDrawCards, onSaveFavorite }: ChatMess
                           <button
                             type="button"
                             className="mt-3 rounded-lg border border-[#baa98d]/72 bg-[#fdf8ee] px-3 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-                            onClick={() => onDrawCards(msg.cards)}
+                            onClick={() => {
+                              if (msg.cards) {
+                                onDrawCards(msg.cards);
+                              }
+                            }}
                           >
                             カードを見る
                           </button>

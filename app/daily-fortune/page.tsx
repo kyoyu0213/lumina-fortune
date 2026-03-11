@@ -13,6 +13,7 @@ import { pickHakuMessage } from "@/lib/haku-messages";
 import { parseDailyFortuneSections } from "@/lib/daily-fortune-output";
 import { runClientModerationCheck } from "@/lib/moderation/clientCheck";
 import { getOrCreateChatVisitorKey } from "@/lib/membership";
+import type { FortuneSection } from "@/lib/types/content";
 
 type DrawnCard = TarotCardEntry & {
   reversed: boolean;
@@ -504,20 +505,6 @@ function usePrefersReducedMotion() {
 }
 
 export default function DailyFortunePage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const profile = useMemo(() => loadProfileForDailyFortune(), []);
-  const specialEvent: SpecialFortuneEvent & { card: BirthdayBlessingCard } = {
-    key: "disabled",
-    badge: "",
-    title: "",
-    message: "",
-    priority: 0,
-    card: {
-      id: "disabled",
-      title: "",
-      message: "",
-    },
-  };
   const [readyToFlip, setReadyToFlip] = useState(false);
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -564,6 +551,30 @@ export default function DailyFortunePage() {
       whiteHitokoto: parsed.whiteHitokoto || hakuMessage || "",
     };
   }, [fullText, hakuMessage]);
+  const detailSections = useMemo<FortuneSection[]>(() => {
+    const sections: FortuneSection[] = [];
+
+    if (fortuneSections.cardMeaning) {
+      sections.push({ heading: "カードの意味", text: fortuneSections.cardMeaning });
+    }
+    if (fortuneSections.overallFlow) {
+      sections.push({ heading: "今日の流れ", text: fortuneSections.overallFlow });
+    }
+    if (fortuneSections.work) {
+      sections.push({ heading: "仕事・学び", text: fortuneSections.work });
+    }
+    if (fortuneSections.love) {
+      sections.push({ heading: "恋愛・人間関係", text: fortuneSections.love });
+    }
+    if (fortuneSections.advice) {
+      sections.push({ heading: "アドバイス", text: fortuneSections.advice });
+    }
+    if (fortuneSections.money) {
+      sections.push({ heading: "金運", text: fortuneSections.money });
+    }
+
+    return sections;
+  }, [fortuneSections]);
   const sharePreview = useMemo(() => {
     const sourceText = (fullText ?? "").trim();
     const fallback = (summary ?? "").trim();
@@ -1175,77 +1186,17 @@ export default function DailyFortunePage() {
                     </div>
                   ) : null}
 
-                  {false && specialEvent && fullText ? (
-                    <section className="mt-4 rounded-[28px] border border-[#dbcdb4]/80 bg-[linear-gradient(160deg,rgba(255,251,246,0.97),rgba(245,236,224,0.92))] p-4 shadow-[0_18px_30px_-24px_rgba(96,80,60,0.2)] sm:p-5">
-                      <p className="text-xs tracking-[0.18em] text-[#8a7a64]">{specialEvent.badge}</p>
-                      <h3 className="mt-1 text-lg font-medium text-[#2e2a26]">{specialEvent.title}</h3>
-                      <p className="mt-3 text-sm leading-relaxed text-[#544c42]">{specialEvent.message}</p>
-                      {specialEvent.card ? (
-                        <div className="mt-4 rounded-[24px] border border-[#e4d7c2]/85 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(252,246,236,0.9))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-                          <p className="text-xs tracking-[0.18em] text-[#8a7a64]">誕生日の祝福カード</p>
-                          <div className="mt-3 flex items-start gap-4">
-                            <div className="flex h-20 w-14 shrink-0 items-center justify-center rounded-[18px] border border-[#dcccae]/85 bg-[linear-gradient(180deg,#fffaf0,#f6ead7)] text-[26px] text-[#9c8661] shadow-sm">
-                              ✨
-                            </div>
-                            <div className="min-w-0">
-                              <h4 className="text-base font-medium text-[#2e2a26]">{specialEvent.card.title}</h4>
-                              <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{specialEvent.card.message}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </section>
-                  ) : null}
-
-                  {false && specialEvent && fullText ? (
-                    <div className="mt-4 rounded-2xl border border-[#dbcdb4]/80 bg-[linear-gradient(160deg,rgba(255,250,245,0.96),rgba(246,238,230,0.92))] p-4 shadow-[0_14px_24px_-20px_rgba(96,80,60,0.18)]">
-                      <p className="text-xs tracking-[0.18em] text-[#8a7a64]">BIRTHDAY MESSAGE</p>
-                      <h3 className="mt-1 text-base font-medium text-[#2e2a26]">お誕生日の祝福</h3>
-                      <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-[#544c42]">{specialEvent?.message}</p>
-                    </div>
-                  ) : null}
-
                   {fortuneSections.intro ? (
                     <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.intro}</p>
                     </div>
                   ) : null}
-                  {fortuneSections.cardMeaning ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">カードの意味</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.cardMeaning}</p>
+                  {detailSections.map((section) => (
+                    <div key={section.heading} className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
+                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">{section.heading}</p>
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{section.text}</p>
                     </div>
-                  ) : null}
-                  {fortuneSections.overallFlow ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">今日の流れ</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.overallFlow}</p>
-                    </div>
-                  ) : null}
-                  {fortuneSections.work ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">仕事・学び</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.work}</p>
-                    </div>
-                  ) : null}
-                  {fortuneSections.love ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">恋愛・人間関係</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.love}</p>
-                    </div>
-                  ) : null}
-                  {fortuneSections.advice ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">アドバイス</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.advice}</p>
-                    </div>
-                  ) : null}
-                  {fortuneSections.money ? (
-                    <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-4">
-                      <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">金運</p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#544c42]">{fortuneSections.money}</p>
-                    </div>
-                  ) : null}
+                  ))}
                   {false && fullText ? (
                     <div className="mt-4 rounded-xl border border-[#e6dac5]/80 bg-white/60 p-3">
                       <p className="mb-2 text-xs font-medium tracking-wide text-[#7d6d5a]">
@@ -1905,6 +1856,3 @@ export default function DailyFortunePage() {
     </PageShell>
   );
 }
-
-
-
