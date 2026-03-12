@@ -67,7 +67,7 @@ export default function FortuneResult({
   nextLinkHref,
   nextLinkLabel,
   dailyFortunes = [],
-  dailySectionTitle = "今月の日別の流れ",
+  dailySectionTitle = "今月の光の流れ",
 }: Props) {
   const router = useRouter();
   const [openDailyDate, setOpenDailyDate] = useState<string | null>(null);
@@ -228,26 +228,22 @@ export default function FortuneResult({
             <section className="rounded-2xl border border-sky-200/80 bg-[linear-gradient(160deg,rgba(244,250,255,0.88),rgba(234,244,251,0.76),rgba(244,249,246,0.72))] p-5 shadow-[0_12px_24px_-24px_rgba(74,107,142,0.28)]">
               <SectionHeading>{dailySectionTitle}</SectionHeading>
               <p className="mt-2 text-sm leading-relaxed text-[#5b5a57]">
-                日付と光の強さを見比べながら、今月の軽さや整えどころをすぐ追える一覧です。
+                光が強まる日と、静けさに寄り添いたい日をそっと束ねました。今月のリズムをやさしく見渡すための小さな道しるべです。
               </p>
 
               {monthlyHighlights ? (
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   <MonthlyHighlightCard
-                    title="今月の光が強い3日"
-                    description="この日は動くほど流れに乗りやすそうです。"
+                    title="光が満ちやすい3日"
+                    description="一歩踏み出すなら、このあたり。追い風のような明るさが届きやすい日です。"
                     entries={monthlyHighlights.brightDays}
                     tone="bright"
-                    openDailyDate={openDailyDate}
-                    onToggle={setOpenDailyDate}
                   />
                   <MonthlyHighlightCard
-                    title="今月の静かに過ごしたい3日"
-                    description="この日は答えを急がず、整える意識が助けになります。"
+                    title="静けさを大切にしたい3日"
+                    description="急がず整えることで、内側の声が澄みやすくなる日を選びました。"
                     entries={monthlyHighlights.quietDays}
                     tone="quiet"
-                    openDailyDate={openDailyDate}
-                    onToggle={setOpenDailyDate}
                   />
                 </div>
               ) : null}
@@ -370,25 +366,31 @@ function DailyFlowColumn({
               key={entry.date}
               type="button"
               onClick={() => onToggle((current) => (current === entry.date ? null : entry.date))}
+              title={entry.headline}
               className={`flex w-full items-start gap-2 rounded-xl px-2.5 py-2 text-left transition ${
                 entry.isToday
                   ? "border border-[#e4c394] bg-[linear-gradient(135deg,rgba(255,246,228,0.95),rgba(255,250,244,0.96))] shadow-[0_16px_28px_-24px_rgba(210,164,92,0.45)]"
                   : "border border-transparent bg-[rgba(255,255,255,0.42)] hover:bg-[rgba(255,255,255,0.72)]"
               } ${isOpen ? "ring-1 ring-inset ring-[#d8b889]" : ""}`}
             >
-              <span className="w-[52px] shrink-0 text-[13px] font-semibold leading-5 text-[#2e2a26]">
+              <span className="w-[46px] shrink-0 text-[12px] font-semibold leading-[1.35] text-[#2e2a26] sm:w-[48px] sm:text-[13px]">
                 {entry.isToday ? "▶ " : ""}
                 {formatDailyFortuneCompactLabel(entry.date)}
               </span>
               <span
-                className="w-6 shrink-0 text-center text-lg leading-5"
+                className="w-5 shrink-0 text-center text-[16px] leading-[1.2] sm:w-6 sm:text-lg"
                 title={`${meta.stars} | ${meta.label} | ${meta.meaning}`}
                 aria-label={`${meta.label} ${meta.meaning}`}
               >
                 {meta.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] leading-[1.35] text-[#4b3d30]">{entry.headline}</p>
+                <p
+                  className="overflow-hidden text-ellipsis whitespace-nowrap pr-1 text-[12px] leading-[1.48] tracking-[0.01em] text-[#4b3d30] md:line-clamp-2 md:whitespace-normal"
+                  title={entry.headline}
+                >
+                  {entry.headline}
+                </p>
               </div>
             </button>
           );
@@ -403,15 +405,11 @@ function MonthlyHighlightCard({
   description,
   entries,
   tone,
-  openDailyDate,
-  onToggle,
 }: {
   title: string;
   description: string;
   entries: DailyListEntry[];
   tone: "bright" | "quiet";
-  openDailyDate: string | null;
-  onToggle: (date: string | null | ((current: string | null) => string | null)) => void;
 }) {
   const toneClass =
     tone === "bright"
@@ -419,33 +417,18 @@ function MonthlyHighlightCard({
       : "border-[#d8dfeb] bg-[linear-gradient(165deg,rgba(246,249,255,0.96),rgba(237,243,251,0.88),rgba(252,253,255,0.84))] shadow-[0_14px_28px_-24px_rgba(100,120,153,0.24)]";
 
   return (
-    <div className={`rounded-[1.35rem] border p-4 ${toneClass}`}>
+    <div className={`rounded-[1.35rem] border p-4 sm:p-5 ${toneClass}`}>
       <h3 className="text-sm font-semibold tracking-[0.08em] text-[#4a4238]">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-[#625a50]">{description}</p>
-      <div className="mt-4 space-y-2">
+      <div className="mt-4 flex flex-wrap gap-2.5">
         {entries.map((entry) => {
-          const meta = FLOW_LEVEL_META[entry.flowLevel];
-          const isOpen = openDailyDate === entry.date;
-
           return (
-            <button
+            <span
               key={`${title}-${entry.date}`}
-              type="button"
-              onClick={() => onToggle((current) => (current === entry.date ? null : entry.date))}
-              className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition ${
-                isOpen
-                  ? "border-[#d7bb8b] bg-white/88 ring-1 ring-inset ring-[#d7bb8b]"
-                  : "border-white/60 bg-white/68 hover:bg-white/84"
-              }`}
+              className="inline-flex min-w-[4.5rem] items-center justify-center rounded-full border border-white/65 bg-white/72 px-3.5 py-2 text-sm font-semibold text-[#4b3d30] shadow-[0_10px_24px_-24px_rgba(82,69,53,0.28)]"
             >
-              <span className="w-[44px] shrink-0 text-sm font-semibold text-[#2e2a26]">
-                {formatDailyFortuneCompactLabel(entry.date)}
-              </span>
-              <span className="w-6 shrink-0 text-center text-lg" aria-hidden="true">
-                {meta.icon}
-              </span>
-              <span className="min-w-0 flex-1 text-sm leading-relaxed text-[#4b3d30]">{meta.label}</span>
-            </button>
+              {formatDailyFortuneCompactLabel(entry.date)}
+            </span>
           );
         })}
       </div>

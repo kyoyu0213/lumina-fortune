@@ -1,15 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-
-const QUESTION_EXAMPLES = [
-  "彼は私のことをどう思っていますか？",
-  "この恋のゆくえを占って",
-  "復縁できますか？",
-  "結婚できますか？",
-  "転職はうまくいきますか？",
-  "今の運気はどうなっていますか？",
-  "いつ頃運気の流れが変わりますか？",
-] as const;
+import { PRESET_FORTUNE_QUESTIONS } from "@/lib/preset-fortune-questions";
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -18,6 +9,12 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [value, setValue] = useState("");
+  const visiblePresetQuestions = useMemo(
+    () => PRESET_FORTUNE_QUESTIONS.map((preset) => preset.question),
+    []
+  );
+
+  console.log("[lumina] visible preset questions:", visiblePresetQuestions);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent) => {
@@ -38,23 +35,23 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     >
       <div className="mx-auto max-w-3xl">
         <p className="mb-3 text-sm leading-relaxed text-[#6f6556]">
-          気になることをひとつ送ってください。ルミナがカードで静かに読み解きます。
+          {"\u6c17\u306b\u306a\u308b\u3053\u3068\u3092\u3072\u3068\u3064\u9001\u3063\u3066\u304f\u3060\u3055\u3044\u3002\u30eb\u30df\u30ca\u304c\u30ab\u30fc\u30c9\u3067\u9759\u304b\u306b\u8aad\u307f\u89e3\u304d\u307e\u3059\u3002"}
         </p>
 
         <div className="mb-3">
           <section className="rounded-2xl border border-[#e5d8c1]/72 bg-white/45 p-3">
             <p className="text-xs font-medium tracking-[0.12em] text-[#8a7a64]">
-              こんなことをカードに聞けます
+              {"\u3053\u3093\u306a\u3053\u3068\u3092\u30ab\u30fc\u30c9\u306b\u805e\u3051\u307e\u3059"}
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {QUESTION_EXAMPLES.map((example) => (
+              {visiblePresetQuestions.map((example) => (
                 <button
                   key={example}
                   type="button"
                   onClick={() => setValue(example)}
                   className="rounded-full border border-[#dbcdb6]/78 bg-[#fcf7ee] px-3 py-1.5 text-left text-xs text-[#5d5449] transition hover:bg-[#f8f1e4]"
                 >
-                  {`・${example}`}
+                  {example}
                 </button>
               ))}
             </div>
@@ -66,7 +63,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             type="text"
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            placeholder="例：彼は私のことをどう思っていますか？"
+            placeholder={"\u4f8b\uff1a\u5f7c\u306f\u79c1\u306e\u3053\u3068\u3092\u3069\u3046\u601d\u3063\u3066\u3044\u307e\u3059\u304b\uff1f"}
             disabled={disabled}
             className="lumina-input min-w-0 flex-1 rounded-full px-4 py-3 text-[#2e2a26] placeholder:text-[#9a8f7e] focus:outline-none"
           />
@@ -77,7 +74,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             whileTap={{ scale: 0.98 }}
             className="lumina-btn lumina-btn-primary !w-auto shrink-0 px-4 py-3 sm:px-6 disabled:opacity-50"
           >
-            送信
+            {"\u9001\u4fe1"}
           </motion.button>
         </div>
       </div>

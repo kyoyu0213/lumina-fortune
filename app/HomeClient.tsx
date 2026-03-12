@@ -35,6 +35,7 @@ type ChatConversationState = {
   lastTopic?: string | null;
   offtopicStreak?: number;
   awaitingFortuneResult?: boolean;
+  lightGuidanceCount?: number;
 };
 
 const FALLBACK_WELCOME = "Failed to load the welcome message. Please try again in a moment.";
@@ -42,8 +43,8 @@ const FALLBACK_CHAT = "Something went wrong while getting a response. Please try
 
 const FORTUNE_PART_DELAYS: Record<ChatMessagePart["type"], number> = {
   intro: 0,
-  animation: 560,
-  card: 1520,
+  animation: 420,
+  card: 1700,
   "reading-short": 760,
   "reading-detail": 980,
 };
@@ -267,7 +268,10 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
   const handleSend = useCallback(
     async (text: string) => {
       const chatUserKey = getOrCreateChatVisitorKey();
-      const moderation = runClientModerationCheck(text, chatUserKey, { maxLength: 500 });
+      const moderation = runClientModerationCheck(text, chatUserKey, {
+        maxLength: 500,
+        skipRateLimit: true,
+      });
       if (!moderation.ok) {
         setMessages((prev) => [
           ...prev,

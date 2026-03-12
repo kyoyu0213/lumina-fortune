@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 function BirdSpirit() {
   return (
@@ -64,76 +65,70 @@ function BirdSpirit() {
 }
 
 export function WhiteBirdAnimation() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVisible(false), 1500);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.28, ease: "easeOut" }}
-      className="relative mx-auto my-2 h-[6.8rem] w-full max-w-[16.5rem] overflow-hidden rounded-[1.8rem] border border-[#ebe0cc]/78 bg-[linear-gradient(180deg,rgba(255,252,247,0.97),rgba(244,237,227,0.88))] px-3 shadow-[0_16px_32px_-26px_rgba(72,58,41,0.22)]"
-    >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,249,236,0.7),rgba(255,249,236,0)_72%)]" />
-      <motion.div
-        className="pointer-events-none absolute inset-y-3 left-8 w-16 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.7),rgba(255,255,255,0))] blur-md"
-        initial={{ opacity: 0, scale: 0.7 }}
-        animate={{ opacity: [0, 0.55, 0], scale: [0.7, 1.15, 0.9] }}
-        transition={{ duration: 1.04, ease: "easeOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute inset-x-7 top-1/2 h-px -translate-y-1/2 bg-[linear-gradient(90deg,rgba(234,223,201,0),rgba(234,223,201,0.82),rgba(234,223,201,0))]"
-        initial={{ opacity: 0, scaleX: 0.7 }}
-        animate={{ opacity: [0, 0.65, 0.08], scaleX: [0.7, 1, 1.04] }}
-        transition={{ duration: 1.08, ease: "easeOut" }}
-      />
-
-      {[0, 1, 2, 3].map((index) => (
-        <motion.span
-          key={index}
-          className="pointer-events-none absolute top-1/2 h-1.5 w-1.5 rounded-full bg-[#f6ecd8]"
-          initial={{ x: 68 + index * 8, y: -8 + index * 4, opacity: 0 }}
-          animate={{
-            x: -36 + index * 24,
-            y: -18 + index * 12,
-            opacity: [0, 0.72, 0],
-            scale: [0.45, 1, 0.45],
-          }}
-          transition={{ duration: 1.1, delay: 0.12 + index * 0.1, ease: "easeOut" }}
-        />
-      ))}
-
-      <motion.div
-        className="absolute left-[-22%] top-1/2 h-12 w-24 -translate-y-1/2 sm:h-14 sm:w-28"
-        initial={{ x: 0, y: 8, opacity: 0, rotate: -5 }}
-        animate={{ x: "145%", y: -6, opacity: [0, 1, 1, 0], rotate: [-5, -2, 2, 6] }}
-        transition={{ duration: 1.18, ease: "easeInOut" }}
-      >
-        <div className="relative h-full w-full">
-          <BirdSpirit />
+    <AnimatePresence>
+      {visible ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.16, ease: "easeOut" } }}
+          className="pointer-events-none relative mx-auto my-1 h-[8.8rem] w-full max-w-[38rem] overflow-hidden sm:h-[10rem]"
+        >
           <motion.div
-            className="absolute -bottom-1.5 right-0 h-8 w-6 rounded-[0.7rem] border border-[#eadfcb]/88 bg-[linear-gradient(180deg,rgba(255,251,244,0.98),rgba(244,236,223,0.95))] p-[2px]"
-            animate={{
-              rotate: [-10, -5, 2],
-              y: [1, -1.5, 0],
-              boxShadow: [
-                "0 10px 20px -16px rgba(58,44,28,0.24)",
-                "0 10px 24px -14px rgba(244,227,187,0.62)",
-                "0 10px 20px -16px rgba(58,44,28,0.24)",
-              ],
-            }}
-            transition={{ duration: 1.18, ease: "easeInOut" }}
-          >
-            <div className="h-full w-full rounded-[0.6rem] border border-[#efe4d5] bg-[radial-gradient(circle_at_top,rgba(255,254,249,0.96),rgba(235,225,208,0.92))]" />
-          </motion.div>
-        </div>
-      </motion.div>
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_56%,rgba(255,250,241,0.36),rgba(255,250,241,0)_60%)]"
+            animate={{ opacity: [0.12, 0.34, 0] }}
+            transition={{ duration: 1.24, ease: "easeOut" }}
+          />
 
-      <motion.p
-        className="absolute bottom-2.5 left-1/2 w-full max-w-[12rem] -translate-x-1/2 text-center text-[10px] tracking-[0.18em] text-[#9b8c76]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.72, 0.42], y: [5, 0, 0] }}
-        transition={{ duration: 1.02, ease: "easeOut" }}
-      >
-        白い鳥がそっとカードを運んできます
-      </motion.p>
-    </motion.div>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <motion.span
+              key={index}
+              className="absolute left-[28%] top-1/2 h-2 w-2 rounded-full bg-[#fff7e8]/90 blur-[0.5px]"
+              initial={{ opacity: 0, scale: 0.4 }}
+              animate={{
+                x: [0, 42 + index * 28, 88 + index * 44],
+                y: [8 - index * 2, -8 + index * 3, -22 + index * 5],
+                opacity: [0, 0.9, 0],
+                scale: [0.4, 1.1, 0.55],
+              }}
+              transition={{
+                duration: 1.05,
+                delay: 0.18 + index * 0.06,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+
+          <motion.div
+            className="absolute left-[-18%] top-[56%] h-20 w-40 -translate-y-1/2 sm:h-24 sm:w-48"
+            initial={{ x: 0, y: 18, opacity: 0, scale: 0.88, rotate: -8 }}
+            animate={{
+              x: ["0%", "52%", "118%"],
+              y: [18, -10, -24],
+              opacity: [0, 1, 1, 0],
+              scale: [0.88, 1.08, 1.02, 0.92],
+              rotate: [-8, -2, 4, 7],
+            }}
+            transition={{ duration: 1.34, times: [0, 0.24, 0.76, 1], ease: "easeInOut" }}
+          >
+            <div className="relative h-full w-full">
+              <motion.div
+                className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.9),rgba(255,255,255,0)_72%)] blur-xl"
+                animate={{ opacity: [0.18, 0.42, 0] }}
+                transition={{ duration: 1.1, ease: "easeOut" }}
+              />
+              <BirdSpirit />
+            </div>
+          </motion.div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }

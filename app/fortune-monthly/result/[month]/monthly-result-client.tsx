@@ -75,7 +75,7 @@ export default function MonthlyResultClient({ month, initialBirthdate }: Props) 
       key={`${month}:${profileKey}`}
       template={result.template}
       dailyFortunes={result.dailyFortunes}
-      dailySectionTitle="今月の日別の流れ"
+      dailySectionTitle="今月の光の流れ"
       variantLabel="NUMEROLOGY MONTHLY"
       pageTitle={`${result.fortuneName}の${month}月の運勢`}
       topLinkHref="/"

@@ -13,7 +13,8 @@
     "test:dialogue-flow": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/dialogue-transition.test.ts",
     "test:fortune-output": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/fortune-output.test.ts",
     "test:chat-route": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/chat-route-awaiting.test.ts",
-    "test:numerology": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/numerology.test.ts"
+    "test:numerology": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/numerology.test.ts",
+    "report:daily-lines": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" report-monthly-daily-lines.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

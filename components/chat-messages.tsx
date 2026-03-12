@@ -199,6 +199,7 @@ export function ChatMessages({ messages, onDrawCards, onSaveFavorite }: ChatMess
                             part.type === "intro" ||
                             part.type === "reading-short" ||
                             part.type === "reading-detail";
+                          const isAnimationPart = part.type === "animation";
 
                           return (
                             <motion.div
@@ -212,7 +213,9 @@ export function ChatMessages({ messages, onDrawCards, onSaveFavorite }: ChatMess
                                 className={
                                   isTextPart
                                     ? assistantTextBubbleClassName
-                                    : "mx-auto w-full max-w-[300px]"
+                                    : isAnimationPart
+                                      ? "mx-auto w-full max-w-2xl"
+                                      : "mx-auto w-full max-w-[300px]"
                                 }
                               >
                                 <AssistantMessagePart part={part} cards={msg.cards} />

@@ -36,11 +36,15 @@ function writeClientRateLimitStore(store: Record<string, number>) {
 export function runClientModerationCheck(
   text: string,
   userKey: string,
-  options?: { maxLength?: number }
+  options?: { maxLength?: number; skipRateLimit?: boolean }
 ): ClientModerationResult {
   const textResult = validateModerationText(text, { maxLength: options?.maxLength ?? MODERATION_MAX_LENGTH });
   if (!textResult.ok) {
     return { ok: false, error: textResult.error };
+  }
+
+  if (options?.skipRateLimit) {
+    return { ok: true, normalizedText: textResult.normalizedText };
   }
 
   const rateKey = normalizeRateLimitKey(userKey);

@@ -1,4 +1,9 @@
-import { resolveOneCardReadingContext, type LightGuidanceTheme } from "@/lib/fortune/light-guidance-one-card";
+import {
+  detectLightGuidanceLoveSubtheme,
+  resolveOneCardReadingContext,
+  type LightGuidanceLoveSubtheme,
+  type LightGuidanceTheme,
+} from "@/lib/fortune/light-guidance-one-card";
 import { luminaDevError, luminaDevLog, luminaDevWarn } from "@/lib/config/lumina-dev";
 import type { DrawnTarotCard } from "@/lib/tarot/deck";
 
@@ -8,6 +13,8 @@ export type LightGuidanceOneCardSections = {
   readingDetail: string;
   text: string;
 };
+
+const MARRIAGE_FORBIDDEN_TERMS_RE = /(復縁|やり直し|再び戻る)/;
 
 function normalize(text: string): string {
   return text.replace(/\r\n/g, "\n").trim();
@@ -39,11 +46,12 @@ function trimSentenceCount(text: string, min: number, max: number): string {
 
 function inferIntro(theme: LightGuidanceTheme, message: string): string {
   const text = message.trim();
-  if (/復縁|元[彼カレ女ジョ]|やり直|よりを戻|戻れ/.test(text)) {
-    return "復縁の可能性を静かに見ていきますね。";
-  }
-  if (/結婚|結婚運|けっこん|婚活|入籍|プロポーズ/.test(text)) {
+  const loveSubtheme = detectLightGuidanceLoveSubtheme(message, theme);
+  if (loveSubtheme === "marriage") {
     return "結婚の流れについて見ていきましょう。";
+  }
+  if (loveSubtheme === "reunion") {
+    return "復縁の可能性を静かに見ていきますね。";
   }
   if (/気持ち|本音|どう思/.test(text)) return "お相手のお気持ちの流れを見ていきますね。";
   if (/恋愛|恋|好き|片思い|彼氏|彼女/.test(text)) return "恋の流れを見ていきましょう。";
@@ -70,10 +78,23 @@ function inferIntro(theme: LightGuidanceTheme, message: string): string {
   }
 }
 
-function buildFallbackReadingShort(card: DrawnTarotCard, theme: LightGuidanceTheme, message: string): string {
+function buildFallbackReadingShort(
+  card: DrawnTarotCard,
+  theme: LightGuidanceTheme,
+  message: string,
+  loveSubtheme: LightGuidanceLoveSubtheme = detectLightGuidanceLoveSubtheme(message, theme)
+): string {
   const seed = `${theme ?? "general"}:${card.card.code}:${card.reversed ? "r" : "u"}:${message.trim()}`;
   const context = resolveOneCardReadingContext(card, theme, seed, message);
   const first = context.categoryReading[0] ?? context.selectedMode;
+
+  if (loveSubtheme === "marriage") {
+    return ensureSentenceEnding(
+      card.reversed
+        ? "結婚については、焦って形にするより現実的な確認を重ねたい流れです"
+        : "結婚については、将来を形にするための土台が静かに整い始めています"
+    );
+  }
 
   return ensureSentenceEnding(
     card.reversed
@@ -82,12 +103,28 @@ function buildFallbackReadingShort(card: DrawnTarotCard, theme: LightGuidanceThe
   );
 }
 
-function buildFallbackReadingDetail(card: DrawnTarotCard, theme: LightGuidanceTheme, message: string): string {
+function buildFallbackReadingDetail(
+  card: DrawnTarotCard,
+  theme: LightGuidanceTheme,
+  message: string,
+  loveSubtheme: LightGuidanceLoveSubtheme = detectLightGuidanceLoveSubtheme(message, theme)
+): string {
   const seed = `${theme ?? "general"}:${card.card.code}:${card.reversed ? "r" : "u"}:${message.trim()}`;
   const context = resolveOneCardReadingContext(card, theme, seed, message);
   const first = context.categoryReading[0] ?? context.selectedMode;
   const second = context.categoryReading[1] ?? context.selectedMode;
   const orientation = card.reversed ? "逆位置" : "正位置";
+
+  if (loveSubtheme === "marriage") {
+    return [
+      `この一枚には、${first}が前に出ており、結婚の可能性は感情だけでなく現実の歩幅で見極める段階です。`,
+      `${card.card.nameJa}の${orientation}は、${second}を通して、二人の価値観や生活感覚が無理なく重なるかを丁寧に確かめることの大切さを示します。`,
+      card.reversed
+        ? "今はタイミングを急がず、将来像や役割分担を言葉にしてすり合わせるほど、話に現実味が戻りやすいでしょう。"
+        : "今は将来のイメージや生活の作り方を共有するほど、結婚への流れが具体的になっていきやすいでしょう。",
+      "勢いだけで結論を出すより、時期や段取りを整えることが、ふたりにとって納得のいく形につながります。",
+    ].join("");
+  }
 
   return [
     `この一枚には、${first}が前に出ています。`,
@@ -204,7 +241,8 @@ export function ensureLightGuidanceOneCardOutput(
   rawText: string,
   card: DrawnTarotCard,
   theme: LightGuidanceTheme,
-  message: string
+  message: string,
+  loveSubtheme: LightGuidanceLoveSubtheme = detectLightGuidanceLoveSubtheme(message, theme)
 ): LightGuidanceOneCardSections {
   const parsed = parseJsonObject(rawText) ?? salvageFreeformSections(rawText, theme, card, message);
   luminaDevLog("[lumina] parsed response:", parsed);
@@ -215,8 +253,17 @@ export function ensureLightGuidanceOneCardOutput(
       ? inferredIntro
       : parsed?.intro?.trim() || inferredIntro;
   const intro = ensureSentenceEnding(introSource);
-  const readingShort = trimSentenceCount(parsed?.readingShort ?? "", 1, 1) || buildFallbackReadingShort(card, theme, message);
-  const readingDetail = trimSentenceCount(parsed?.readingDetail ?? "", 3, 5) || buildFallbackReadingDetail(card, theme, message);
+  const shouldUseMarriageFallback =
+    loveSubtheme === "marriage" &&
+    MARRIAGE_FORBIDDEN_TERMS_RE.test(
+      [parsed?.intro ?? "", parsed?.readingShort ?? "", parsed?.readingDetail ?? ""].join(" ")
+    );
+  const readingShort =
+    (!shouldUseMarriageFallback && trimSentenceCount(parsed?.readingShort ?? "", 1, 1)) ||
+    buildFallbackReadingShort(card, theme, message, loveSubtheme);
+  const readingDetail =
+    (!shouldUseMarriageFallback && trimSentenceCount(parsed?.readingDetail ?? "", 3, 5)) ||
+    buildFallbackReadingDetail(card, theme, message, loveSubtheme);
 
   if (!parsed) {
     luminaDevWarn("[lumina] fallback route: json-parse-failed");

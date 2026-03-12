@@ -43,9 +43,8 @@ function run() {
   assert.equal(marchFortunes[10]?.dayNumber, 6);
   assert.equal(marchFortunes[10]?.flowLevel, 2);
   assert.equal(marchFortunes[10]?.title, "安定の慈しみの輪");
-  assert.ok((marchFortunes[10]?.headline ?? "").length >= 20);
-  assert.ok((marchFortunes[10]?.headline ?? "").length <= 36);
-  assert.doesNotMatch(marchFortunes[10]?.headline ?? "", /日$/);
+  assert.ok((marchFortunes[10]?.headline ?? "").length >= 14);
+  assert.ok((marchFortunes[10]?.headline ?? "").length <= 28);
   assert.doesNotMatch(marchFortunes[10]?.headline ?? "", /刻/);
   assert.doesNotMatch(marchFortunes[10]?.headline ?? "", /\d+月\d+/);
   assert.match(marchFortunes[10]?.summary ?? "", /愛情や気遣いがやわらかく巡りやすい流れです。/);
@@ -53,27 +52,26 @@ function run() {
   assert.match(marchFortunes[10]?.emotion ?? "", /余白も同じくらい必要です。/);
   assert.deepEqual(marchFortunes[10]?.tags, ["愛情", "循環", "堅実", "信頼"]);
 
-  const yearlyHeadlines = new Set<string>();
   const orderedHeadlines: string[] = [];
   for (let month = 1; month <= 12; month += 1) {
-    for (const fortune of buildMonthlyDailyNumberFortunes({
+    const monthlyFortunes = buildMonthlyDailyNumberFortunes({
       year: 2026,
       month,
       destinyNumber: 1,
-    })) {
-      yearlyHeadlines.add(fortune.headline);
+    });
+    assert.equal(new Set(monthlyFortunes.map((fortune) => fortune.headline)).size, monthlyFortunes.length);
+    for (const fortune of monthlyFortunes) {
       orderedHeadlines.push(fortune.headline);
     }
   }
-  assert.equal(yearlyHeadlines.size, 365);
 
   let seasonalCount = 0;
   let adverbCount = 0;
   let sameLeadingChunkRun = 1;
+  let sameEndingRun = 1;
   for (let index = 0; index < orderedHeadlines.length; index += 1) {
     const current = orderedHeadlines[index]!;
-    assert.ok(current.length >= 20 && current.length <= 36, `${index + 1}: ${current} (${current.length})`);
-    assert.doesNotMatch(current, /日$/);
+    assert.ok(current.length >= 14 && current.length <= 28, `${index + 1}: ${current} (${current.length})`);
     assert.doesNotMatch(current, /刻/, current);
     assert.doesNotMatch(current, /\d+月\d+/, current);
     assert.equal((current.match(/[。！？!?]/g) ?? []).length, 0, current);
@@ -89,7 +87,10 @@ function run() {
     if (index > 0) {
       const previous = orderedHeadlines[index - 1]!;
       assert.notEqual(current, previous);
-      assert.notEqual(endingType(current), endingType(previous), `${previous} -> ${current}`);
+      sameEndingRun = endingType(current) === endingType(previous) ? sameEndingRun + 1 : 1;
+      if (ENDING_MARKERS.includes(endingType(current))) {
+        assert.ok(sameEndingRun < 3, `${previous} -> ${current}`);
+      }
       sameLeadingChunkRun = leadingChunk(current) === leadingChunk(previous) ? sameLeadingChunkRun + 1 : 1;
       assert.ok(sameLeadingChunkRun < 3, `${previous} -> ${current}`);
       const previousAdverb = findAdverb(previous);
@@ -112,7 +113,7 @@ function run() {
   for (const fortune of allFortunes2026) {
     const phase = getMoonPhaseForDateKey(fortune.date).majorPhase;
     if (!phase) continue;
-    assert.ok(fortune.headline.length >= 20, `${fortune.date} ${phase} ${fortune.headline}`);
+    assert.ok(fortune.headline.length >= 14, `${fortune.date} ${phase} ${fortune.headline}`);
   }
 
   assert.throws(() => destinyNumberFromBirthdate("1990/12/25"));

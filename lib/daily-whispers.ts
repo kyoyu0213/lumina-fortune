@@ -62,6 +62,21 @@ export async function getDailyWhisperByDate(dateKey: string): Promise<DailyWhisp
   return record;
 }
 
+export async function getDailyWhispersForMonth(dateKey: string): Promise<DailyWhisperRecord[]> {
+  const store = await readStore();
+  const monthKey = dateKey.slice(0, 7);
+
+  return Object.values(store)
+    .filter(
+      (record) =>
+        typeof record?.date === "string" &&
+        record.date.startsWith(monthKey) &&
+        typeof record.message === "string" &&
+        typeof record.created_at === "string"
+    )
+    .sort((left, right) => left.date.localeCompare(right.date));
+}
+
 export async function saveDailyWhisper(record: DailyWhisperRecord): Promise<DailyWhisperRecord> {
   const store = await readStore();
   store[record.date] = record;

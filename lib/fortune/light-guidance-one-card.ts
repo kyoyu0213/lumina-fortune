@@ -16,6 +16,15 @@ export type LightGuidanceTheme =
   | "health"
   | null;
 
+export type LightGuidanceLoveSubtheme =
+  | "feelings"
+  | "future"
+  | "reunion"
+  | "encounter"
+  | "relationship"
+  | "marriage"
+  | null;
+
 export type ReadingViewpoint =
   | "相手の気持ち"
   | "恋の流れ"
@@ -47,7 +56,7 @@ function themeLabel(theme: LightGuidanceTheme): string {
     case "love":
       return "恋愛";
     case "marriage":
-      return "復縁・結婚";
+      return "結婚";
     case "work":
       return "仕事";
     case "money":
@@ -61,6 +70,48 @@ function themeLabel(theme: LightGuidanceTheme): string {
     default:
       return "全体";
   }
+}
+
+function loveSubthemeLabel(subtheme: LightGuidanceLoveSubtheme): string {
+  switch (subtheme) {
+    case "feelings":
+      return "feelings（彼の気持ち）";
+    case "future":
+      return "future（恋の未来）";
+    case "reunion":
+      return "reunion（復縁）";
+    case "encounter":
+      return "encounter（出会い）";
+    case "relationship":
+      return "relationship（関係の進展）";
+    case "marriage":
+      return "marriage（結婚）";
+    default:
+      return "none";
+  }
+}
+
+export function detectLightGuidanceLoveSubtheme(
+  message: string,
+  theme: LightGuidanceTheme
+): LightGuidanceLoveSubtheme {
+  const text = message.trim();
+  if (!text) return theme === "marriage" ? "marriage" : null;
+
+  if (
+    theme === "marriage" ||
+    /(結婚|婚|プロポーズ|将来|家庭|夫婦)/.test(text)
+  ) {
+    return "marriage";
+  }
+
+  if (theme !== "love") return null;
+  if (/復縁|元[彼カレ女ジョ]|やり直|よりを戻|戻れ/.test(text)) return "reunion";
+  if (/出会い|出逢い|いつ出会|どこで出会|新しい恋/.test(text)) return "encounter";
+  if (/気持ち|本音|どう思|脈|好き/.test(text)) return "feelings";
+  if (/進展|付き合える|交際|恋人|告白|距離|関係/.test(text)) return "relationship";
+  if (/未来|これから|この先|今後|どうなる|ゆくえ/.test(text)) return "future";
+  return "future";
 }
 
 function determineViewpoint(message: string, theme: LightGuidanceTheme): ReadingViewpoint {
@@ -112,7 +163,10 @@ export function buildLightGuidanceOneCardSystemPrompt(): string {
     "長い前置きは禁止です。",
     "営業的な締めは禁止です。",
     "未来を100%断定せず、ただし曖昧語の連発にもならないようにしてください。",
+    "ユーザー質問のテーマと鑑定文のテーマを必ず一致させてください。",
     "恋愛では相手の気持ちを断定しすぎず、温度感や距離感として伝えてください。",
+    "恋愛サブテーマが指定された場合は、そのサブテーマだけを扱い、別の恋愛テーマへ逸らさないでください。",
+    "恋愛サブテーマが marriage の場合は、「復縁」「やり直し」「再び戻る」を使わず、結婚の可能性・現実性・二人の価値観・タイミングを中心に書いてください。",
     "人間関係では相手を悪く決めつけないでください。",
     "仕事では押す、整える、待つなどの進め方が伝わるようにしてください。",
     "医療、法律、妊娠、生死、事故、失踪、浮気などの断定は禁止です。",
@@ -134,7 +188,8 @@ export function buildLightGuidanceOneCardSystemPrompt(): string {
 export function buildLightGuidanceOneCardPrompt(
   message: string,
   card: DrawnTarotCard,
-  theme: LightGuidanceTheme = null
+  theme: LightGuidanceTheme = null,
+  loveSubtheme: LightGuidanceLoveSubtheme = detectLightGuidanceLoveSubtheme(message, theme)
 ): string {
   const seed = buildOneCardReadingSeed(message, card, theme);
   const context = resolveOneCardReadingContext(card, theme, seed, message);
@@ -143,10 +198,14 @@ export function buildLightGuidanceOneCardPrompt(
   return [
     `相談内容: ${message}`,
     `テーマ: ${context.themeLabel}`,
+    `恋愛サブテーマ: ${loveSubthemeLabel(loveSubtheme)}`,
     `読みの視点: ${context.viewpoint}`,
     `カード: ${card.card.nameJa}（${orientation}）`,
     `カードの声: ${context.profile.voice}`,
     `読みの材料: ${context.categoryReading.join(" / ")}`,
     `今回の出方: ${context.selectedMode}`,
+    loveSubtheme === "marriage"
+      ? "厳守事項: 「復縁」「やり直し」「再び戻る」は使わず、結婚の可能性・現実性・二人の価値観・タイミングを中心に読むこと。"
+      : null,
   ].join("\n");
 }

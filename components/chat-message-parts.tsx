@@ -33,6 +33,13 @@ function TarotReadingCard({ card }: { card: TarotCardData }) {
       transition={{ duration: 0.46, ease: "easeOut" }}
       className="mx-auto w-full max-w-[300px] rounded-[1.8rem] border border-[#e9dcc7]/82 bg-[linear-gradient(180deg,rgba(255,252,247,0.99),rgba(246,238,226,0.96))] p-3 shadow-[0_18px_36px_-30px_rgba(56,42,26,0.26)]"
     >
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-4 h-16 w-16 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,248,230,0.88),rgba(255,248,230,0))] blur-xl"
+        initial={{ opacity: 0, scale: 0.75 }}
+        animate={{ opacity: [0, 0.85, 0], scale: [0.75, 1.15, 1.3] }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+      />
       <div className="overflow-hidden rounded-[1.3rem] border border-[#ece0cf]/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(251,245,236,0.9))] p-2.5">
         <LightTarotDisplay
           imagePath={imageMeta?.imagePath ?? CARD_BACK_IMAGE_PATH}

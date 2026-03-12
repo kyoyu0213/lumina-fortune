@@ -6,8 +6,7 @@ import { HomeClient } from "./HomeClient";
 export const dynamic = "force-dynamic";
 
 const FALLBACK_DAILY_WHISPER = {
-  message:
-    "今日は、急いで答えを出すよりも、心の水面を静かに整えることが似合いそうです。\n小さな違和感に気づけたなら、それだけで流れはやわらかく変わっていきます。",
+  message: "薄明かりが背を押す日",
 };
 
 export default async function Page() {
