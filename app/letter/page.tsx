@@ -127,7 +127,7 @@ export default function LetterPage() {
     >
       <div className="mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
         <Image
-          src="/gazou/tarotkanteiheya.jpg"
+          src="/gazou/tegami.png"
           alt="ルミナへの手紙"
           width={720}
           height={400}

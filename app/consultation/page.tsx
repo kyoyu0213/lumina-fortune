@@ -111,6 +111,15 @@ export default function ConsultationPage() {
       backLabel="トップへ戻る"
       className="font-serif"
     >
+      <div className="mb-6 overflow-hidden rounded-2xl border border-[#e2d6c0]/60 shadow-[0_12px_32px_-12px_rgba(82,69,53,0.18)]">
+        <Image
+          src="/gazou/tarot.png"
+          alt="タロット占いのイメージ"
+          width={1200}
+          height={600}
+          className="h-auto w-full object-cover"
+        />
+      </div>
       <GlassCard className="rounded-3xl">
         <form onSubmit={handleSubmit} className="space-y-4">
           <section className="relative overflow-hidden rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(160deg,rgba(255,251,245,0.92),rgba(248,241,229,0.88))] p-4">

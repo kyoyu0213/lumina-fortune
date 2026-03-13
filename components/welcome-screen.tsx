@@ -1,15 +1,21 @@
-﻿"use client";
+"use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
 import { SpecialOccasionCard } from "@/components/special-occasion-card";
 import { BRAND } from "@/lib/brand";
 import { getInitialBirthdate } from "@/lib/profile/getProfile";
 import { getSpecialOccasionEvent, type SpecialOccasionEvent } from "@/lib/special-occasions";
-import { getJstDateKey, getVisitStreakForVisitor, makeVisitorKey, updateVisitStreakForVisitor, type VisitStreakRecord } from "@/lib/visit-streak";
+import {
+  getJstDateKey,
+  getVisitStreakForVisitor,
+  makeVisitorKey,
+  updateVisitStreakForVisitor,
+  type VisitStreakRecord,
+} from "@/lib/visit-streak";
 
 const TAROT_HREF = "/?start=tarot";
 const TarotContext = createContext<(() => void) | undefined>(undefined);
@@ -19,118 +25,125 @@ const DEFAULT_WHISPER_MESSAGE = `今日は「整えること」が鍵になる�
 小さな違和感を見逃さないことで、
 次の選択が静かに見えてきます。`;
 
-type MenuCard = {
+type NavigationCard = {
   title: string;
   description: string;
   href: string;
   ctaLabel: string;
+  badge?: string;
 };
 
-type MenuGroup = {
-  heading: string;
-  sub: string;
-  image: string;
-  items: MenuCard[];
+type SectionGroup = {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: NavigationCard[];
+  backgroundImage?: string;
+  backgroundOverlayClassName?: string;
+  sectionImage?: string;
 };
-
-const MOBILE_FORTUNE_VISIBLE_COUNT = 3;
 
 const heroActions = [
-  { label: "今日のカードを引く", href: "/daily-fortune", tone: "primary" as const },
-  { label: "基本性格", href: "/basic-personality", tone: "secondary" as const },
-  { label: "光の導きタロット占い", href: "/?start=tarot", tone: "secondary" as const },
+  { label: "今日の運勢", href: "/daily-fortune", tone: "primary" as const },
+  { label: "恋愛占い", href: "/uranai/kataomoi", tone: "secondary" as const },
+  { label: "タロット占い", href: TAROT_HREF, tone: "secondary" as const },
 ];
 
-const groupedMenus: MenuGroup[] = [
-  {
-    heading: "結びの間",
-    sub: "恋とご縁の流れをたどる",
-    image: "/gazou/aisyou.jpg",
-    items: [
-      { title: "片思い占い", description: "この恋の行方、進展、動き出すタイミングを光の導きタロットで読み解きます。", href: "/uranai/kataomoi", ctaLabel: "占う" },
-      { title: "あの人の気持ち占い", description: "あの人の本音やあなたへの想いを、光の導きタロットでやさしく読み解きます。", href: "/uranai/kare-no-kimochi", ctaLabel: "占う" },
-      { title: "復縁占い", description: "元彼の気持ちや復縁の可能性、二人の縁の流れを静かに読み解きます。", href: "/uranai/fukuen", ctaLabel: "占う" },
-      { title: "婚期を視る占い", description: "これから3年の愛の流れと、ご縁が形になりやすい時期を読み解きます。", href: "/marriage-timing", ctaLabel: "見る" },
-      { title: "相性占い", description: "ふたりの関係性をやさしく読み解きます。", href: "/compatibility", ctaLabel: "見る" },
-    ],
-  },
-  {
-    heading: "導きの間",
-    sub: "カードが示す運命を受け取る",
-    image: "/gazou/IMG_4213.webp",
-    items: [
-      { title: "基本性格", description: "生年月日からあなたの本質を読み解きます。", href: "/basic-personality", ctaLabel: "見る" },
-      { title: "光の導きタロット占い", description: "いまの流れをカードで静かに読み解きます。", href: "/?start=tarot", ctaLabel: "ひらく" },
-      { title: "毎日の占い", description: "今日の流れに寄り添うメッセージを受け取れます。", href: "/daily-fortune", ctaLabel: "見る" },
-      { title: "毎月の運勢", description: "今月のテーマと過ごし方を確認できます。", href: "/fortune-monthly", ctaLabel: "開く" },
-      { title: "2026年の運勢", description: "一年の流れを静かに見通します。", href: "/fortune-2026", ctaLabel: "開く" },
-      { title: "光の暦", description: "月の流れに合わせて毎日を整えます。", href: "/calendar", ctaLabel: "ひらく" },
-    ],
-  },
-  {
-    heading: "白の休息室",
-    sub: "心を静かに整える場所",
-    image: "/gazou/IMG_4223.webp",
-    items: [
-      { title: "光のワーク", description: "日常に静かな光を取り戻す小さな実践。", href: "/light-work", ctaLabel: "はじめる" },
-      { title: "未来の手紙", description: "未来のあなたへ残した言葉を、白が静かに預かります。", href: "/future-letter", ctaLabel: "手紙を書く" },
-      { title: "館の休息室", description: "静かなBGMと短い瞑想で心をゆるめます。", href: "/healing", ctaLabel: "休む" },
-      { title: "光の願いの庭", description: "小さな願いを匿名で残せる場所です。", href: "/wish-garden", ctaLabel: "願いを残す" },
-    ],
-  },
-  {
-    heading: "光の書庫",
-    sub: "静かな時間を受け取る",
-    image: "/gazou/IMG_4219.webp",
-    items: [
-      { title: "白の庭の記録（物語）", description: "白の館とルミナの物語を辿ります。", href: "/library/records", ctaLabel: "読む" },
-      { title: "館の書棚（コラム）", description: "心を整えるための短い読み物です。", href: "/columns", ctaLabel: "読む" },
-      { title: "光の待ち受けお守り", description: "今月の待ち受けを受け取れます。", href: "/lucky-wallpapers", ctaLabel: "開く" },
-      { title: "月灯りの間（動画）", description: "静かな動画をゆっくり楽しめます。", href: "/library/limited-video", ctaLabel: "見る" },
-    ],
-  },
-  {
-    heading: "ルミナの相談室",
-    sub: "恋愛や仕事などを丁寧に相談",
-    image: "/gazou/IMG_4222.webp",
-    items: [
-      { title: "ルミナへの手紙", description: "個人鑑定の前に、いまの気持ちを短く届けてみませんか。", href: "/letter", ctaLabel: "手紙を書く" },
-      { title: "個人鑑定のご依頼", description: "今すぐ相談したい方はこちら。", href: "/consultation", ctaLabel: "依頼する" },
-    ],
-  },
-];
+const loveFortuneSection: SectionGroup = {
+  id: "love-fortune",
+  eyebrow: "Love",
+  title: "恋愛占い",
+  description: "恋の悩みに寄り添う5つの占い",
+  items: [
+    { title: "片思い占い", description: "恋の行方と進展のきっかけ", href: "/uranai/kataomoi", ctaLabel: "はじめる" },
+    { title: "あの人の気持ち占い", description: "相手の本音と今の距離感", href: "/uranai/kare-no-kimochi", ctaLabel: "はじめる" },
+    { title: "復縁占い", description: "復縁の可能性と流れ", href: "/uranai/fukuen", ctaLabel: "はじめる" },
+    { title: "相性占い", description: "二人の相性とアドバイス", href: "/compatibility", ctaLabel: "見る" },
+    { title: "結婚占い", description: "結婚の時期とご縁の流れ", href: "/marriage-timing", ctaLabel: "見る" },
+  ],
+  sectionImage: "/gazou/renai.png",
+};
 
-const mapCards = [
-  {
-    tag: "玄関",
-    title: "はじめての方へ",
-    description: "プロフィールを登録して、ルミナの言葉をあなた仕様に。",
-    href: "/profile",
-    ctaLabel: "プロフィールを登録する",
-  },
-  {
-    tag: "書庫",
-    title: "白の庭の記録",
-    description: "ルミナについてと、白の館の物語。",
-    href: "/library/records",
-    ctaLabel: "物語をひらく",
-  },
-  {
-    tag: "導きの間",
-    title: "2026年の運勢",
-    description: "一年の流れを静かに見通します。",
-    href: "/fortune-2026",
-    ctaLabel: "運勢をひらく",
-  },
-];
+const fortuneSection: SectionGroup = {
+  id: "fortune-tarot",
+  eyebrow: "Fortune",
+  title: "運勢占い",
+  description: "日々の流れを整える5つの占い",
+  items: [
+    { title: "毎日の運勢", description: "今日の流れとヒント", href: "/daily-fortune", ctaLabel: "見る" },
+    { title: "毎月の運勢", description: "今月のテーマと過ごし方", href: "/fortune-monthly", ctaLabel: "見る" },
+    { title: "2026年の運勢", description: "一年全体の流れ", href: "/fortune-2026", ctaLabel: "見る" },
+    { title: "光の暦カレンダー", description: "月の満ち欠けと開運日", href: "/calendar", ctaLabel: "見る" },
+    { title: "基本性格", description: "生年月日から本質を読み解く", href: "/basic-personality", ctaLabel: "見る" },
+  ],
+  sectionImage: "/gazou/unsei2.png",
+};
 
-const bridgeSocialLinks = [
+const firstVisitSection: SectionGroup = {
+  id: "first-visit",
+  eyebrow: "Guide",
+  title: "はじめての方へ",
+  items: [
+    { title: "初めての方へ", description: "", href: "/profile", ctaLabel: "プロフィールを登録" },
+    { title: "ルミナについて", description: "", href: "/library/world", ctaLabel: "読む" },
+    { title: "相性占い", description: "", href: "/compatibility", ctaLabel: "見る" },
+  ],
+};
+
+const mansionSection: SectionGroup = {
+  id: "mansion",
+  eyebrow: "Mansion",
+  title: "白の館をめぐる",
+  items: [
+    { title: "光のワーク", description: "日常を整える小さな実践", href: "/light-work", ctaLabel: "はじめる" },
+    { title: "未来の手紙", description: "未来の自分へのメッセージ", href: "/future-letter", ctaLabel: "開く" },
+    { title: "音の休息室", description: "心癒される音楽と瞑想の時間", href: "/healing", ctaLabel: "開く" },
+    { title: "光の願いの庭", description: "小さな願いを残せる場所", href: "/wish-garden", ctaLabel: "開く" },
+  ],
+  backgroundImage: "/gazou/sasayaki.jpg",
+  backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,250,244,0.62),rgba(247,240,232,0.68))]",
+};
+
+const recordsSection: SectionGroup = {
+  id: "records",
+  eyebrow: "Records",
+  title: "白の書庫",
+  backgroundImage: "/gazou/IMG_4219.webp",
+  backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,251,243,0.56),rgba(247,241,231,0.62))]",
+  items: [
+    { title: "白の庭の記録", description: "白の館とルミナの物語をたどります。", href: "/library/records", ctaLabel: "開く" },
+    { title: "節の書簡", description: "日々を整える短い読み物です。", href: "/columns", ctaLabel: "開く" },
+    { title: "光の待ち受け", description: "静かな光を受け取る待ち受けです。", href: "/lucky-wallpapers", ctaLabel: "見る" },
+    { title: "月灯りの間", description: "静かな動画をゆっくり眺められます。", href: "/library/limited-video", ctaLabel: "見る" },
+  ],
+};
+
+const consultationSection: SectionGroup = {
+  id: "consultation",
+  eyebrow: "Consultation",
+  title: "個人相談・手紙",
+  items: [
+    { title: "ルミナへの手紙", description: "今の気持ちを言葉にして届けます。", href: "/letter", ctaLabel: "開く" },
+    { title: "個人鑑定のご依頼", description: "恋愛や仕事を個別に相談できます。", href: "/consultation", ctaLabel: "はじめる" },
+  ],
+  backgroundImage: "/gazou/tarot.png",
+  backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,250,244,0.62),rgba(247,240,232,0.68))]",
+};
+
+const socialLinks = [
   { name: "TikTok", href: "https://www.tiktok.com/@luminousmagic0?_r=1&_t=ZS-94P8u7q3O5g", ariaLabel: "TikTokを開く" },
   { name: "Instagram", href: "https://www.instagram.com/luminousmagic0?igsh=MXZqNmtkazllZHpqNg%3D%3D&utm_source=qr", ariaLabel: "Instagramを開く" },
   { name: "YouTube", href: "https://youtube.com/channel/UCgmijIrv50RWonl2XgO8fiA?si=k60PNOj1RXFB3wcG", ariaLabel: "YouTubeを開く" },
 ] as const;
 
-function BridgeSocialIcon({ name }: { name: (typeof bridgeSocialLinks)[number]["name"] }) {
+type FeatherIconProps = {
+  size?: "small" | "large";
+  dimmed?: boolean;
+  alt?: string;
+};
+
+function BridgeSocialIcon({ name }: { name: (typeof socialLinks)[number]["name"] }) {
   if (name === "TikTok") {
     return (
       <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
@@ -138,6 +151,7 @@ function BridgeSocialIcon({ name }: { name: (typeof bridgeSocialLinks)[number]["
       </svg>
     );
   }
+
   if (name === "Instagram") {
     return (
       <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
@@ -145,6 +159,7 @@ function BridgeSocialIcon({ name }: { name: (typeof bridgeSocialLinks)[number]["
       </svg>
     );
   }
+
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
       <rect x="3" y="6.5" width="18" height="11" rx="3.2" />
@@ -155,6 +170,7 @@ function BridgeSocialIcon({ name }: { name: (typeof bridgeSocialLinks)[number]["
 
 function SmartLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
   const onStartTarot = useContext(TarotContext);
+
   if (href === TAROT_HREF && onStartTarot) {
     return (
       <button type="button" onClick={onStartTarot} className={className}>
@@ -162,6 +178,7 @@ function SmartLink({ href, className, children }: { href: string; className: str
       </button>
     );
   }
+
   return (
     <Link href={href} className={className}>
       {children}
@@ -169,34 +186,11 @@ function SmartLink({ href, className, children }: { href: string; className: str
   );
 }
 
-function MenuCardItem({ item }: { item: MenuCard }) {
-  return (
-    <article className="rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(162deg,rgba(255,252,246,0.9),rgba(248,242,231,0.86))] p-4 shadow-[0_12px_22px_-20px_rgba(82,69,53,0.22)]">
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="text-lg font-medium leading-tight text-[#2e2a26]">{item.title}</h3>
-        <SmartLink
-          href={item.href}
-          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md border border-[#baa98d]/72 bg-[#fdf8ee] px-3 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-        >
-          {item.ctaLabel}
-        </SmartLink>
-      </div>
-      <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{item.description}</p>
-    </article>
-  );
-}
-
-type FeatherIconProps = {
-  size?: "small" | "large";
-  dimmed?: boolean;
-  alt?: string;
-};
-
 function FeatherIcon({ size = "small", dimmed = false, alt = "" }: FeatherIconProps) {
   const wrapperClass = size === "large" ? "h-11 w-14" : "h-3 w-4";
   const imageClass = dimmed
-    ? "object-contain opacity-[0.46] grayscale-[0.2] brightness-[1.06] contrast-[1.08]"
-    : "object-contain opacity-[0.78] brightness-[1.08] contrast-[1.12] drop-shadow-[0_0_3px_rgba(255,255,255,0.28)]";
+    ? "object-contain opacity-[0.42] grayscale-[0.2] brightness-[1.04]"
+    : "object-contain opacity-[0.8] brightness-[1.08] contrast-[1.1]";
 
   return (
     <span className={`relative block ${wrapperClass}`.trim()}>
@@ -212,8 +206,104 @@ function FeatherIcon({ size = "small", dimmed = false, alt = "" }: FeatherIconPr
   );
 }
 
-const featherCardClassName =
-  "rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(180deg,#f0e8da_0%,#f5efe4_60%,#faf6ef_100%)] px-4 py-3 text-left shadow-[0_10px_22px_-22px_rgba(82,69,53,0.18)]";
+function SectionHeader({ eyebrow, title, description }: Omit<SectionGroup, "id" | "items" | "backgroundImage" | "backgroundOverlayClassName">) {
+  return (
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="max-w-2xl">
+        {eyebrow ? <p className="text-[11px] tracking-[0.22em] text-[#8b7e6b] uppercase">{eyebrow}</p> : null}
+        <h2 className="mt-1 text-2xl font-medium tracking-[0.04em] text-[#2f2a25] sm:text-[1.8rem]">{title}</h2>
+      </div>
+      {description ? <p className="max-w-xl text-sm leading-7 text-[#665d51] sm:text-right">{description}</p> : null}
+    </div>
+  );
+}
+
+function NavigationCardItem({ item, featured = false, compact = false }: { item: NavigationCard; featured?: boolean; compact?: boolean }) {
+  return (
+    <SmartLink
+      href={item.href}
+      className={`group flex h-full flex-col justify-between rounded-[1.35rem] border shadow-[0_14px_28px_-24px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 ${
+        compact ? "min-h-0 px-4 py-2.5" : "min-h-[5.6rem] px-4 py-4 sm:min-h-[6rem]"
+      } ${
+        featured
+          ? "border-[#d6c39d]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.7),rgba(245,236,219,0.62))]"
+          : "border-[#e6dbc8]/85 bg-white/60"
+      }`}
+    >
+      <div className={compact ? "flex items-center gap-3" : "flex flex-col"}>
+        {!compact && item.badge ? <p className="mb-1.5 text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">{item.badge}</p> : null}
+        <h3 className={`font-medium leading-tight text-[#2e2a26] group-hover:text-[#5d513f] ${compact ? "text-sm" : "text-base sm:text-lg"}`}>{item.title}</h3>
+        {compact ? (
+          item.description ? <p className="text-[12px] leading-5 text-[#7a7063]">{item.description}</p> : null
+        ) : (
+          <p className="mt-1.5 text-[13px] leading-5 text-[#7a7063]">{item.description}</p>
+        )}
+        {compact ? (
+          <p className="ml-auto shrink-0 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p>
+        ) : null}
+      </div>
+      {compact ? null : (
+        <p className="mt-3 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p>
+      )}
+    </SmartLink>
+  );
+}
+
+function CardSection({ section, columns = "three", compact = false }: { section: SectionGroup; columns?: "two" | "three"; compact?: boolean }) {
+  const gridClass =
+    section.id === "love-fortune" || section.id === "fortune-tarot"
+      ? "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+      : section.id === "first-visit"
+        ? "grid grid-cols-1 gap-3 sm:grid-cols-3"
+        : section.id === "mansion"
+          ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+          : section.id === "records"
+            ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+          : columns === "two"
+            ? "grid grid-cols-1 gap-4 md:grid-cols-2"
+            : "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3";
+
+  return (
+    <section id={section.id} className="relative mx-auto w-full max-w-6xl px-4">
+      <div className={`relative overflow-hidden rounded-[2rem] border border-[#ebe1cf]/80 bg-[rgba(255,252,247,0.58)] shadow-[0_18px_32px_-30px_rgba(82,69,53,0.24)] backdrop-blur-[1px] ${compact ? "px-5 py-3 sm:px-8 sm:py-4" : "px-5 py-6 sm:px-8 sm:py-7"}`}>
+        {section.backgroundImage ? (
+          <div className="pointer-events-none absolute inset-0">
+            <Image src={section.backgroundImage} alt="" fill className="object-cover opacity-[0.82]" sizes="(max-width: 768px) 100vw, 1200px" />
+            <div className={`absolute inset-0 ${section.backgroundOverlayClassName ?? "bg-[rgba(255,252,246,0.74)]"}`} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(255,255,255,0.34),transparent_34%),radial-gradient(circle_at_86%_76%,rgba(231,214,181,0.18),transparent_28%)]" />
+          </div>
+        ) : null}
+        <div className="relative z-10">
+          {section.sectionImage ? (
+            <div className="flex flex-col gap-5 md:flex-row md:items-stretch">
+              <div className="relative mx-auto aspect-[4/5] w-[60%] shrink-0 overflow-hidden rounded-2xl border border-[#e2d6c0]/60 shadow-[0_12px_32px_-12px_rgba(82,69,53,0.18)] md:mx-0 md:aspect-auto md:w-[200px]">
+                <Image src={section.sectionImage} alt="" fill className="object-cover" sizes="(max-width: 768px) 60vw, 200px" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(180deg,transparent_60%,rgba(255,250,244,0.3)_100%)]" />
+              </div>
+              <div className="flex-1">
+                <SectionHeader eyebrow={section.eyebrow} title={section.title} description={section.description} />
+                <div className="mt-4 grid grid-cols-1 content-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {section.items.map((item, index) => (
+                    <NavigationCardItem key={item.href} item={item} featured={index === 0 && columns === "two"} compact={compact} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {compact ? null : <SectionHeader eyebrow={section.eyebrow} title={section.title} description={section.description} />}
+              <div className={`${compact ? "" : "mt-4 "}${gridClass}`}>
+                {section.items.map((item, index) => (
+                  <NavigationCardItem key={item.href} item={item} featured={index === 0 && columns === "two"} compact={compact} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 type WelcomeScreenProps = {
   initialDailyWhisper?: string;
@@ -223,8 +313,6 @@ type WelcomeScreenProps = {
 
 export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onStartTarot }: WelcomeScreenProps) {
   const dailyWhisper = initialDailyWhisper?.trim() || DEFAULT_WHISPER_MESSAGE;
-  const [mobileFortuneExpanded, setMobileFortuneExpanded] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState(false);
   const [featherNotice, setFeatherNotice] = useState<string | null>(null);
   const [specialOccasion, setSpecialOccasion] = useState<SpecialOccasionEvent | null>(() =>
     getSpecialOccasionEvent(serverBirthdate)
@@ -236,6 +324,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
     monthlyVisitCount: 1,
     monthlyClaimed: false,
   });
+  const [visitorName, setVisitorName] = useState<string>("ゲスト");
 
   useEffect(() => {
     setSpecialOccasion(getSpecialOccasionEvent(getInitialBirthdate(serverBirthdate)));
@@ -243,28 +332,35 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
 
   useEffect(() => {
     let timeoutId: number | null = null;
+
     try {
       const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
       const profile = rawProfile ? (JSON.parse(rawProfile) as { nickname?: string }) : {};
-      const visitorKey = makeVisitorKey(typeof profile.nickname === "string" ? profile.nickname : "");
+      const nickname = typeof profile.nickname === "string" && profile.nickname.trim() ? profile.nickname.trim() : "";
+      if (nickname) setVisitorName(nickname);
+      const visitorKey = makeVisitorKey(nickname);
       const previous = getVisitStreakForVisitor(localStorage, visitorKey);
       const next = updateVisitStreakForVisitor(localStorage, visitorKey);
       const earnedToday = previous?.lastVisited !== getJstDateKey();
+
       timeoutId = window.setTimeout(() => {
         setVisitStreak(next);
-        setFeatherNotice(earnedToday ? "白が羽を落としていきました" : null);
+        setFeatherNotice(earnedToday ? "今日の贈り物に白い羽が加わりました。" : null);
       }, 0);
     } catch {
-      // keep defaults
+      // Keep defaults when localStorage is unavailable.
     }
+
     return () => {
-      if (timeoutId !== null) window.clearTimeout(timeoutId);
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
     };
   }, []);
 
   const handleShareWhisper = () => {
     const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
-    const shareText = ["今日のルミナのささやき", "", dailyWhisper, "", BRAND.name, BRAND.tagline, siteUrl].join("\n");
+    const shareText = ["今日のルミナのささやき", "", dailyWhisper, "", BRAND.name, siteUrl].join("\n");
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
@@ -273,347 +369,205 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
   const collectedFeathers = Math.min(visitStreak.monthlyVisitCount, 7);
   const giftStatusText =
     visitStreak.monthlyVisitCount >= 7 || visitStreak.monthlyClaimed
-      ? "七枚の羽がそろいました。白の贈り物を受け取れます"
-      : `白が落としていく羽は、あと${remainingDays}枚でそろいます。`;
-  const mobileQuickMenus = [
-    { label: "今日の占い", href: "/daily-fortune" },
-    { label: "光の導きタロット", href: "/?start=tarot" },
-    { label: "白の庭の記録", href: "/library/records" },
-    { label: "個人鑑定", href: "/consultation" },
-  ];
-  const mobileFortuneMenu = groupedMenus.find((group) => group.heading === "導きの間");
-  const mobileFortuneItems = mobileFortuneExpanded
-    ? (mobileFortuneMenu?.items ?? [])
-    : (mobileFortuneMenu?.items ?? []).slice(0, MOBILE_FORTUNE_VISIBLE_COUNT);
-  const hasMoreMobileFortuneItems = (mobileFortuneMenu?.items.length ?? 0) > MOBILE_FORTUNE_VISIBLE_COUNT;
-  const mobileHiddenGroups = groupedMenus.filter((group) =>
-    ["結びの間", "白の休息室", "光の書庫", "ルミナの相談室"].includes(group.heading)
-  );
+      ? "今月の小さな贈り物を受け取れます。"
+      : `あと${remainingDays}回で小さな贈り物が届きます。`;
 
   return (
     <TarotContext.Provider value={onStartTarot}>
-    <div className="relative min-h-screen overflow-hidden px-4 py-8 sm:py-10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_16%,rgba(255,255,247,0.2),transparent_46%),radial-gradient(circle_at_78%_14%,rgba(246,233,202,0.16),transparent_50%),radial-gradient(circle_at_36%_74%,rgba(223,242,226,0.12),transparent_56%)]" />
+      <div className="relative min-h-screen overflow-hidden px-0 py-5 sm:py-7">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(247,244,237,0.32)_0%,rgba(245,240,230,0.22)_46%,rgba(247,244,237,0.32)_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(circle_at_top,rgba(255,252,245,0.5),transparent_72%)]" />
 
-      <section className="relative mx-auto w-full max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.42 }}
-          className="lumina-shell relative overflow-hidden rounded-3xl border border-[#e4dbc9]/85 bg-[linear-gradient(155deg,rgba(255,255,251,0.9),rgba(248,242,231,0.84))] px-5 py-8 shadow-[0_18px_34px_-26px_rgba(82,69,53,0.24)] sm:px-8 sm:py-10"
-        >
-          <div className="pointer-events-none absolute inset-0">
-            <Image src="/gazou/yakata.jpg" alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 1024px" />
-            <div className="absolute inset-0 bg-[rgba(255,252,246,0.84)]" />
-          </div>
-          <div className="relative z-10 text-center">
-            <div className="mx-auto h-24 w-24 overflow-hidden rounded-full border-4 border-[#f2ebde]/85 bg-[#fffdf8]/85">
-              <Image src="/lumina-icon.png" alt="ルミナのアイコン" width={128} height={128} className="h-full w-full object-cover" priority />
+        <section className="relative mx-auto w-full max-w-6xl px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="relative overflow-hidden rounded-[2.25rem] border border-[#e6dac7]/85 px-6 py-8 shadow-[0_24px_44px_-34px_rgba(82,69,53,0.35)] sm:px-10 sm:py-10"
+          >
+            <div className="pointer-events-none absolute inset-0">
+              <Image src="/gazou/yakata.jpg" alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 1200px" priority />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,253,248,0.94),rgba(246,238,226,0.84))]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.72),transparent_52%)]" />
             </div>
-            <p className="mt-4 text-xs tracking-[0.24em] text-[#766e62]">WHITE WITCH TAROT</p>
-            <h1 className="mt-1 font-[var(--font-playfair-display)] text-4xl tracking-[0.14em] text-[#2e2a26] sm:text-5xl">{BRAND.name}</h1>
-            <p className="mt-2 text-base leading-relaxed text-[#544c42]">{BRAND.tagline}</p>
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#665d51]">
-              がんばりすぎた心に、静かな光を。
-              {"\n"}LUMINAの占いは、あなたを整えるための言葉です。
-            </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-              {heroActions.map((action) => (
-                <SmartLink
-                  key={action.href}
-                  href={action.href}
-                  className={
-                    action.tone === "primary"
-                      ? "inline-flex min-h-10 min-w-[9.5rem] items-center justify-center rounded-full border border-[#a79678]/80 bg-[#b7a076] px-4 py-1.5 text-sm font-medium text-white transition hover:bg-[#ad9568]"
-                      : "inline-flex min-h-10 min-w-[9.5rem] items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#fffaf0]"
-                  }
-                >
-                  {action.label}
-                </SmartLink>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </section>
 
-      {specialOccasion ? <SpecialOccasionCard event={specialOccasion} /> : null}
-
-      <section className="relative mx-auto mt-4 w-full max-w-5xl md:hidden">
-        <div className="grid grid-cols-2 gap-2">
-          {mobileQuickMenus.map((item) => (
-            <SmartLink
-              key={item.href}
-              href={item.href}
-              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[#baa98d]/72 bg-[#fdf8ee] px-3 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-            >
-              {item.label}
-            </SmartLink>
-          ))}
-        </div>
-      </section>
-
-      <section className="relative mx-auto mt-6 w-full max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-          className="lumina-glow-card relative overflow-hidden rounded-2xl border border-[#d9ccb3]/80 px-6 py-7 text-center shadow-[0_12px_24px_-20px_rgba(96,80,60,0.28)]"
-        >
-          <div className="pointer-events-none absolute inset-0">
-            <Image src="/gazou/sasayaki.jpg" alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 960px" />
-            <div className="absolute inset-0 bg-[rgba(255,252,246,0.84)]" />
-          </div>
-          <div className="relative z-10">
-            <h2 className="text-base font-medium text-[#2f2a25]">今日のルミナのささやき</h2>
-            <p className="mx-auto mt-3 max-w-2xl whitespace-pre-line text-sm leading-relaxed text-[#544c42]">{dailyWhisper}</p>
-            <div className="mt-5 flex items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={handleShareWhisper}
-                className="inline-flex min-h-9 min-w-[10.5rem] items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#fffaf0]"
-              >
-                この言葉をシェア
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      <section className="relative mx-auto mt-4 w-full max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.09 }}
-          className="grid grid-cols-1 gap-4 md:grid-cols-2"
-        >
-          <article className={featherCardClassName}>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-sm font-medium text-[#6f6658]">白の羽</h3>
-                <p className="mt-1 text-sm leading-relaxed text-[#544c42]">白が落としていった羽を ひとつ拾いました。</p>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="relative h-36 w-36 overflow-hidden rounded-full border border-white/70 bg-white/80 shadow-[0_10px_24px_-16px_rgba(82,69,53,0.28)]">
+                <Image src="/lumina-icon.png" alt="ルミナのアイコン" fill className="object-cover" sizes="144px" priority />
               </div>
-              <div className="shrink-0 pt-1">
-                <FeatherIcon size="large" alt="白い羽" />
-              </div>
-            </div>
-            <div className="mt-2 space-y-2 sm:flex sm:items-end sm:justify-between sm:gap-4 sm:space-y-0" aria-label="白の羽の記録">
-              <div className="flex items-center gap-1.5 leading-none">
-                {Array.from({ length: 7 }).map((_, i) => (
-                  <FeatherIcon key={`feather-dot-${i}`} dimmed={i >= collectedFeathers} />
-                ))}
-              </div>
-              <div className="space-y-0.5 sm:text-right">
-                <p className="text-[11px] tracking-[0.12em] text-[#8b8376]">進捗</p>
-                <p className="text-base font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
-                <p className="text-xs text-[#6f6556]">
-                  {remainingDays === 0 ? "また来月受け取れます" : `あと${remainingDays}枚でそろいます。`}
-                </p>
-              </div>
-            </div>
-            {featherNotice ? <p className="mt-1 text-xs text-[#8b7e6b]">{featherNotice}</p> : null}
-          </article>
+              <p className="mt-4 text-[11px] tracking-[0.3em] text-[#7b6f5f]">WHITE WITCH TAROT</p>
+              <h1 className="mt-2 font-[var(--font-playfair-display)] text-4xl tracking-[0.12em] text-[#2e2a26] sm:text-5xl">
+                {BRAND.name}
+              </h1>
 
-          <article className={featherCardClassName}>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-sm font-medium text-[#6f6658]">白の贈り物</h3>
-                <p className="mt-1 text-xs text-[#8b7e6b]">七枚そろうと、白が小さな贈り物を届けます</p>
-              </div>
-              <div className="shrink-0 pt-1">
-                <FeatherIcon size="large" alt="白い羽" />
-              </div>
-            </div>
-            <div className="mt-2 sm:flex sm:items-end sm:justify-between sm:gap-4">
-              <div className="space-y-0.5">
-                <p className="text-[11px] tracking-[0.12em] text-[#8b8376]">進捗</p>
-                <p className="text-base font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
-              </div>
-              <Link
-                href="/library/wallpapers"
-                className="mt-2 inline-flex min-h-8 items-center justify-center rounded-full border border-[#baa98d]/75 bg-[linear-gradient(160deg,#fdf8ee,#f3e8d4)] px-3.5 py-1 text-xs font-medium text-[#6a5f50] shadow-[0_8px_18px_-16px_rgba(82,69,53,0.35)] transition hover:bg-[linear-gradient(160deg,#fffaf1,#f0e1c8)] sm:mt-0"
-              >
-                贈り物を見る →
-              </Link>
-            </div>
-            <p className="mt-1 text-xs text-[#6f6556]">{giftStatusText}</p>
-          </article>
-        </motion.div>
-      </section>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-[#554c41] sm:text-xl">
+                無料タロット占い・恋愛占い・今日の運勢
+              </p>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-[#6a6054] sm:text-base">
+                片思い・復縁・相性・結婚の恋愛占いから、毎日の運勢まで。
+                <br />
+                白の魔女ルミナがあなたの悩みに寄り添います。
+              </p>
 
-      <section className="relative mx-auto mt-6 w-full max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.42, delay: 0.11 }}
-          className="rounded-3xl border border-[#e1d5bf]/72 bg-[linear-gradient(165deg,rgba(255,252,246,0.76),rgba(248,242,231,0.68))] p-4 shadow-[0_10px_20px_-22px_rgba(82,69,53,0.2)] sm:p-5"
-        >
-          <div className="mb-3 flex items-end justify-between gap-3">
-            <h2 className="text-lg font-medium text-[#3c352d]">✧ 館の入口</h2>
-            <p className="text-xs tracking-[0.08em] text-[#8b7e6b]">迷ったら、まずこの3つから。</p>
-          </div>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            {mapCards.map((card) => (
-              <article
-                key={card.href}
-                className="rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(162deg,rgba(255,252,246,0.92),rgba(248,242,231,0.88))] p-4 shadow-[0_12px_22px_-20px_rgba(82,69,53,0.22)]"
-              >
-                <p className="text-xs tracking-[0.1em] text-[#8b7e6b]">{card.tag}</p>
-                <h3 className="mt-1 text-lg font-medium text-[#2e2a26]">{card.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{card.description}</p>
-                <SmartLink
-                  href={card.href}
-                  className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-                >
-                  + {card.ctaLabel} →
-                </SmartLink>
-              </article>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      <section className="relative mx-auto mt-6 w-full max-w-5xl md:hidden">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.12 }}
-          className="space-y-3"
-        >
-          <div className="rounded-2xl border border-[#e1d5bf]/72 bg-[linear-gradient(165deg,rgba(255,252,246,0.76),rgba(248,242,231,0.68))] p-4">
-            <div className="mb-3 flex items-end justify-between gap-3">
-              <h2 className="text-lg font-medium text-[#3c352d]">占いメニュー</h2>
-              <p className="text-xs tracking-[0.08em] text-[#8b7e6b]">横にスワイプ</p>
-            </div>
-            <div className="-mx-1 overflow-x-auto pb-1">
-              <div className="flex gap-3 px-1">
-                {mobileFortuneItems.map((item) => (
-                  <article
-                    key={`mobile-fortune-${item.href}`}
-                    className="w-[260px] shrink-0 rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(162deg,rgba(255,252,246,0.92),rgba(248,242,231,0.88))] p-4"
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+                {heroActions.map((action) => (
+                  <SmartLink
+                    key={action.href}
+                    href={action.href}
+                    className={
+                      action.tone === "primary"
+                        ? "inline-flex min-h-11 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-6 text-sm font-medium text-white shadow-[0_14px_28px_-18px_rgba(106,86,52,0.52)] transition hover:bg-[#b59558]"
+                        : "inline-flex min-h-11 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-[rgba(255,251,244,0.94)] px-6 text-sm font-medium text-[#695e50] shadow-[0_8px_20px_-18px_rgba(82,69,53,0.2)] transition hover:bg-[#fff7eb]"
+                    }
                   >
-                    <h3 className="text-base font-medium text-[#2e2a26]">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{item.description}</p>
-                    <SmartLink
-                      href={item.href}
-                      className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-                    >
-                      {item.ctaLabel} →
-                    </SmartLink>
-                  </article>
+                    {action.label}
+                  </SmartLink>
                 ))}
               </div>
-            </div>
-            {hasMoreMobileFortuneItems ? (
-              <button
-                type="button"
-                onClick={() => setMobileFortuneExpanded((prev) => !prev)}
-                className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-4 py-1.5 text-xs font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-              >
-                {mobileFortuneExpanded ? "折りたたむ" : "もっと見る"}
-              </button>
-            ) : null}
-          </div>
 
-          <div className="rounded-2xl border border-[#e1d5bf]/72 bg-[linear-gradient(165deg,rgba(255,252,246,0.76),rgba(248,242,231,0.68))] p-4">
-            {!mobileExpanded ? (
-              <button
-                type="button"
-                onClick={() => setMobileExpanded(true)}
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-5 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-              >
-                もっと見る
-              </button>
-            ) : (
-              <div className="space-y-4">
-                {mobileHiddenGroups.map((group) => (
-                  <section key={`mobile-group-${group.heading}`} className="rounded-2xl border border-[#e1d5bf]/70 bg-white/60 p-3">
-                    <div className="mb-2 flex items-end justify-between gap-2">
-                      <h3 className="text-base font-medium text-[#3c352d]">{group.heading}</h3>
-                      <p className="text-[11px] tracking-[0.06em] text-[#8b7e6b]">{group.sub}</p>
-                    </div>
-                    <div className="space-y-2">
-                      {group.items.map((item) => (
-                        <article key={`mobile-item-${item.href}`} className="rounded-xl border border-[#e1d5bf]/75 bg-white/75 p-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-sm font-medium text-[#2e2a26]">{item.title}</h4>
-                            <SmartLink
-                              href={item.href}
-                              className="inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-[#baa98d]/72 bg-[#fdf8ee] px-2.5 text-xs font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
-                            >
-                              {item.ctaLabel}
-                            </SmartLink>
-                          </div>
-                          <p className="mt-1 text-xs leading-relaxed text-[#544c42]">{item.description}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {specialOccasion ? <SpecialOccasionCard event={specialOccasion} /> : null}
+
+        <div className="mt-5">
+          <CardSection section={firstVisitSection} compact />
+        </div>
+
+        <section className="relative mx-auto mt-5 w-full max-w-6xl px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="grid grid-cols-1 gap-4 md:grid-cols-2"
+          >
+            <article className="rounded-[1.8rem] border border-[#e2d6c0]/85 bg-[rgba(245,239,227,0.92)] px-4 py-3 shadow-[0_14px_28px_-24px_rgba(82,69,53,0.22)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.2em] text-[#8d816f] uppercase">Whisper</p>
+                  <h3 className="mt-1 text-lg font-medium text-[#2f2a25]">ルミナのささやき</h3>
+                </div>
                 <button
                   type="button"
-                  onClick={() => setMobileExpanded(false)}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#baa98d]/72 bg-[#fdf8ee] px-5 py-2 text-sm font-medium text-[#6f6556] transition hover:bg-[#f9f3e7]"
+                  onClick={handleShareWhisper}
+                  className="mt-1 shrink-0 inline-flex min-h-8 items-center justify-center rounded-full border border-[#cfbe9f]/85 bg-[#fffaf0] px-3 text-[12px] font-medium text-[#6f6556] transition hover:bg-[#f8f0e2]"
                 >
-                  閉じる
+                  共有する
                 </button>
               </div>
-            )}
-          </div>
-        </motion.div>
-      </section>
+              <p className="mt-2 text-sm leading-6 text-[#5e5549]">こんにちは、{visitorName}さん</p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-6 text-[#5e5549]">今日は{dailyWhisper}</p>
+            </article>
 
-      <section className="relative mx-auto mt-6 hidden w-full max-w-5xl md:block">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.12 }} className="space-y-5">
-          {groupedMenus.map((group) => (
-            <section
-              key={group.heading}
-              className="relative overflow-hidden rounded-3xl border border-[#e1d5bf]/72 bg-[linear-gradient(165deg,rgba(255,252,246,0.76),rgba(248,242,231,0.68))] p-4 shadow-[0_10px_20px_-22px_rgba(82,69,53,0.2)] sm:p-5"
-            >
-              <div className="pointer-events-none absolute inset-0 opacity-55">
-                <Image src={group.image} alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 960px" />
-                <div className="absolute inset-0 bg-[rgba(255,252,246,0.52)]" />
+            <article className="rounded-[1.8rem] border border-[#e2d6c0]/85 bg-[rgba(245,239,227,0.92)] px-4 py-3 shadow-[0_14px_28px_-24px_rgba(82,69,53,0.22)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.2em] text-[#8d816f] uppercase">Gift</p>
+                  <h3 className="mt-1 text-lg font-medium text-[#2f2a25]">白の贈り物</h3>
+                </div>
+                <Link
+                  href="/library/wallpapers"
+                  className="mt-1 shrink-0 inline-flex min-h-8 items-center justify-center rounded-full border border-[#cfbe9f]/85 bg-[#fffaf0] px-3 text-[12px] font-medium text-[#6f6556] transition hover:bg-[#f8f0e2]"
+                >
+                  贈り物を見る
+                </Link>
               </div>
-              <div className="relative z-10 mb-3 flex items-end justify-between gap-3">
-                <h2 className="text-lg font-medium text-[#3c352d]">{group.heading}</h2>
-                <p className="text-xs tracking-[0.08em] text-[#8b7e6b]">{group.sub}</p>
-              </div>
-              <div className="relative z-10 grid grid-cols-1 gap-3 md:grid-cols-2">
-                {group.items.map((item) => (
-                  <MenuCardItem key={item.href} item={item} />
+              <div className="mt-2 flex items-center gap-1.5" aria-label="白い羽の進捗">
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <FeatherIcon key={`feather-${index}`} dimmed={index >= collectedFeathers} />
                 ))}
               </div>
-            </section>
-          ))}
-        </motion.div>
-      </section>
+              <p className="mt-2 text-sm leading-5 text-[#5e5549]">{giftStatusText}</p>
+              {featherNotice ? <p className="mt-1 text-xs text-[#8d816f]">{featherNotice}</p> : null}
+            </article>
+          </motion.div>
+        </section>
 
-      <section className="relative mx-auto mt-8 w-full max-w-5xl pb-4">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.18 }}
-          className="rounded-2xl border border-[#ddd1ba]/78 bg-[linear-gradient(160deg,rgba(255,252,246,0.92),rgba(246,238,226,0.86))] px-6 py-6 text-center"
-        >
-          <p className="text-xs tracking-[0.14em] text-[#8f826f]">WHITE MANSION</p>
-          <p className="text-base leading-relaxed text-[#6a5f52]">ここで過ごした時間が、あなたの静かな支えになりますように。</p>
-        </motion.div>
-        <div className="mt-3 flex items-center justify-center gap-3">
-          {bridgeSocialLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.ariaLabel}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#cdbb9f]/85 bg-[linear-gradient(160deg,#fffdf8,#f2e8d7)] text-[#6b6152] shadow-[0_8px_18px_-14px_rgba(82,69,53,0.35)] transition hover:-translate-y-0.5 hover:bg-[#fffaf0]"
+        <div className="mt-6 space-y-5 sm:space-y-6">
+          <section className="relative mx-auto w-full max-w-6xl px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.42, delay: 0.09 }}
+              className="relative overflow-hidden rounded-[2rem] border border-[#dfcfb0]/80 px-5 py-7 shadow-[0_20px_36px_-28px_rgba(106,86,52,0.34)] sm:px-8 sm:py-8"
             >
-              <BridgeSocialIcon name={link.name} />
-            </a>
-          ))}
-        </div>
-      </section>
+              <div className="pointer-events-none absolute inset-0">
+                <Image src="/gazou/IMG_4213.webp" alt="" fill className="object-cover opacity-[0.86]" sizes="(max-width: 768px) 100vw, 1200px" />
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(251,246,235,0.62),rgba(242,232,211,0.68))]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.34),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(216,199,164,0.2),transparent_26%)]" />
+              </div>
+              <div className="pointer-events-none absolute right-[-8%] top-[-12%] h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.82),transparent_70%)]" />
 
-    </div>
+              <div className="relative z-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+                <div>
+                  <p className="text-[11px] tracking-[0.24em] text-[#8d7f69] uppercase">Tarot</p>
+                  <h2 className="mt-2 text-3xl font-medium tracking-[0.04em] text-[#2f2a25] sm:text-[2rem]">光の導きタロット占い</h2>
+                  <p className="mt-3 text-base leading-8 text-[#5d5346]">一枚のカードが、今のあなたに寄り添います</p>
+                  <p className="mt-2 max-w-2xl text-sm leading-7 text-[#6b6053]">
+                    恋愛、仕事、人間関係——どんな悩みにも、白の魔女ルミナがタロットカードで光の導きをお届けします。
+                  </p>
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <SmartLink
+                      href={TAROT_HREF}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-6 text-sm font-medium text-white transition hover:bg-[#b59558]"
+                    >
+                      タロット占いをはじめる
+                    </SmartLink>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[1.5rem] border border-white/65 bg-white/65 px-4 py-4">
+                    <p className="text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">無料で占える</p>
+                    <p className="mt-2 text-sm leading-7 text-[#5f564a]">会員登録なしで、今すぐタロット占いを体験できます。</p>
+                  </div>
+                  <div className="rounded-[1.5rem] border border-white/65 bg-white/65 px-4 py-4">
+                    <p className="text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">あなただけの鑑定</p>
+                    <p className="mt-2 text-sm leading-7 text-[#5f564a]">相談内容に合わせて、一枚のカードを深く読み解きます。</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </section>
+
+          <CardSection section={loveFortuneSection} columns="two" />
+
+          <CardSection section={fortuneSection} />
+
+          <CardSection section={recordsSection} columns="two" />
+          <CardSection section={mansionSection} />
+          <CardSection section={consultationSection} columns="two" />
+        </div>
+
+        <section className="relative mx-auto mt-6 w-full max-w-6xl px-4 pb-3">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.14 }}
+            className="rounded-[1.9rem] border border-[#e6dac7]/85 bg-[rgba(255,252,247,0.8)] px-6 py-6 text-center shadow-[0_16px_28px_-28px_rgba(82,69,53,0.26)]"
+          >
+            <p className="text-[11px] tracking-[0.24em] text-[#8d806e] uppercase">White Mansion</p>
+            <p className="mt-3 text-base leading-8 text-[#665c50]">
+              ここで過ごす時間が、次の一歩を静かに整える支えになりますように。
+            </p>
+            <div className="mt-5 flex items-center justify-center gap-3">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.ariaLabel}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-white/75 text-[#6b6152] shadow-[0_8px_18px_-14px_rgba(82,69,53,0.35)] transition hover:-translate-y-0.5 hover:bg-white"
+                >
+                  <BridgeSocialIcon name={link.name} />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+      </div>
     </TarotContext.Provider>
   );
 }
