@@ -1,28 +1,9 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { MODERATION_MESSAGES } from "./messages";
 
-const STORE_DIR = path.join(process.cwd(), "data");
-const STORE_PATH = path.join(STORE_DIR, "moderation-rate-limit.json");
 const POST_INTERVAL_MS = 30_000;
 
 type RateLimitStore = Record<string, number>;
-
-async function readStore(): Promise<RateLimitStore> {
-  try {
-    const raw = await fs.readFile(STORE_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    if (!parsed || typeof parsed !== "object") return {};
-    return parsed as RateLimitStore;
-  } catch {
-    return {};
-  }
-}
-
-async function writeStore(store: RateLimitStore) {
-  await fs.mkdir(STORE_DIR, { recursive: true });
-  await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf-8");
-}
+const memoryStore: RateLimitStore = {};
 
 export function normalizeRateLimitKey(value: string): string {
   return value.trim().toLowerCase().replace(/[^\w\-:.@]/g, "_").slice(0, 120) || "guest";
@@ -52,14 +33,12 @@ export async function checkModerationPostInterval(userKey: string): Promise<
 > {
   const normalizedKey = normalizeRateLimitKey(userKey);
   const now = Date.now();
-  const store = await readStore();
-  const lastPostedAt = store[normalizedKey] ?? 0;
+  const lastPostedAt = memoryStore[normalizedKey] ?? 0;
 
   if (now - lastPostedAt < POST_INTERVAL_MS) {
     return { ok: false, error: MODERATION_MESSAGES.rateLimit, code: "rate_limit" };
   }
 
-  store[normalizedKey] = now;
-  await writeStore(store);
+  memoryStore[normalizedKey] = now;
   return { ok: true };
 }

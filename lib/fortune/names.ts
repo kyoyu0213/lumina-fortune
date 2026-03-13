@@ -1,15 +1,15 @@
 import { isFortuneNumber, type FortuneNumber } from "@/lib/fortune/types";
 
 export const fortuneNumberNames: Record<FortuneNumber, string> = {
-  1: "はじまりの灯火",
-  2: "月影の調律者",
-  3: "祝福の歌い手",
+  1: "はじまりの光",
+  2: "調和のしずく",
+  3: "祝福の歌声",
   4: "大地の守り手",
-  5: "風を渡る旅人",
-  6: "愛を育てる灯",
+  5: "風をまとう旅人",
+  6: "愛を灯す人",
   7: "静寂の賢者",
-  8: "現実を築く王",
-  9: "終わりなき慈愛",
+  8: "実りを築く星",
+  9: "慈しみの月",
 };
 
 export function getFortuneNumberName(number: number): string | null {

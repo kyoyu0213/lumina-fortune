@@ -11,7 +11,10 @@ export async function GET() {
   try {
     const wishes = await listLatestWishes(24);
     return NextResponse.json({ wishes });
-  } catch {
+  } catch (error) {
+    console.error("[api/wish-garden][GET] failed to load wishes", {
+      message: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json({ error: "failed to load wishes" }, { status: 500 });
   }
 }
@@ -43,6 +46,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
     }
+    console.error("[api/wish-garden][POST] failed to save wish", {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : "unknown",
+    });
     return NextResponse.json({ error: "failed to save wish" }, { status: 500 });
   }
 }

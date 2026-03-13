@@ -250,7 +250,9 @@ function daysInMonth(year: number, month: number): number {
 }
 
 function getMonthPhase(day: number): MonthPhase {
-  return day <= 15 ? "early" : "late";
+  if (day <= 7) return "early";
+  if (day <= 20) return "mid";
+  return "late";
 }
 
 function shouldUseSeasonalWord(seed: number, offset: number): boolean {
@@ -261,6 +263,9 @@ function getSeasonalBucketByPhase(phase: MonthPhase, seed: number, offset: numbe
   if (phase === "early") {
     return seededIndex(seed, offset, 10) < 6 ? "air" : "comfort";
   }
+  if (phase === "mid") {
+    return seededIndex(seed, offset, 10) < 6 ? "air" : "light";
+  }
   return seededIndex(seed, offset, 10) < 6 ? "scene" : "light";
 }
 
@@ -270,6 +275,15 @@ function pickSeasonalWord(
   seed: number,
   offset: number
 ): { bucket: SeasonalBucket; word: string } | null {
+  if (month === 1) {
+    const seasonal = JANUARY_SEASONAL_WORDS_BY_PHASE[phase];
+    const bucket = getSeasonalBucketByPhase(phase, seed, offset);
+    const words = seasonal[bucket];
+    return {
+      bucket,
+      word: words[seededIndex(seed, offset + 1, words.length)]!,
+    };
+  }
   const seasonal = MONTHLY_SEASONAL_WORDS[month as MonthNumber];
   if (!seasonal) return null;
   const bucket = getSeasonalBucketByPhase(phase, seed, offset);
@@ -450,7 +464,7 @@ type DailyLineCandidate = {
   naturalnessScore: number;
 };
 
-type MonthPhase = "early" | "late";
+type MonthPhase = "early" | "mid" | "late";
 type MonthNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 type SeasonalBucket = "air" | "light" | "scene" | "comfort";
 
@@ -565,6 +579,27 @@ const ENDING_VARIANTS = [
 ] as const;
 
 const SEASONAL_USAGE_RATE = 0.3;
+
+const JANUARY_SEASONAL_WORDS_BY_PHASE: Record<MonthPhase, Record<SeasonalBucket, string[]>> = {
+  early: {
+    air: ["澄んだ朝", "冬の空気", "冷えた空", "白い息"],
+    light: ["やわらかな朝の光", "新しい朝", "凛とした光", "静かな光"],
+    scene: ["年明けの空気", "新年のはじまり", "静かな始まり", "新しい朝"],
+    comfort: ["ぬくもり", "ひと息つける時間", "静かなぬくもり"],
+  },
+  mid: {
+    air: ["冬の空気", "澄んだ朝", "澄んだ冬の空気", "冷えた空"],
+    light: ["やわらかな冬の光", "淡い朝の光", "澄んだ光", "静かな朝の光"],
+    scene: ["冬の空気", "澄んだ朝", "静かな冬景色", "白い息の朝"],
+    comfort: ["ぬくもり", "ひと息つける時間", "静かなぬくもり"],
+  },
+  late: {
+    air: ["澄んだ空気", "冬の空気", "冬空", "冷たい朝の空気"],
+    light: ["淡い冬の光", "やわらかな朝の光", "静かな光", "冬空の光"],
+    scene: ["冬の静けさ", "澄んだ空気", "冬空", "静かな冬景色"],
+    comfort: ["落ち着く時間", "静かなぬくもり", "ひと息つける時間"],
+  },
+};
 
 export const MONTHLY_SEASONAL_WORDS: Record<MonthNumber, Record<SeasonalBucket, string[]>> = {
   1: {

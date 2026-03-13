@@ -8,132 +8,319 @@ export type CompatibilityReading = {
 };
 
 type NumberArchetype = {
-  trait: string;
-  strengthInLove: string;
-  stressPoint: string;
-  healingAction: string;
+  aura: string;
+  gift: string;
+  challenge: string;
+  request: string;
+  partnerTip: string;
+};
+
+type PairMood = {
+  bond: string;
+  caution: string;
+  message: string;
+};
+
+type SameNumberTemplate = {
+  opening: string;
+  flow: string;
+  blessing: string;
+  shadow: string;
+  caution: string;
+  remedy: string;
+  tips: string[];
+  message: string;
 };
 
 const archetypes: Record<FortuneNumber, NumberArchetype> = {
   1: {
-    trait: "道を切り開く",
-    strengthInLove: "関係を前進させる決断力",
-    stressPoint: "答えを急ぎすぎる",
-    healingAction: "結論を出す前に気持ちを言葉にする",
+    aura: "自分の意志をはっきり持ち、関係を前へ進める力を持つ人",
+    gift: "迷いが出た場面でも流れを切りひらき、お相手さまに勇気を渡せること",
+    challenge: "気持ちを急ぎすぎて、お相手さまの温度を置いていってしまうこと",
+    request: "結論を急ぐ前に、お相手さまの本音に耳を澄ませてみること",
+    partnerTip: "率直な気持ちを言葉にして伝えること",
   },
   2: {
-    trait: "気配を読む",
-    strengthInLove: "相手の安心を育てる聞く力",
-    stressPoint: "本音を後回しにする",
-    healingAction: "短い本音を先に伝える",
+    aura: "やわらかな気配でお相手さまの心をほどき、安心を育てる人",
+    gift: "さりげない思いやりで、関係に静かな信頼を積み重ねられること",
+    challenge: "遠慮が重なって、本心を胸の奥にしまい込みやすいこと",
+    request: "合わせるだけでなく、自分の願いも少しずつ見せること",
+    partnerTip: "安心して甘えられる空気を返してあげること",
   },
   3: {
-    trait: "空気を明るくする",
-    strengthInLove: "会話を温める表現力",
-    stressPoint: "気分で距離が揺れる",
-    healingAction: "一日一つ感謝を伝える",
+    aura: "明るさと会話のぬくもりで、その場を軽やかに照らす人",
+    gift: "ふたりの関係に楽しさを運び、笑顔から絆を深められること",
+    challenge: "気まずさを避けるあまり、大切な話を後回しにしやすいこと",
+    request: "楽しい雰囲気の先で、本音の話題にも一歩踏み込むこと",
+    partnerTip: "反応を返し、会話の楽しさを一緒に育てること",
   },
   4: {
-    trait: "土台を整える",
-    strengthInLove: "約束を守る誠実さ",
-    stressPoint: "正しさに寄りすぎる",
-    healingAction: "相手の気持ちを確認してから提案する",
+    aura: "誠実さと安定感で、関係に落ち着きをもたらす人",
+    gift: "約束を守り、安心できる日常を丁寧につくっていけること",
+    challenge: "慎重さが強く出ると、気持ちを見せる前に距離を取ってしまうこと",
+    request: "正しさだけでなく、やわらかな感情表現も添えること",
+    partnerTip: "誠実さに応え、約束を軽く扱わないこと",
   },
   5: {
-    trait: "風をつかむ",
-    strengthInLove: "関係に新鮮さを運ぶ柔軟さ",
-    stressPoint: "自由を守ろうとして説明不足になる",
-    healingAction: "予定変更は理由と一緒に共有する",
+    aura: "自由な感性で空気を動かし、新しい風を運ぶ人",
+    gift: "関係に新鮮さをもたらし、停滞した空気をやさしくほぐせること",
+    challenge: "縛られる感覚に敏感で、急に距離を置きたくなること",
+    request: "自由と安心の両方が必要だと、素直に共有すること",
+    partnerTip: "干渉しすぎず、信じて見守る余白を持つこと",
   },
   6: {
-    trait: "愛を育てる",
-    strengthInLove: "日常に安心をつくる包容力",
-    stressPoint: "抱えすぎて疲れを隠す",
-    healingAction: "自分の回復時間を先に確保する",
+    aura: "愛情深く、ぬくもりのある関係を育てることが得意な人",
+    gift: "お相手さまを思いやり、心地よい居場所をつくれること",
+    challenge: "尽くしすぎて、自分の寂しさを後回しにしやすいこと",
+    request: "与えるだけでなく、受け取りたい愛も言葉にすること",
+    partnerTip: "感謝と愛情を、形にして返してあげること",
   },
   7: {
-    trait: "本質を見抜く",
-    strengthInLove: "深い理解で関係を支える洞察",
-    stressPoint: "考えすぎて沈黙が長くなる",
-    healingAction: "考え途中でも短く共有する",
+    aura: "静かな深さで物事を見つめ、心の真実を大切にする人",
+    gift: "表面的ではない対話を生み、関係に深い意味を与えられること",
+    challenge: "考えすぎるほど気持ちが閉じて、距離ができやすいこと",
+    request: "整理がつくのを待つだけでなく、途中の気持ちも伝えること",
+    partnerTip: "答えを急かさず、静かな時間も尊重すること",
   },
   8: {
-    trait: "現実を動かす",
-    strengthInLove: "未来設計を形にする実行力",
-    stressPoint: "責任を背負いすぎる",
-    healingAction: "役割分担を言語化して負荷を分ける",
+    aura: "現実感覚に優れ、未来を具体的に描ける人",
+    gift: "理想を現実に近づけ、将来の話を着実に進められること",
+    challenge: "正しさや成果を優先しすぎて、気持ちが固く見えること",
+    request: "結論だけでなく、その背景にある想いも伝えること",
+    partnerTip: "現実的な話題から逃げず、同じ目線で向き合うこと",
   },
   9: {
-    trait: "広く包み込む",
-    strengthInLove: "違いを受け止める共感力",
-    stressPoint: "相手の感情を抱え込みすぎる",
-    healingAction: "境界線を丁寧に引く",
+    aura: "包み込むような優しさで、お相手さまの心に寄り添える人",
+    gift: "過去も痛みも受け止めながら、関係を成熟へ導けること",
+    challenge: "我慢を重ねて限界まで抱え込みやすいこと",
+    request: "優しさの中に、譲れない気持ちも残しておくこと",
+    partnerTip: "甘えすぎず、思いやりを返し続けること",
   },
 };
 
-type PairTemplate = {
-  strengths: string;
-  pitfalls: string;
-  tips: string[];
-  luminaMessage: string;
-};
+function getPairMood(a: FortuneNumber, b: FortuneNumber): PairMood {
+  if (a === b) {
+    return {
+      bond: "似た感性で自然に通じ合いやすく、言葉にしなくても分かり合える瞬間が生まれやすい相性です。",
+      caution: "似ているぶん、譲らない点まで重なると、無言のまま気まずさを抱えやすくなります。",
+      message: "鏡のような存在だからこそ、優しさも未熟さも映し合います。理解したつもりで終わらず、言葉を重ねるほど絆は深まります。",
+    };
+  }
 
-function toPairKey(a: FortuneNumber, b: FortuneNumber): string {
-  const min = Math.min(a, b);
-  const max = Math.max(a, b);
-  return `${min}-${max}`;
+  if (a + b === 10) {
+    return {
+      bond: "お互いに足りない感覚を補い合いやすく、惹かれ合う理由がはっきりしやすい相性です。",
+      caution: "違いの魅力が大きいぶん、歩幅を合わせないと疲れやすくなることがあります。",
+      message: "惹かれ合う力が強い組み合わせです。違いを直そうとするより、役割の違いとして愛せたときに関係が美しく整います。",
+    };
+  }
+
+  if (Math.abs(a - b) <= 2) {
+    return {
+      bond: "価値観の距離が近く、日常の感覚を共有しやすい穏やかな相性です。",
+      caution: "分かり合える安心感があるぶん、大事な確認を省いてしまいやすいところがあります。",
+      message: "無理なく続けやすいふたりです。言わなくても伝わると思わずに、小さな気持ちを丁寧に渡し合うほど安定感が増していきます。",
+    };
+  }
+
+  return {
+    bond: "違いがあるからこそ視野が広がり、お相手さまを通して新しい世界に触れやすい相性です。",
+    caution: "感じ方の差が大きい日は、説明不足のまま誤解がふくらみやすくなります。",
+    message: "育てがいのある関係です。違いを面白がれる日と難しく感じる日を繰り返しながら、ふたりだけの歩幅が見つかっていきます。",
+  };
 }
 
-const pairTemplateMap: Record<string, PairTemplate> = {
-  "1-7": {
-    strengths: "進む力と深く考える力が合わさることで、勢いと慎重さのバランスが整う相性です。",
-    pitfalls: "結論の速度に差が出ると、急かされた側は距離を取り、急ぎたい側は不安を抱えやすくなります。",
+function buildStrengths(me: NumberArchetype, partner: NumberArchetype, mood: PairMood): string {
+  return [
+    `あなたは${me.aura}、お相手さまは${partner.aura}です。`,
+    `あなたの${me.gift}と、お相手さまの${partner.gift}が響き合うと、${mood.bond}`,
+    "恋愛として惹かれ合うだけでなく、お相手さまの存在によって自分にない魅力が育っていく相性でもあります。",
+  ].join(" ");
+}
+
+function buildPitfalls(me: NumberArchetype, partner: NumberArchetype, mood: PairMood): string {
+  return [
+    `ただ、あなたが${me.challenge}とき、お相手さまも${partner.challenge}ときがあり、その重なりが続くと心の距離になりやすいでしょう。`,
+    `${mood.caution}`,
+    "少しだけ勇気を出して確認し合うだけで、すれ違いはやわらぎやすく、関係の深まり方も変わってきます。",
+  ].join(" ");
+}
+
+function buildTips(me: NumberArchetype, partner: NumberArchetype): string[] {
+  return [
+    `まずは、${me.request}。`,
+    `お相手さまには、${partner.partnerTip}。`,
+    "答えを急ぐ日ほど、うれしかったことを一つ先に伝えると空気が整います。",
+  ];
+}
+
+function buildLuminaMessage(mood: PairMood): string {
+  return `白の魔女ルミナが見るかぎり、ふたりには育てる価値のあるご縁があります。${mood.message}`;
+}
+
+const sameNumberTemplates: Record<FortuneNumber, SameNumberTemplate> = {
+  1: {
+    opening: "同じ魂の灯火を持つふたりは、前へ進みたい気持ちが自然と重なりやすい組み合わせです。",
+    flow: "心が動く瞬間や決めたいタイミングが似ているため、言葉にしきれない熱まで感じ取りやすいでしょう。",
+    blessing: "まっすぐな光が響き合うことで、迷いの場面でも関係に勢いと希望を灯しやすい相性です。",
+    shadow: "似た性質を持つふたりだからこそ、答えを急ぎたくなる瞬間まで重なりやすいでしょう。",
+    caution: "どちらも前へ進みたい思いが強いぶん、気持ちを整える前に結論だけが先へ走ることがあります。",
+    remedy: "少し立ち止まって本音を確かめ合うだけで、勢いはぶつかる力ではなく、未来を照らす力へ変わっていきます。",
     tips: [
-      "結論の期限を先に決める",
-      "互いに一度ずつ『今の気持ち』を先に話す",
-      "大事な話は夜遅くを避ける",
+      "言わなくても伝わると思う前に、気持ちをひとこと添えてみましょう。",
+      "お相手さまが急いで見える日ほど、結論より先に心の温度をたずねてみること。",
+      "うれしかったことを小さくても言葉にして、同じ歩幅を確かめ合いましょう。",
     ],
-    luminaMessage: "急ぐ光と静かな光は、交わるほど澄んでいきます。歩幅をそろえる対話が鍵です。",
+    message: "同じ灯火を宿すふたりだからこそ、言葉を交わすたびに絆の光は澄んでいきます。",
   },
-  "2-6": {
-    strengths: "思いやりが自然に循環し、安心感の高い関係を作りやすい組み合わせです。",
-    pitfalls: "どちらも我慢が先に立つと、気づかない疲れが蓄積して突然重たくなりやすいです。",
+  2: {
+    opening: "似た波長を持つふたりは、やわらかな気配で心を通わせやすい相性です。",
+    flow: "思いやりの向く先や安心したい形がよく似ているため、そっと寄り添うだけで心がほどける場面も多いでしょう。",
+    blessing: "同じぬくもりを宿す関係だからこそ、無理に言葉を重ねなくても静かな信頼を育てやすいふたりです。",
+    shadow: "その一方で、遠慮やためらいまで似ているため、本音が胸の奥にしまわれたままになることがあります。",
+    caution: "言わなくても察してもらえるはずという気持ちが強くなると、小さな寂しさが静かに積もりやすくなります。",
+    remedy: "やさしさに短い本音をひとつ添えるだけで、ふたりのあいだの安心はさらに深まっていきます。",
     tips: [
-      "週1回は『してほしいこと』を一つずつ言う",
-      "気遣いを言語化して受け取り直す",
-      "一人時間を予定として確保する",
+      "やさしさのあとに、自分の気持ちも短く添えてみましょう。",
+      "お相手さまの遠慮を決めつけず、そっと本音の居場所をつくってあげること。",
+      "うれしいことも寂しいことも、ためこむ前に小さく分かち合いましょう。",
     ],
-    luminaMessage: "優しさは与えるだけでなく、受け取ることで深まります。",
+    message: "似た魂が響き合うとき、ふたりのあいだには静かなぬくもりが育っていきます。",
   },
-  "3-5": {
-    strengths: "変化と楽しさを共有しやすく、軽やかに距離を縮められる相性です。",
-    pitfalls: "勢いで進みすぎると、すれ違いの原因を確認しないまま流してしまう傾向があります。",
+  3: {
+    opening: "同じ光を宿すふたりは、明るさと楽しさで空気を軽やかに変えていける相性です。",
+    flow: "笑う場所や心が弾む瞬間が似ているため、一緒にいるだけで場がぱっと華やぎやすいでしょう。",
+    blessing: "会話のぬくもりが自然にめぐるので、恋の時間を楽しく彩りながら絆を深めていけるふたりです。",
+    shadow: "ただ、気分の流れまで似ているぶん、大事な話が楽しい空気の中に溶けてしまいやすいところがあります。",
+    caution: "話したつもりでも核心だけが残っていないと、あとから小さな行き違いにつながることがあるでしょう。",
+    remedy: "笑顔のあとに本音をひとつ置く習慣が、ふたりの関係をいっそうあたたかく整えてくれます。",
     tips: [
-      "予定変更時は一言メモでも共有する",
-      "月に一度は落ち着いて振り返る時間を作る",
-      "楽しい話と同じ熱量で不安も話す",
+      "楽しい話のあとに、その日の本音をひとつ添えてみましょう。",
+      "お相手さまの明るさの奥にある気持ちにも、やさしく耳を澄ませること。",
+      "大切な約束ほど、言葉にして確かめ合いましょう。",
     ],
-    luminaMessage: "笑い合える関係ほど、静かな確認が未来を守ります。",
+    message: "同じ波長で笑い合えるふたりは、素直なひとことを重ねるほど光が深まります。",
+  },
+  4: {
+    opening: "同じ灯りを静かに守るふたりは、落ち着きと誠実さで関係を育てやすい相性です。",
+    flow: "安心できる形や大切にしたい約束がよく似ているため、時間をかけるほど信頼が根づいていくでしょう。",
+    blessing: "派手さよりも確かなぬくもりを選べるので、穏やかで安定した愛を築きやすいふたりです。",
+    shadow: "その反面、慎重さや頑固さまで重なると、どちらも気持ちを見せる前に黙り込んでしまうことがあります。",
+    caution: "正しさを守ろうとするほど、やわらかな感情表現が後ろへ下がってしまいやすいでしょう。",
+    remedy: "安心を守る言葉に、少しのやさしさと本音を添えることが、ふたりの距離をやわらかく近づけます。",
+    tips: [
+      "正しい言葉だけでなく、やさしい気持ちも一緒に伝えてみましょう。",
+      "お相手さまが黙っているときほど、責めずに心の在りかを確かめてみること。",
+      "当たり前になった感謝を、あらためて言葉にして届けましょう。",
+    ],
+    message: "同じ光を静かに守るふたりには、言葉を添えるたびに深まる安らぎがあります。",
+  },
+  5: {
+    opening: "似た風をまとったふたりは、出会いの瞬間から心を軽やかに揺らし合いやすい相性です。",
+    flow: "好奇心の向く先や自由を感じる場面が重なりやすく、一緒にいると世界が広がっていくでしょう。",
+    blessing: "同じ波長の刺激がめぐることで、関係に新鮮さとときめきを絶やさず宿せるふたりです。",
+    shadow: "ただし、落ち着きたくない気分まで似ると、どちらも距離の取り方が急になりやすいところがあります。",
+    caution: "自由を守りたい思いが同時に強まる日は、説明不足のまますれ違いが生まれやすくなるでしょう。",
+    remedy: "離れたいのではなく整えたいだけだと伝えるひとことが、ふたりの安心をしっかり支えてくれます。",
+    tips: [
+      "予定が変わるときほど、ひとこと先に伝えてみましょう。",
+      "お相手さまの自由を尊重しながら、不安も素直に共有すること。",
+      "楽しい刺激の中に、安心できる約束をひとつ置いておきましょう。",
+    ],
+    message: "同じ風を追いかけるふたりは、心の居場所を言葉にしたとき、愛がさらに自由に息づきます。",
+  },
+  6: {
+    opening: "同じぬくもりを宿すふたりは、愛情深くお互いを包み込もうとする相性です。",
+    flow: "守りたいものや大切にしたい日常が似ているため、一緒にいるほど心の居場所が育っていくでしょう。",
+    blessing: "あたたかな光が寄り添い合うことで、安心とやさしさに満ちた関係を築きやすいふたりです。",
+    shadow: "けれど、抱え込みやすさまで重なると、どちらも我慢したまま笑ってしまうことがあります。",
+    caution: "大丈夫と言い合うほど、本当は癒やしてほしい気持ちが見えにくくなる日もあるでしょう。",
+    remedy: "与える愛だけでなく受け取りたい愛も言葉にすると、ふたりの絆はもっと健やかに育ちます。",
+    tips: [
+      "がんばりすぎる前に、甘えたい気持ちも言葉にしてみましょう。",
+      "お相手さまのやさしさの裏にある疲れにも、そっと気づいてあげること。",
+      "感謝と愛情を、思ったその日に小さく伝え合いましょう。",
+    ],
+    message: "同じ灯火で愛を育てるふたりは、受け取るやさしさによって絆がいっそう深まります。",
+  },
+  7: {
+    opening: "同じ静かな光を宿すふたりは、言葉よりも深い場所で響き合いやすい相性です。",
+    flow: "ものごとの本質を見つめる眼差しが似ているため、表面を越えた理解が育ちやすいでしょう。",
+    blessing: "ひとりの時間さえも尊重し合えるので、無理なく深い信頼を育てられるふたりです。",
+    shadow: "その一方で、沈黙の意味まで似ているため、考え込む時期が重なると距離が長く見えやすくなります。",
+    caution: "言わなくても分かるはずという思いが強まるほど、心の扉が半分閉じたままになりやすいでしょう。",
+    remedy: "途中の気持ちを少しだけでも渡し合うことが、静かな絆を確かな安心へと変えてくれます。",
+    tips: [
+      "考えがまとまりきる前でも、今の気持ちを少しだけ伝えてみましょう。",
+      "お相手さまの沈黙を結論だと思わず、静かな余白ごと尊重すること。",
+      "大切な話ほど、落ち着ける時間を選んでゆっくり交わしましょう。",
+    ],
+    message: "似た魂の静けさが響き合うとき、ふたりの絆には澄んだぬくもりが宿ります。",
+  },
+  8: {
+    opening: "同じ強い光を宿すふたりは、未来を形にする力に恵まれた相性です。",
+    flow: "目指したい景色や現実を動かす感覚が似ているため、大きな願いをともに育てやすいでしょう。",
+    blessing: "頼もしさと実行力が重なり合うことで、夢を絵空事にせず現実へ近づけられるふたりです。",
+    shadow: "ただ、主導権を握りたい気持ちまで重なると、どちらも譲れないまま空気が張りつめることがあります。",
+    caution: "正しさを通したい思いが強い日は、やさしさより先に結論が前へ出やすくなるでしょう。",
+    remedy: "何を望むかだけでなく、なぜそれを大切にしたいのかまで言葉にすると、力は対立ではなく支え合いへ変わります。",
+    tips: [
+      "結論を伝える前に、その奥にある想いも添えてみましょう。",
+      "お相手さまのやり方を否定せず、まず大切にしているものを聞いてみること。",
+      "役割を分けるだけでなく、感謝もきちんと伝え合いましょう。",
+    ],
+    message: "同じ強い灯火を持つふたりは、心を通わせるほど大きな未来を美しく動かしていけます。",
+  },
+  9: {
+    opening: "同じやわらかな光を宿すふたりは、深い包容力で心を受け止め合いやすい相性です。",
+    flow: "痛みや寂しさへの感受性が似ているため、言葉の奥にある気持ちまで自然に汲み取りやすいでしょう。",
+    blessing: "似た魂のぬくもりが響き合うことで、癒やしと成熟をもたらす関係へ育ちやすいふたりです。",
+    shadow: "けれど、我慢の仕方まで似ているため、つらさを抱えたまま笑ってしまうことがあります。",
+    caution: "お相手さまを思うやさしさが強いほど、自分の限界が見えにくくなる日もあるでしょう。",
+    remedy: "やさしさの中に譲れない本音も置いておくことが、ふたりの関係を長くあたためる鍵になります。",
+    tips: [
+      "無理をして微笑む前に、自分の気持ちもやさしく伝えてみましょう。",
+      "お相手さまを気づかうときほど、自分の心の境界も大切にすること。",
+      "うれしさも痛みも抱え込まず、少しずつ分かち合っていきましょう。",
+    ],
+    message: "同じ魂の響きを持つふたりは、本音を交わすたびに静かな光で結ばれていきます。",
   },
 };
+
+function buildSameNumberReading(number: FortuneNumber): CompatibilityReading {
+  const same = sameNumberTemplates[number];
+
+  return {
+    strengths: [same.opening, same.flow, same.blessing].join(" "),
+    pitfalls: [same.shadow, same.caution, same.remedy].join(" "),
+    tips: same.tips,
+    luminaMessage: `白の魔女ルミナがそっと見つめると、${same.message}`,
+  };
+}
+
+function buildMixedNumberReading(
+  myNumber: FortuneNumber,
+  partnerNumber: FortuneNumber,
+): CompatibilityReading {
+  const me = archetypes[myNumber];
+  const partner = archetypes[partnerNumber];
+  const mood = getPairMood(myNumber, partnerNumber);
+
+  return {
+    strengths: buildStrengths(me, partner, mood),
+    pitfalls: buildPitfalls(me, partner, mood),
+    tips: buildTips(me, partner),
+    luminaMessage: buildLuminaMessage(mood),
+  };
+}
 
 export function getCompatibilityReading(
   myNumber: FortuneNumber,
-  partnerNumber: FortuneNumber
+  partnerNumber: FortuneNumber,
 ): CompatibilityReading {
-  const key = toPairKey(myNumber, partnerNumber);
-  const mapped = pairTemplateMap[key];
-  if (mapped) {
-    return mapped;
+  if (myNumber === partnerNumber) {
+    return buildSameNumberReading(myNumber);
   }
 
-  const me = archetypes[myNumber];
-  const partner = archetypes[partnerNumber];
-
-  return {
-    strengths: `あなたの「${me.trait}」と相手の「${partner.trait}」が噛み合うと、${me.strengthInLove}と${partner.strengthInLove}が互いを支え合います。`,
-    pitfalls: `一方で、あなたは${me.stressPoint}、相手は${partner.stressPoint}が出ると、気持ちの温度差が生まれやすくなります。`,
-    tips: [me.healingAction, partner.healingAction, "週に一度、今週の嬉しかったことを伝え合う"],
-    luminaMessage: "違いは壁ではなく、灯りの角度です。互いの光を知るほど、関係はやさしく強くなります。",
-  };
+  return buildMixedNumberReading(myNumber, partnerNumber);
 }

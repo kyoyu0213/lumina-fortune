@@ -1,32 +1,12 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { validateModerationText } from "@/lib/moderation/validateText";
+import {
+  saveStoredConsultationLetter,
+  type StoredConsultationLetterSubmission,
+} from "@/lib/storage/user-submissions";
 
-export type ConsultationLetter = {
-  id: string;
-  nickname: string | null;
-  message: string;
-  createdAt: string;
-};
+export type ConsultationLetter = StoredConsultationLetterSubmission;
 
-const STORE_DIR = path.join(process.cwd(), "data");
-const STORE_PATH = path.join(STORE_DIR, "consultation-letters.json");
 const MAX_ITEMS = 500;
-
-async function readStore(): Promise<ConsultationLetter[]> {
-  try {
-    const raw = await fs.readFile(STORE_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    return Array.isArray(parsed) ? (parsed as ConsultationLetter[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-async function writeStore(items: ConsultationLetter[]): Promise<void> {
-  await fs.mkdir(STORE_DIR, { recursive: true });
-  await fs.writeFile(STORE_PATH, JSON.stringify(items, null, 2), "utf-8");
-}
 
 export async function saveConsultationLetter(payload: {
   nickname?: string;
@@ -54,8 +34,6 @@ export async function saveConsultationLetter(payload: {
     createdAt: new Date().toISOString(),
   };
 
-  const current = await readStore();
-  const next = [letter, ...current].slice(0, MAX_ITEMS);
-  await writeStore(next);
+  await saveStoredConsultationLetter(letter, MAX_ITEMS);
   return letter;
 }

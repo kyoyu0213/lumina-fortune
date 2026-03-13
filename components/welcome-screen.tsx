@@ -43,6 +43,18 @@ const heroActions = [
 
 const groupedMenus: MenuGroup[] = [
   {
+    heading: "結びの間",
+    sub: "恋とご縁の流れをたどる",
+    image: "/gazou/aisyou.jpg",
+    items: [
+      { title: "片思い占い", description: "この恋の行方、進展、動き出すタイミングを光の導きタロットで読み解きます。", href: "/uranai/kataomoi", ctaLabel: "占う" },
+      { title: "あの人の気持ち占い", description: "あの人の本音やあなたへの想いを、光の導きタロットでやさしく読み解きます。", href: "/uranai/kare-no-kimochi", ctaLabel: "占う" },
+      { title: "復縁占い", description: "元彼の気持ちや復縁の可能性、二人の縁の流れを静かに読み解きます。", href: "/uranai/fukuen", ctaLabel: "占う" },
+      { title: "婚期を視る占い", description: "これから3年の愛の流れと、ご縁が形になりやすい時期を読み解きます。", href: "/marriage-timing", ctaLabel: "見る" },
+      { title: "相性占い", description: "ふたりの関係性をやさしく読み解きます。", href: "/compatibility", ctaLabel: "見る" },
+    ],
+  },
+  {
     heading: "導きの間",
     sub: "カードが示す運命を受け取る",
     image: "/gazou/IMG_4213.webp",
@@ -52,7 +64,6 @@ const groupedMenus: MenuGroup[] = [
       { title: "毎日の占い", description: "今日の流れに寄り添うメッセージを受け取れます。", href: "/daily-fortune", ctaLabel: "見る" },
       { title: "毎月の運勢", description: "今月のテーマと過ごし方を確認できます。", href: "/fortune-monthly", ctaLabel: "開く" },
       { title: "2026年の運勢", description: "一年の流れを静かに見通します。", href: "/fortune-2026", ctaLabel: "開く" },
-      { title: "相性占い", description: "ふたりの関係性をやさしく読み解きます。", href: "/compatibility", ctaLabel: "見る" },
       { title: "光の暦", description: "月の流れに合わせて毎日を整えます。", href: "/calendar", ctaLabel: "ひらく" },
     ],
   },
@@ -105,7 +116,7 @@ const mapCards = [
     ctaLabel: "物語をひらく",
   },
   {
-    tag: "相談室",
+    tag: "導きの間",
     title: "2026年の運勢",
     description: "一年の流れを静かに見通します。",
     href: "/fortune-2026",
@@ -202,7 +213,7 @@ function FeatherIcon({ size = "small", dimmed = false, alt = "" }: FeatherIconPr
 }
 
 const featherCardClassName =
-  "rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(180deg,#f0e8da_0%,#f5efe4_60%,#faf6ef_100%)] px-5 py-4 text-left shadow-[0_10px_22px_-22px_rgba(82,69,53,0.18)]";
+  "rounded-2xl border border-[#e1d5bf]/75 bg-[linear-gradient(180deg,#f0e8da_0%,#f5efe4_60%,#faf6ef_100%)] px-4 py-3 text-left shadow-[0_10px_22px_-22px_rgba(82,69,53,0.18)]";
 
 type WelcomeScreenProps = {
   initialDailyWhisper?: string;
@@ -276,7 +287,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
     : (mobileFortuneMenu?.items ?? []).slice(0, MOBILE_FORTUNE_VISIBLE_COUNT);
   const hasMoreMobileFortuneItems = (mobileFortuneMenu?.items.length ?? 0) > MOBILE_FORTUNE_VISIBLE_COUNT;
   const mobileHiddenGroups = groupedMenus.filter((group) =>
-    ["白の休息室", "光の書庫", "ルミナの相談室"].includes(group.heading)
+    ["結びの間", "白の休息室", "光の書庫", "ルミナの相談室"].includes(group.heading)
   );
 
   return (
@@ -385,16 +396,18 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                 <FeatherIcon size="large" alt="白い羽" />
               </div>
             </div>
-            <div className="mt-3 space-y-2" aria-label="白の羽の記録">
+            <div className="mt-2 space-y-2 sm:flex sm:items-end sm:justify-between sm:gap-4 sm:space-y-0" aria-label="白の羽の記録">
               <div className="flex items-center gap-1.5 leading-none">
                 {Array.from({ length: 7 }).map((_, i) => (
                   <FeatherIcon key={`feather-dot-${i}`} dimmed={i >= collectedFeathers} />
                 ))}
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 sm:text-right">
                 <p className="text-[11px] tracking-[0.12em] text-[#8b8376]">進捗</p>
-                <p className="text-lg font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
-                <p className="text-sm text-[#6f6556]">あと{remainingDays}枚でそろいます。</p>
+                <p className="text-base font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
+                <p className="text-xs text-[#6f6556]">
+                  {remainingDays === 0 ? "また来月受け取れます" : `あと${remainingDays}枚でそろいます。`}
+                </p>
               </div>
             </div>
             {featherNotice ? <p className="mt-1 text-xs text-[#8b7e6b]">{featherNotice}</p> : null}
@@ -410,14 +423,19 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                 <FeatherIcon size="large" alt="白い羽" />
               </div>
             </div>
-            <div className="mt-3 space-y-0.5">
-              <p className="text-[11px] tracking-[0.12em] text-[#8b8376]">進捗</p>
-              <p className="text-lg font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
+            <div className="mt-2 sm:flex sm:items-end sm:justify-between sm:gap-4">
+              <div className="space-y-0.5">
+                <p className="text-[11px] tracking-[0.12em] text-[#8b8376]">進捗</p>
+                <p className="text-base font-medium tracking-[0.08em] text-[#4f4a42]">{collectedFeathers} / 7</p>
+              </div>
+              <Link
+                href="/library/wallpapers"
+                className="mt-2 inline-flex min-h-8 items-center justify-center rounded-full border border-[#baa98d]/75 bg-[linear-gradient(160deg,#fdf8ee,#f3e8d4)] px-3.5 py-1 text-xs font-medium text-[#6a5f50] shadow-[0_8px_18px_-16px_rgba(82,69,53,0.35)] transition hover:bg-[linear-gradient(160deg,#fffaf1,#f0e1c8)] sm:mt-0"
+              >
+                贈り物を見る →
+              </Link>
             </div>
-            <p className="mt-1 text-sm text-[#6f6556]">{giftStatusText}</p>
-            <Link href="/library/wallpapers" className="mt-2 inline-block text-xs text-[#6f6556] underline-offset-4 hover:underline">
-              詳細 →
-            </Link>
+            <p className="mt-1 text-xs text-[#6f6556]">{giftStatusText}</p>
           </article>
         </motion.div>
       </section>

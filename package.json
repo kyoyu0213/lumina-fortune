@@ -14,6 +14,7 @@
     "test:fortune-output": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/fortune-output.test.ts",
     "test:chat-route": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/chat-route-awaiting.test.ts",
     "test:numerology": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/numerology.test.ts",
+    "test:marriage-timing": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" tests/marriage-timing.test.ts",
     "report:daily-lines": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" report-monthly-daily-lines.ts"
   },
   "dependencies": {

@@ -1,15 +1,15 @@
 import type { FortuneNumber } from "@/lib/fortune/types";
 
 export const SOUL_NAME_BY_NUMBER: Record<FortuneNumber, string> = {
-  1: "始まりの灯火",
-  2: "月影の調律者",
-  3: "祝福の歌い手",
-  4: "大地の守り手",
-  5: "風を渡る旅人",
-  6: "愛を育てる灯",
-  7: "静寂の賢者",
-  8: "現実を築く王",
-  9: "包容の祈り手",
+  1: "黎明のひかり",
+  2: "月雫のこころ",
+  3: "花ひらく声",
+  4: "白土のまもり",
+  5: "風巡る羽",
+  6: "灯火のまなざし",
+  7: "星影の叡智",
+  8: "黄金の礎",
+  9: "満ちる慈愛",
 };
 
 export function getSoulNameByNumber(number: FortuneNumber): string {

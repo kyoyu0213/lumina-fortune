@@ -31,6 +31,7 @@ function buildFallbackReply(nickname: string, message: string): string {
 
 async function buildLuminaLetterReply(nickname: string, message: string): Promise<string> {
   if (!process.env.OPENAI_API_KEY) {
+    console.warn("[api/consultation-letter] OPENAI_API_KEY is not set; using fallback reply");
     return buildFallbackReply(nickname, message);
   }
 
@@ -58,7 +59,11 @@ async function buildLuminaLetterReply(nickname: string, message: string): Promis
       return buildFallbackReply(nickname, message);
     }
     return text;
-  } catch {
+  } catch (error) {
+    console.error("[api/consultation-letter] failed to generate OpenAI reply; using fallback reply", {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : "unknown",
+    });
     return buildFallbackReply(nickname, message);
   }
 }
@@ -91,6 +96,13 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
       }
     }
+    console.error("[api/consultation-letter][POST] failed to save letter", {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : "unknown",
+      vercel: process.env.VERCEL === "1",
+      nodeEnv: process.env.NODE_ENV,
+      hasOpenAiKey: Boolean(process.env.OPENAI_API_KEY),
+    });
     return NextResponse.json({ ok: false, error: "failed to save letter" }, { status: 500 });
   }
 }

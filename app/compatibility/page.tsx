@@ -2,15 +2,16 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
-import { fortuneNumberNames } from "@/lib/fortune/names";
-import type { FortuneNumber } from "@/lib/fortune/types";
-import { getSoulNameByNumber } from "@/lib/fortune/soul-names";
-import { getCompatibilityReading } from "@/lib/fortune/compatibility-map";
-import { PageShell } from "@/components/ui/page-shell";
-import { GlassCard } from "@/components/ui/glass-card";
-import { LuminaButton } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
+import { LuminaButton } from "@/components/ui/button";
+import { GlassCard } from "@/components/ui/glass-card";
+import { PageShell } from "@/components/ui/page-shell";
+import { destinyNumberFromBirthdate } from "@/lib/fortune/fortuneNumber";
+import { getCompatibilityReading } from "@/lib/fortune/compatibility-map";
+import { fortuneNumberNames } from "@/lib/fortune/names";
+import { getSoulNameByNumber } from "@/lib/fortune/soul-names";
+import type { FortuneNumber } from "@/lib/fortune/types";
 
 const PROFILE_STORAGE_KEY = "lumina_profile";
 
@@ -43,6 +44,26 @@ function loadProfile() {
   }
 }
 
+function splitReadingParagraphs(text: string, preferredParagraphs = 2): string[] {
+  const sentences = text
+    .split(/(?<=[\u3002\uff01\uff1f])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
+  if (sentences.length <= 1) {
+    return [text.trim()];
+  }
+
+  const chunkSize = Math.ceil(sentences.length / preferredParagraphs);
+  const paragraphs: string[] = [];
+
+  for (let index = 0; index < sentences.length; index += chunkSize) {
+    paragraphs.push(sentences.slice(index, index + chunkSize).join(" "));
+  }
+
+  return paragraphs;
+}
+
 export default function CompatibilityPage() {
   const [profile] = useState(loadProfile);
   const [myNickname, setMyNickname] = useState(profile.nickname);
@@ -51,6 +72,10 @@ export default function CompatibilityPage() {
   const [partnerBirthdate, setPartnerBirthdate] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [result, setResult] = useState<CompatibilityResult | null>(null);
+
+  const strengthsParagraphs = result ? splitReadingParagraphs(result.reading.strengths) : [];
+  const pitfallsParagraphs = result ? splitReadingParagraphs(result.reading.pitfalls) : [];
+  const messageParagraphs = result ? splitReadingParagraphs(result.reading.luminaMessage) : [];
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,19 +98,30 @@ export default function CompatibilityPage() {
       });
     } catch {
       setResult(null);
-      setErrorMessage("正しい生年月日（YYYY-MM-DD）を入力してください。");
+      setErrorMessage("生年月日は YYYY-MM-DD の形式で正しく入力してください。");
     }
   };
 
   return (
     <PageShell
       maxWidth="content"
-      title="運命数相性占い"
-      description="ふたりの生年月日から運命数を読み解き、関係の育て方をやさしく照らします。"
+      title="相性占い"
+      description="ふたりの生年月日から、関係の流れと心の響きをやさしく読み解きます。"
       backHref="/"
       backLabel="トップへ戻る"
       className="font-serif"
     >
+      <div className="mb-4 overflow-hidden rounded-3xl">
+        <Image
+          src="/gazou/aisyou.jpg"
+          alt="LUMINAの相性占い。ふたりの関係をやさしく読み解くイメージ"
+          width={1050}
+          height={500}
+          className="w-full"
+          priority
+        />
+      </div>
+
       <GlassCard className="rounded-3xl">
         <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
           <label className="block text-sm font-medium text-[#2e2a26]">
@@ -100,7 +136,7 @@ export default function CompatibilityPage() {
           </label>
 
           <label className="block text-sm font-medium text-[#2e2a26]">
-            あなたの生年月日（必須）
+            あなたの生年月日
             <input
               type="date"
               value={myBirthdate}
@@ -111,7 +147,7 @@ export default function CompatibilityPage() {
           </label>
 
           <label className="block text-sm font-medium text-[#2e2a26]">
-            相手のニックネーム（任意）
+            お相手のニックネーム（任意）
             <input
               type="text"
               value={partnerNickname}
@@ -122,7 +158,7 @@ export default function CompatibilityPage() {
           </label>
 
           <label className="block text-sm font-medium text-[#2e2a26]">
-            相手の生年月日（必須）
+            お相手の生年月日
             <input
               type="date"
               value={partnerBirthdate}
@@ -149,56 +185,87 @@ export default function CompatibilityPage() {
               <p className="mt-1 text-lg font-medium text-[#2e2a26]">
                 {myNickname || "あなた"}: {fortuneNumberNames[result.myNumber]}
               </p>
-              <p className="mt-1 text-sm text-[#544c42]">魂の名: {result.mySoulName}</p>
+              <p className="mt-1 text-sm text-[#544c42]">
+                魂の名: {result.mySoulName}
+              </p>
             </div>
             <div className="rounded-xl border border-[#e1d5bf]/72 bg-white/65 p-4">
               <p className="text-xs tracking-wide text-[#847967]">お相手</p>
               <p className="mt-1 text-lg font-medium text-[#2e2a26]">
                 {partnerNickname || "お相手"}: {fortuneNumberNames[result.partnerNumber]}
               </p>
-              <p className="mt-1 text-sm text-[#544c42]">魂の名: {result.partnerSoulName}</p>
+              <p className="mt-1 text-sm text-[#544c42]">
+                魂の名: {result.partnerSoulName}
+              </p>
             </div>
           </div>
 
-          <div className="mt-4 space-y-4">
-            <section className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4">
-              <h2 className="text-sm font-medium tracking-wide text-[#2e2a26]">相性の特徴（強み）</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{result.reading.strengths}</p>
+          <div className="mt-5 space-y-4 sm:space-y-5">
+            <section className="rounded-[1.35rem] border border-[#e1d5bf]/72 bg-white/72 px-4 py-4 sm:px-5 sm:py-5">
+              <h2 className="text-sm font-medium tracking-[0.08em] text-[#2e2a26]">
+                相性の特徴
+              </h2>
+              <div className="mt-3 space-y-3 text-sm leading-7 text-[#544c42] sm:leading-8">
+                {strengthsParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </section>
 
-            <section className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4">
-              <h2 className="text-sm font-medium tracking-wide text-[#2e2a26]">つまずきやすい点</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{result.reading.pitfalls}</p>
+            <section className="rounded-[1.35rem] border border-[#e1d5bf]/72 bg-white/72 px-4 py-4 sm:px-5 sm:py-5">
+              <h2 className="text-sm font-medium tracking-[0.08em] text-[#2e2a26]">
+                つまずきやすい点
+              </h2>
+              <div className="mt-3 space-y-3 text-sm leading-7 text-[#544c42] sm:leading-8">
+                {pitfallsParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </section>
 
-            <section className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4">
-              <h2 className="text-sm font-medium tracking-wide text-[#2e2a26]">うまくいくコツ（具体行動）</h2>
-              <ul className="mt-2 space-y-2 text-sm leading-relaxed text-[#544c42]">
-                {result.reading.tips.map((tip) => (
-                  <li key={tip} className="flex items-start gap-2">
-                    <span className="mt-1 text-[10px] text-[#958cad]">◆</span>
-                    <span>{tip}</span>
+            <section className="rounded-[1.35rem] border border-[#e1d5bf]/72 bg-white/72 px-4 py-4 sm:px-5 sm:py-5">
+              <h2 className="text-sm font-medium tracking-[0.08em] text-[#2e2a26]">
+                うまくいくコツ
+              </h2>
+              <ul className="mt-3 space-y-2.5 text-sm leading-7 text-[#544c42] sm:space-y-3">
+                {result.reading.tips.map((tip, index) => (
+                  <li
+                    key={tip}
+                    className="flex items-start gap-3 rounded-2xl border border-[#eadfef] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,241,255,0.82))] px-3.5 py-3 shadow-[0_14px_30px_-26px_rgba(95,79,128,0.28)]"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f0e7fb] text-[11px] font-medium text-[#7e6f9a]">
+                      {index + 1}
+                    </span>
+                    <span className="pt-0.5">{tip}</span>
                   </li>
                 ))}
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#d2c4e7] bg-[#f5f0ff]/55 p-4">
-              <h2 className="text-sm font-medium tracking-wide text-[#2e2a26]">ひと言メッセージ</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#544c42]">{result.reading.luminaMessage}</p>
+            <section className="rounded-[1.6rem] border border-[#d9cbe9] bg-[linear-gradient(180deg,rgba(250,246,255,0.92),rgba(244,236,252,0.86))] px-5 py-5 text-center shadow-[0_20px_40px_-30px_rgba(95,79,128,0.3)] sm:px-6 sm:py-6">
+              <h2 className="text-sm font-medium tracking-[0.12em] text-[#4f4660]">
+                ひと言メッセージ
+              </h2>
+              <div className="mt-3 space-y-2 text-sm leading-7 text-[#544c42] sm:text-[15px] sm:leading-8">
+                {messageParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </section>
 
             <section className="rounded-[1.45rem] border border-[#d8cde7] bg-[#f6f1fb] px-5 py-5 shadow-[0_18px_38px_-28px_rgba(95,79,128,0.24)]">
-              <p className="text-sm font-medium text-[#5e5246]">もっと深く知りたい方はこちら</p>
+              <p className="text-sm font-medium text-[#5e5246]">
+                もっと深く知りたいときは、こちらへ。
+              </p>
               <p className="mt-1 text-xs leading-relaxed text-[#7a6d60]">
-                ふたりの流れを、今の状況に合わせて丁寧に読み解きます。
+                ふたりの流れを、対話を通してもう少し丁寧に読み解くこともできます。
               </p>
               <div className="mt-3">
                 <Link
                   href="/consultation"
                   className="inline-flex items-center rounded-full border border-[#cfc2e2] bg-[linear-gradient(160deg,#ffffff,#f2eafb)] px-4 py-2 text-sm font-medium text-[#5f5472] shadow-[0_10px_24px_-20px_rgba(95,79,128,0.28)] transition hover:border-[#bdaed7] hover:bg-[#f8f2ff] hover:text-[#4f4660]"
                 >
-                  個人鑑定を依頼する
+                  対話鑑定をひらく
                 </Link>
               </div>
             </section>
