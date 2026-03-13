@@ -378,7 +378,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
   const giftStatusText =
     visitStreak.monthlyVisitCount >= 7 || visitStreak.monthlyClaimed
       ? "今月の白い羽はすべて揃いました。\n来月、また新しい羽が舞い降ります。"
-      : `あと${remainingDays}枚でそろいます。`;
+      : `あと${remainingDays}日で、今月の限定待ち受けが届きます。`;
 
   return (
     <TarotContext.Provider value={onStartTarot}>

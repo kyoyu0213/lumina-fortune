@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   keywords: [
     "タロット占い", "無料占い", "恋愛占い", "今日の運勢",
     "片思い占い", "復縁占い", "相性占い", "結婚占い",
-    "当たる占い", "タロット", "運勢", "白の館", "LUMINA",
+    "タロット", "運勢", "白の館", "LUMINA",
   ],
   openGraph: {
     title: BRAND.seoTitle,
