@@ -8,7 +8,9 @@ export type TermsSection = ContentSection & {
   hasPrivacyLink?: boolean;
 };
 
-export type PrivacySection = ContentSection;
+export type PrivacySection = ContentSection & {
+  note?: string;
+};
 
 export type SpecialEvent =
   | {

@@ -6,7 +6,7 @@ export const MONTHLY_BIRTH_COOKIE_KEY = "lumina_birth";
 export const PROFILE_UPDATED_AT_COOKIE_KEY = "lumina_profile_updated_at";
 export const PROFILE_COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
 
-export type LoveStatus = "single" | "married" | "complicated" | "unrequited";
+export type LoveStatus = "single" | "dating" | "married" | "complicated" | "unrequited";
 
 export type StoredProfile = {
   nickname?: string;

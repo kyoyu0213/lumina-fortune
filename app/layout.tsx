@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import { Geist_Mono, Noto_Serif_JP, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 import { StarfieldBackground } from "@/components/starfield-background";
@@ -57,6 +58,10 @@ export default function RootLayout({
           {children}
           <Suspense fallback={null}>
             <Footer />
+          </Suspense>
+          {/* 分析: visitor 初期化 + page_view 送信 */}
+          <Suspense fallback={null}>
+            <AnalyticsProvider />
           </Suspense>
         </div>
       </body>

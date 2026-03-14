@@ -16,8 +16,11 @@ import {
   PROFILE_STORAGE_KEY,
   PROFILE_UPDATED_AT_COOKIE_KEY,
 } from "@/lib/profile/profile-store";
+import { trackEvent } from "@/lib/analytics/track";
+import { syncProfileToSupabase } from "@/lib/analytics/profile-sync";
+import { deleteProfile } from "@/lib/analytics/profile-delete";
 
-type LoveStatus = "single" | "married" | "complicated" | "unrequited";
+type LoveStatus = "single" | "dating" | "married" | "complicated" | "unrequited";
 
 type StoredProfile = {
   nickname: string;
@@ -37,7 +40,7 @@ type LightRecord = {
 
 const LOVE_STATUS_OPTIONS: Array<{ label: string; value: LoveStatus }> = [
   { label: "🌿 ひとりの時間を楽しんでいる", value: "single" },
-  { label: "💞 お付き合いしている人がいる（dating）", value: "married" },
+  { label: "💞 お付き合いしている人がいる", value: "dating" },
   { label: "💍 結婚している", value: "married" },
   { label: "🌙 秘密の関係", value: "complicated" },
   { label: "🌸 想いを寄せている人がいる", value: "unrequited" },
@@ -55,6 +58,7 @@ function loadInitialProfile(): StoredProfile {
     const parsed = JSON.parse(raw) as Partial<StoredProfile> & { occupation?: unknown };
     const loveStatus =
       parsed.loveStatus === "single" ||
+      parsed.loveStatus === "dating" ||
       parsed.loveStatus === "married" ||
       parsed.loveStatus === "complicated" ||
       parsed.loveStatus === "unrequited"
@@ -90,6 +94,14 @@ export default function ProfilePage() {
   const [savedMessage, setSavedMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [lightRecords, setLightRecords] = useState<LightRecord[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState("");
+
+  // 分析: プロフィール登録画面を開いた
+  useEffect(() => {
+    void trackEvent("profile_started", "/profile");
+  }, []);
 
   useEffect(() => {
     const nicknameForRecords = initialProfile.nickname?.trim();
@@ -152,7 +164,44 @@ export default function ProfilePage() {
     setSavedMessage("saved");
     setIsSaving(true);
     router.refresh();
+
+    // 分析: プロフィール登録完了 → Supabase に保存
+    void trackEvent("profile_completed", "/profile");
+    void syncProfileToSupabase({
+      nickname: trimmedNickname,
+      birthdate,
+      loveStatus,
+      job: trimmedJob || undefined,
+    });
   };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setDeleteMessage("");
+    try {
+      const result = await deleteProfile();
+      if (result.success) {
+        setDeleteMessage("プロフィールを削除しました");
+        // フォームを初期状態にリセット
+        setNickname("");
+        setBirthdate("");
+        setJob("");
+        setLoveStatus("single");
+        setShowDeleteConfirm(false);
+        setLightRecords([]);
+        router.refresh();
+      } else {
+        setDeleteMessage(result.error ?? "削除に失敗しました。時間をおいてもう一度お試しください。");
+      }
+    } catch {
+      setDeleteMessage("削除に失敗しました。時間をおいてもう一度お試しください。");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // プロフィールが登録済みかどうか
+  const hasExistingProfile = initialProfile.nickname.trim().length > 0;
 
   const birthdateFortuneLinks = [
     { label: "2026年の運勢", href: "/fortune-yearly" },
@@ -320,6 +369,70 @@ export default function ProfilePage() {
           </div>
         )}
       </GlassCard>
+
+      {/* プロフィール削除セクション（登録済みの場合のみ表示） */}
+      {hasExistingProfile ? (
+        <div className="mt-6 text-center">
+          <button
+            type="button"
+            onClick={() => setShowDeleteConfirm(true)}
+            className="text-xs text-[#9a8e7e] underline decoration-[#c8bfb0] underline-offset-2 transition hover:text-[#7a6e5e]"
+          >
+            プロフィールを削除する
+          </button>
+        </div>
+      ) : null}
+
+      {/* 削除完了メッセージ */}
+      {deleteMessage ? (
+        <div className="mt-3 text-center">
+          <p className={`text-sm ${deleteMessage.includes("失敗") ? "text-[#8b5e5e]" : "text-[#6a8a64]"}`}>
+            {deleteMessage}
+          </p>
+        </div>
+      ) : null}
+
+      {/* 削除確認モーダル */}
+      {showDeleteConfirm ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-[#2e2a26]/40 backdrop-blur-[2px]"
+            onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+            onKeyDown={(e) => e.key === "Escape" && !isDeleting && setShowDeleteConfirm(false)}
+            role="button"
+            tabIndex={0}
+            aria-label="閉じる"
+          />
+          <div className="relative w-full max-w-sm rounded-2xl border border-[#e1d5bf] bg-[#fffdf8] px-6 py-6 shadow-[0_20px_40px_-16px_rgba(82,69,53,0.3)]">
+            <h3 className="text-base font-medium text-[#2e2a26]">プロフィールの削除</h3>
+            <p className="mt-3 text-sm leading-7 text-[#544c42]">
+              登録したプロフィール情報を削除しますか？
+            </p>
+            <p className="mt-1 text-xs leading-5 text-[#8a7a64]">
+              削除すると、この端末に保存されたプロフィール情報も消去されます。
+              再度登録することもできます。
+            </p>
+            <div className="mt-5 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="rounded-xl border border-[#e1d5bf] bg-white px-4 py-2 text-sm text-[#5f564a] transition hover:bg-[#faf6ef] disabled:opacity-50"
+              >
+                キャンセル
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleDelete()}
+                disabled={isDeleting}
+                className="rounded-xl border border-[#c4a0a0]/60 bg-[#f5ece8] px-4 py-2 text-sm text-[#8b5e5e] transition hover:bg-[#f0e2dc] disabled:opacity-50"
+              >
+                {isDeleting ? "削除中..." : "削除する"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </PageShell>
   );
 }

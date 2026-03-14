@@ -167,6 +167,50 @@ export default function HealingPage() {
     return () => window.cancelAnimationFrame(frame);
   }, [trackIndex]);
 
+  const playBell = () => {
+    try {
+      const ctx = new AudioContext();
+      const now = ctx.currentTime;
+
+      // Chime 1
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.value = 830;
+      gain1.gain.setValueAtTime(0.35, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+      osc1.connect(gain1).connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 1.8);
+
+      // Chime 2 (slightly delayed, lower tone)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.value = 622;
+      gain2.gain.setValueAtTime(0.25, now + 0.6);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
+      osc2.connect(gain2).connect(ctx.destination);
+      osc2.start(now + 0.6);
+      osc2.stop(now + 2.4);
+
+      // Chime 3 (final, soft high tone)
+      const osc3 = ctx.createOscillator();
+      const gain3 = ctx.createGain();
+      osc3.type = "sine";
+      osc3.frequency.value = 1046;
+      gain3.gain.setValueAtTime(0.2, now + 1.2);
+      gain3.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
+      osc3.connect(gain3).connect(ctx.destination);
+      osc3.start(now + 1.2);
+      osc3.stop(now + 3.0);
+
+      setTimeout(() => ctx.close(), 4000);
+    } catch {
+      /* AudioContext unavailable — fail silently */
+    }
+  };
+
   useEffect(() => {
     if (!isMeditating) return;
     const id = window.setInterval(() => {
@@ -174,6 +218,7 @@ export default function HealingPage() {
         if (prev <= 1) {
           window.clearInterval(id);
           setIsMeditating(false);
+          playBell();
           return 0;
         }
         return prev - 1;

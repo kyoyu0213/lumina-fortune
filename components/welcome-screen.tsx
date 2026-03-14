@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { SpecialOccasionCard } from "@/components/special-occasion-card";
 import { BRAND } from "@/lib/brand";
+import { trackEvent } from "@/lib/analytics/track";
 import { getInitialBirthdate } from "@/lib/profile/getProfile";
 import { getSpecialOccasionEvent, type SpecialOccasionEvent } from "@/lib/special-occasions";
 import {
@@ -46,9 +47,9 @@ type SectionGroup = {
 };
 
 const heroActions = [
-  { label: "今日の運勢", href: "/daily-fortune", tone: "primary" as const },
-  { label: "恋愛占い", href: "/uranai/kataomoi", tone: "secondary" as const },
-  { label: "タロット占い", href: TAROT_HREF, tone: "secondary" as const },
+  { label: "今日の運勢", href: "/daily-fortune", tone: "primary" as const, target: "hero_today_fortune" },
+  { label: "恋愛占い", href: "/uranai/kataomoi", tone: "secondary" as const, target: "hero_love" },
+  { label: "タロット占い", href: TAROT_HREF, tone: "secondary" as const, target: "hero_tarot" },
 ];
 
 const loveFortuneSection: SectionGroup = {
@@ -221,40 +222,62 @@ function SectionHeader({ eyebrow, title, description }: Omit<SectionGroup, "id" 
   );
 }
 
+// CTA クリック計測用のターゲットマッピング
+const NAV_CARD_TARGETS: Record<string, { event: string; target: string }> = {
+  "/uranai/kataomoi": { event: "fortune_started", target: "love_unrequited" },
+  "/uranai/kare-no-kimochi": { event: "fortune_started", target: "love_feelings" },
+  "/uranai/fukuen": { event: "fortune_started", target: "love_reconciliation" },
+  "/compatibility": { event: "fortune_started", target: "love_compatibility" },
+  "/marriage-timing": { event: "fortune_started", target: "love_marriage" },
+  "/calendar": { event: "calendar_opened", target: "calendar_card" },
+  "/profile": { event: "profile_started", target: "profile_card" },
+  "/?start=tarot": { event: "tarot_started", target: "tarot_card" },
+};
+
 function NavigationCardItem({ item, featured = false, compact = false }: { item: NavigationCard; featured?: boolean; compact?: boolean }) {
+  const handleCardClick = () => {
+    const mapping = NAV_CARD_TARGETS[item.href];
+    if (mapping) {
+      void trackEvent(mapping.event, "/", mapping.target);
+    }
+  };
+
   return (
-    <SmartLink
-      href={item.href}
-      className={`group flex h-full flex-col justify-between rounded-[1.35rem] border shadow-[0_14px_28px_-24px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 ${
-        compact ? "min-h-0 px-4 py-2.5" : "min-h-[5.6rem] px-4 py-4 sm:min-h-[6rem]"
-      } ${
-        featured
-          ? "border-[#d6c39d]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.7),rgba(245,236,219,0.62))]"
-          : "border-[#e6dbc8]/85 bg-white/60"
-      }`}
-    >
-      <div className={compact ? "flex items-center gap-3" : "flex flex-col"}>
-        {!compact && item.badge ? <p className="mb-1.5 text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">{item.badge}</p> : null}
-        <h3 className={`font-medium leading-tight text-[#2e2a26] group-hover:text-[#5d513f] ${compact ? "text-sm" : "text-base sm:text-lg"}`}>{item.title}</h3>
-        {compact ? (
-          item.description ? <p className="text-[12px] leading-5 text-[#7a7063]">{item.description}</p> : null
-        ) : (
-          <p className="mt-1.5 text-[13px] leading-5 text-[#7a7063]">{item.description}</p>
-        )}
-        {compact ? (
-          item.ctaLabel ? <p className="ml-auto shrink-0 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p> : null
-        ) : null}
-      </div>
-      {compact ? null : (
-        item.ctaLabel ? (
-          item.ctaStyle === "gold-button" ? (
-            <span className="mt-3 inline-flex items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-5 py-2 text-sm font-medium text-white transition group-hover:bg-[#b59558]">{item.ctaLabel}</span>
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div onClick={handleCardClick} className="h-full">
+      <SmartLink
+        href={item.href}
+        className={`group flex h-full flex-col justify-between rounded-[1.35rem] border shadow-[0_14px_28px_-24px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 ${
+          compact ? "min-h-0 px-4 py-2.5" : "min-h-[5.6rem] px-4 py-4 sm:min-h-[6rem]"
+        } ${
+          featured
+            ? "border-[#d6c39d]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.7),rgba(245,236,219,0.62))]"
+            : "border-[#e6dbc8]/85 bg-white/60"
+        }`}
+      >
+        <div className={compact ? "flex items-center gap-3" : "flex flex-col"}>
+          {!compact && item.badge ? <p className="mb-1.5 text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">{item.badge}</p> : null}
+          <h3 className={`font-medium leading-tight text-[#2e2a26] group-hover:text-[#5d513f] ${compact ? "text-sm" : "text-base sm:text-lg"}`}>{item.title}</h3>
+          {compact ? (
+            item.description ? <p className="text-[12px] leading-5 text-[#7a7063]">{item.description}</p> : null
           ) : (
-            <p className="mt-3 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p>
-          )
-        ) : null
-      )}
-    </SmartLink>
+            <p className="mt-1.5 text-[13px] leading-5 text-[#7a7063]">{item.description}</p>
+          )}
+          {compact ? (
+            item.ctaLabel ? <p className="ml-auto shrink-0 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p> : null
+          ) : null}
+        </div>
+        {compact ? null : (
+          item.ctaLabel ? (
+            item.ctaStyle === "gold-button" ? (
+              <span className="mt-3 inline-flex items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-5 py-2 text-sm font-medium text-white transition group-hover:bg-[#b59558]">{item.ctaLabel}</span>
+            ) : (
+              <p className="mt-3 text-[12px] font-medium tracking-[0.08em] text-[#b09a6f] group-hover:text-[#9a8455]">{item.ctaLabel} →</p>
+            )
+          ) : null
+        )}
+      </SmartLink>
+    </div>
   );
 }
 
@@ -424,17 +447,21 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
 
               <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
                 {heroActions.map((action) => (
-                  <SmartLink
+                  <span
                     key={action.href}
-                    href={action.href}
-                    className={
-                      action.tone === "primary"
-                        ? "inline-flex min-h-11 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-6 text-sm font-medium text-white shadow-[0_14px_28px_-18px_rgba(106,86,52,0.52)] transition hover:bg-[#b59558]"
-                        : "inline-flex min-h-11 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-[rgba(255,251,244,0.94)] px-6 text-sm font-medium text-[#695e50] shadow-[0_8px_20px_-18px_rgba(82,69,53,0.2)] transition hover:bg-[#fff7eb]"
-                    }
+                    onClick={() => void trackEvent("hero_cta_click", "/", action.target)}
                   >
-                    {action.label}
-                  </SmartLink>
+                    <SmartLink
+                      href={action.href}
+                      className={
+                        action.tone === "primary"
+                          ? "inline-flex min-h-11 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-6 text-sm font-medium text-white shadow-[0_14px_28px_-18px_rgba(106,86,52,0.52)] transition hover:bg-[#b59558]"
+                          : "inline-flex min-h-11 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-[rgba(255,251,244,0.94)] px-6 text-sm font-medium text-[#695e50] shadow-[0_8px_20px_-18px_rgba(82,69,53,0.2)] transition hover:bg-[#fff7eb]"
+                      }
+                    >
+                      {action.label}
+                    </SmartLink>
+                  </span>
                 ))}
               </div>
 
