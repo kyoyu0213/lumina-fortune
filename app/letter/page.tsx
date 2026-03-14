@@ -125,7 +125,7 @@ export default function LetterPage() {
       backLabel="トップへ戻る"
       className="font-serif"
     >
-      <div className="mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+      <div className="relative mb-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
         <Image
           src="/gazou/tegami.png"
           alt="ルミナへの手紙"
@@ -134,6 +134,7 @@ export default function LetterPage() {
           className="h-auto w-full object-cover"
           priority
         />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
       </div>
 
       {submitted ? (

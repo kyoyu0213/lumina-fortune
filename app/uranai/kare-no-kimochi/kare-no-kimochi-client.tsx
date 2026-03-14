@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -103,6 +103,8 @@ export default function KareNoKimochiClient() {
   const [question, setQuestion] = useState("");
   const [submittedQuestion, setSubmittedQuestion] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const resultRef = useRef<HTMLDivElement>(null);
+
   const result = useMemo(() => {
     if (!submittedQuestion) return null;
     try {
@@ -111,6 +113,12 @@ export default function KareNoKimochiClient() {
       return null;
     }
   }, [submittedQuestion]);
+
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -170,6 +178,7 @@ export default function KareNoKimochiClient() {
           <LuminaButton type="submit" className="mt-5 w-full rounded-[1rem] py-3 text-base sm:w-auto sm:px-8">あの人の気持ちを見る</LuminaButton>
         </form>
       </GlassCard>
+      <div ref={resultRef} />
       <GlassCard className="mt-5 rounded-[2rem] p-5 sm:p-6">
         {result ? (
           <ResultView result={result} />

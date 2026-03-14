@@ -1,5 +1,8 @@
-import { promises as fs } from "fs";
-import path from "path";
+import {
+  listStoredFutureLetters,
+  saveStoredFutureLetter,
+  type StoredFutureLetterSubmission,
+} from "@/lib/storage/user-submissions";
 
 export type FutureLetterRecord = {
   id: string;
@@ -9,24 +12,7 @@ export type FutureLetterRecord = {
   created_at: string;
 };
 
-const STORE_DIR = path.join(process.cwd(), "data");
-const STORE_PATH = path.join(STORE_DIR, "future-letters.json");
 const MAX_ITEMS = 1000;
-
-async function readStore(): Promise<FutureLetterRecord[]> {
-  try {
-    const raw = await fs.readFile(STORE_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    return Array.isArray(parsed) ? (parsed as FutureLetterRecord[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-async function writeStore(items: FutureLetterRecord[]): Promise<void> {
-  await fs.mkdir(STORE_DIR, { recursive: true });
-  await fs.writeFile(STORE_PATH, JSON.stringify(items, null, 2), "utf-8");
-}
 
 export function getJstDateKey(base = new Date()): string {
   const formatter = new Intl.DateTimeFormat("ja-JP", {
@@ -40,6 +26,16 @@ export function getJstDateKey(base = new Date()): string {
   const month = parts.find((part) => part.type === "month")?.value ?? "01";
   const day = parts.find((part) => part.type === "day")?.value ?? "01";
   return `${year}-${month}-${day}`;
+}
+
+function toPublicRecord(entry: StoredFutureLetterSubmission): FutureLetterRecord {
+  return {
+    id: entry.id,
+    date: entry.deliverDate,
+    message: entry.message,
+    user: entry.user,
+    created_at: entry.createdAt,
+  };
 }
 
 export async function saveFutureLetter(payload: {
@@ -67,23 +63,21 @@ export async function saveFutureLetter(payload: {
     throw new Error("date must be today or later");
   }
 
-  const record: FutureLetterRecord = {
+  const entry: StoredFutureLetterSubmission = {
     id: `FL-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    date,
-    message,
     user: user.slice(0, 40),
-    created_at: new Date().toISOString(),
+    message,
+    deliverDate: date,
+    createdAt: new Date().toISOString(),
   };
 
-  const current = await readStore();
-  const next = [record, ...current].slice(0, MAX_ITEMS);
-  await writeStore(next);
-  return record;
+  await saveStoredFutureLetter(entry, MAX_ITEMS);
+  return toPublicRecord(entry);
 }
 
 export async function listDeliveredFutureLetters(user: string, date = getJstDateKey()): Promise<FutureLetterRecord[]> {
   const trimmed = user.trim();
   if (!trimmed) return [];
-  const current = await readStore();
-  return current.filter((item) => item.user === trimmed && item.date === date);
+  const entries = await listStoredFutureLetters(trimmed, date);
+  return entries.map(toPublicRecord);
 }

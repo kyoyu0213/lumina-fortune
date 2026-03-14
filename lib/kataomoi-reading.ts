@@ -8,6 +8,12 @@ export const KATAOMOI_QUESTION_CHIPS = [
   "今この恋はどんな流れの中にありますか？",
   "この恋、あきらめた方がいいですか？",
   "あの人には私よりも親しい人がいますか？",
+  "私から連絡しても大丈夫ですか？",
+  "告白するべきですか？",
+  "付き合えますか？",
+  "連絡が減ったのはなぜですか？",
+  "あの人にとって特別な存在になれますか？",
+  "あの人は私の気持ちに気が付いてますか？",
 ] as const;
 
 type DrawnCard = ReturnType<typeof drawTarotSpread>[number];

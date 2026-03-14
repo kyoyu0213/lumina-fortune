@@ -274,6 +274,9 @@ export default function CalendarPage({ serverBirthdate }: CalendarClientProps) {
         <p className="mt-4 text-sm text-[#544c42]">
           祝日と縁起のいい日を重ねて表示します。日付を押すと、その日の流れをやわらかく読めます。
         </p>
+        <p className="mt-2 text-sm text-[#544c42]">
+          月齢はアイコンで、大安・一粒万倍日などの開運日は目立つ印で分かりやすくしています。
+        </p>
 
         <div className="mt-5 grid grid-cols-7 gap-2">
           {weekdayLabels().map((label) => (

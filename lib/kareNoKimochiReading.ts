@@ -7,6 +7,11 @@ export const KARE_NO_KIMOCHI_QUESTION_CHIPS = [
   "あの人は私を恋愛対象として見ていますか？",
   "あの人は今、私に会いたいと思っていますか？",
   "あの人の本音はどこにありますか？",
+  "あの人は今、何に悩んでいますか？",
+  "あの人は今、寂しいと感じていますか？",
+  "あの人は今、幸せですか？",
+  "私がいなくなったら気づきますか？",
+  "連絡してこない本当の理由は何ですか？",
 ] as const;
 
 type DrawnCard = ReturnType<typeof drawTarotSpread>[number];

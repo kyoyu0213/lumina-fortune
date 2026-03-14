@@ -8,6 +8,7 @@ export type SupabaseStorageClient = {
       orderBy?: string;
       limit?: number;
       offset?: number;
+      filters?: Record<string, string>;
     }
   ): Promise<T[]>;
   insertRow(table: string, payload: Record<string, unknown>): Promise<void>;
@@ -48,6 +49,7 @@ function buildRestUrl(
     orderBy?: string;
     limit?: number;
     offset?: number;
+    filters?: Record<string, string>;
   }
 ): string {
   const url = new URL(`/rest/v1/${table}`, baseUrl);
@@ -62,6 +64,11 @@ function buildRestUrl(
   }
   if (typeof options?.offset === "number") {
     url.searchParams.set("offset", String(options.offset));
+  }
+  if (options?.filters) {
+    for (const [column, expr] of Object.entries(options.filters)) {
+      url.searchParams.set(column, expr);
+    }
   }
   return url.toString();
 }
@@ -86,6 +93,7 @@ function createRestClient(baseUrl: string, serviceRoleKey: string): SupabaseStor
         orderBy?: string;
         limit?: number;
         offset?: number;
+        filters?: Record<string, string>;
       }
     ) {
       const response = await fetch(buildRestUrl(baseUrl, table, options), {

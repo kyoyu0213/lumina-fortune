@@ -8,7 +8,7 @@ import { BRAND } from "@/lib/brand";
 const EXIT_LINKS = [
   { label: "個人鑑定のご依頼", href: "/consultation" },
   { label: "今日の占い", href: "/daily-fortune" },
-  { label: "光の書庫", href: "/library" },
+  { label: "白の庭の記録", href: "/library/records" },
   { label: "光の願いの庭", href: "/wish-garden" },
 ] as const;
 

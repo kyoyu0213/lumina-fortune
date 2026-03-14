@@ -164,15 +164,16 @@ export default function WishGardenPage() {
         </p>
       </GlassCard>
 
-      <div className="mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+      <div className="relative mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
         <Image
-          src="/gazou/negai.png"
+          src="/gazou/negainoniwa2.png"
           alt="光の願いの庭"
           width={960}
           height={400}
           className="h-auto w-full object-cover"
           priority
         />
+        <div className="pointer-events-none absolute inset-0 bg-white/15" />
       </div>
 
       <GlassCard className="mt-4">

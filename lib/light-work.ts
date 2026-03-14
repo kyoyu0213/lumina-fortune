@@ -93,7 +93,7 @@ export const lightWorks: LightWork[] = [
   },
   {
     slug: "evil-banishing",
-    title: "魔を払う光のワーク",
+    title: "邪気を払う光のワーク",
     summary: "重たい気分や不安を手放し、場と心をすっきり整える浄化のためのワークです。",
     duration: "3〜7分",
     prepare: ["換気しやすい空間", "コップ1杯の水", "手を拭けるタオル"],

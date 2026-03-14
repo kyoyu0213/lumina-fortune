@@ -386,10 +386,6 @@ export function RecordChapterPage({ slug }: Props) {
       backLabel="白の庭の記録へ戻る"
     >
       <nav className="mb-4 text-sm text-[#6f6556]">
-        <Link href="/library" className="lumina-link">
-          光の書庫
-        </Link>
-        <span className="px-2 text-[#9f9588]">{">"}</span>
         <Link href="/library/records" className="lumina-link">
           白の庭の記録
         </Link>

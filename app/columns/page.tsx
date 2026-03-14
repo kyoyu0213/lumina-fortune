@@ -52,15 +52,16 @@ export default function ColumnsPage() {
         </div>
       </GlassCard>
 
-      <div className="mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
+      <div className="relative mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
         <Image
-          src="/gazou/column/hondana.png"
+          src="/gazou/dokusyo.png"
           alt="館の書棚"
-          width={960}
-          height={400}
+          width={1050}
+          height={500}
           className="h-auto w-full object-cover"
           priority
         />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">

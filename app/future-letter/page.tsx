@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton, LuminaLinkButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
@@ -164,6 +165,10 @@ export default function FutureLetterPage() {
       className="font-serif"
     >
       <div className="space-y-6">
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#e6dac8]/80 shadow-[0_26px_56px_-40px_rgba(104,86,66,0.28)]">
+          <Image src="/gazou/tegami2.png" alt="未来の手紙のイメージ" width={1050} height={500} className="w-full" priority />
+          <div className="pointer-events-none absolute inset-0 bg-white/25" />
+        </div>
         <GlassCard className="rounded-3xl border border-[#ded0b8]/80 bg-[linear-gradient(165deg,rgba(255,252,246,0.95),rgba(247,239,228,0.9))]">
           <div className="space-y-3">
             <p className="text-xs tracking-[0.18em] text-[#8a7a64]">未来の手紙</p>

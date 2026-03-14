@@ -7,6 +7,11 @@ export const FUKUEN_QUESTION_CHIPS = [
   "あの人は私をまだ想っていますか？",
   "復縁のタイミングはありますか？",
   "この縁はまだ続いていますか？",
+  "あの人に今、新しい相手はいますか？",
+  "ブロックが解除される可能性はありますか？",
+  "もう一度信じ合える関係になれますか？",
+  "別れてから気持ちが変わりましたか？",
+  "あの人は後悔していますか？",
 ] as const;
 
 type DrawnCard = ReturnType<typeof drawTarotSpread>[number];

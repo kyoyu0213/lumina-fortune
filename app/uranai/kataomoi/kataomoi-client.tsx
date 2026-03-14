@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -56,24 +56,22 @@ function ResultSection({
 
 function ResultView({ result }: { result: KataomoiReading }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* カード情報ヘッダー */}
       <section className="overflow-hidden rounded-[2rem] border border-[#e9dcc9]/90 bg-[linear-gradient(145deg,rgba(255,252,248,0.98),rgba(247,241,233,0.92))] shadow-[0_30px_70px_-46px_rgba(109,89,67,0.3)]">
-        <div className="grid gap-0 lg:grid-cols-[220px_minmax(0,1fr)]">
-          <div className="relative flex items-center justify-center bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.94),rgba(245,232,212,0.76),rgba(241,233,225,0.32))] px-6 py-7">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0))]" />
-            <div className="relative w-full max-w-[170px]">
-              <LightTarotDisplay
-                imagePath={result.cardImagePath}
-                alt={`${result.cardName}のタロットカード`}
-                isReversed={result.isReversed}
-                className="rounded-[1.8rem] p-2"
-                artworkClassName="rounded-[1.5rem]"
-                sizes="170px"
-              />
-            </div>
+        <div className="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-start sm:p-8">
+          <div className="w-[140px] shrink-0 sm:w-[160px]">
+            <LightTarotDisplay
+              imagePath={result.cardImagePath}
+              alt={`${result.cardName}のタロットカード`}
+              isReversed={result.isReversed}
+              className="rounded-[1.8rem] p-2"
+              artworkClassName="rounded-[1.5rem]"
+              sizes="160px"
+            />
           </div>
-          <div className="p-6 sm:p-7">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="flex-1 text-center sm:text-left">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
               <span className="rounded-full bg-[#f4ecdf] px-3 py-1 text-[11px] tracking-[0.12em] text-[#796a57]">
                 KATAOMOI READING
               </span>
@@ -81,8 +79,8 @@ function ResultView({ result }: { result: KataomoiReading }) {
                 {result.isReversed ? "逆位置" : "正位置"}
               </span>
             </div>
-            <h2 className="mt-4 text-[1.6rem] leading-tight text-[#2f2a27] sm:text-[1.9rem]">{result.cardName}</h2>
-            <p className="mt-3 text-sm leading-7 text-[#5b5348]">{result.cardMeaning}</p>
+            <h2 className="mt-4 text-[1.5rem] leading-tight text-[#2f2a27] sm:text-[1.8rem]">{result.cardName}</h2>
+            <p className="mt-3 text-[0.95rem] leading-8 text-[#5b5348]">{result.cardMeaning}</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <SummaryChip label="恋の進み方" value={result.progressLabel} />
               <SummaryChip label="動きやすい時期" value={result.timingShort} />
@@ -92,30 +90,40 @@ function ResultView({ result }: { result: KataomoiReading }) {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[minmax(0,1.12fr)_minmax(270px,0.88fr)]">
-        <ResultSection eyebrow="OVERVIEW" title="この恋の現在地" paragraphs={splitParagraphs(result.intro)} />
-        <aside className="rounded-[1.8rem] border border-[#e6d9c7]/90 bg-white/78 p-5 shadow-[0_20px_44px_-34px_rgba(111,90,68,0.2)] sm:p-6">
-          <p className="text-[11px] tracking-[0.18em] text-[#8a7b68]">QUESTION</p>
-          <p className="mt-3 rounded-[1.2rem] bg-[#fbf7f0] px-4 py-4 text-sm leading-7 text-[#51483e]">{result.question}</p>
-          <div className="mt-5 space-y-3">
-            <div className="rounded-[1.2rem] border border-[#eee2cf] bg-[#fffdfa] px-4 py-4">
-              <p className="text-[11px] tracking-[0.14em] text-[#8a7b68]">タイミング</p>
-              <p className="mt-2 text-sm leading-7 text-[#4f473d]">{result.timing}</p>
-            </div>
-            <div className="rounded-[1.2rem] border border-[#e6daef] bg-[#faf6ff] px-4 py-4">
-              <p className="text-[11px] tracking-[0.14em] text-[#7b6c8c]">ルミナメッセージ</p>
-              <p className="mt-2 text-sm leading-7 text-[#534861]">{result.message}</p>
-            </div>
-          </div>
-        </aside>
+      {/* あなたの質問 */}
+      <section className="rounded-[1.8rem] border border-[#e6d9c7]/90 bg-white/78 p-5 shadow-[0_20px_44px_-34px_rgba(111,90,68,0.2)] sm:p-6">
+        <p className="text-[11px] tracking-[0.18em] text-[#8a7b68]">QUESTION</p>
+        <p className="mt-3 rounded-[1.2rem] bg-[#fbf7f0] px-4 py-4 text-[0.95rem] leading-8 text-[#51483e]">{result.question}</p>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      {/* この恋の現在地 */}
+      <ResultSection eyebrow="OVERVIEW" title="この恋の現在地" paragraphs={splitParagraphs(result.intro)} />
+
+      {/* 恋の流れ & 相手の気持ち */}
+      <div className="grid gap-5 lg:grid-cols-2">
         <ResultSection eyebrow="STATUS" title="恋の流れ" paragraphs={splitParagraphs(result.status)} />
         <ResultSection eyebrow="FEELING" title="相手の気持ち" paragraphs={splitParagraphs(result.partnerFeeling)} />
+      </div>
+
+      {/* タイミング */}
+      <section className="rounded-[1.8rem] border border-[#eee2cf] bg-[#fffdfa] p-5 shadow-[0_20px_44px_-34px_rgba(111,90,68,0.15)] sm:p-6">
+        <p className="text-[11px] tracking-[0.14em] text-[#8a7b68]">TIMING</p>
+        <h3 className="mt-2 text-[1.1rem] font-medium text-[#2f2a27]">タイミング</h3>
+        <p className="mt-3 text-[0.95rem] leading-8 text-[#4f473d]">{result.timing}</p>
+      </section>
+
+      {/* これからの動き & 今のアドバイス */}
+      <div className="grid gap-5 lg:grid-cols-2">
         <ResultSection eyebrow="FUTURE" title="これからの動き" accent="violet" paragraphs={splitParagraphs(result.future)} />
         <ResultSection eyebrow="GUIDE" title="今のアドバイス" paragraphs={splitParagraphs(result.advice)} />
       </div>
+
+      {/* ルミナメッセージ */}
+      <section className="rounded-[1.8rem] border border-[#e6daef] bg-[linear-gradient(180deg,rgba(252,248,255,0.96),rgba(245,239,251,0.92))] p-5 shadow-[0_20px_44px_-34px_rgba(100,78,129,0.2)] sm:p-6">
+        <p className="text-[11px] tracking-[0.14em] text-[#7b6c8c]">LUMINA MESSAGE</p>
+        <h3 className="mt-2 text-[1.1rem] font-medium text-[#2f2a27]">ルミナからのメッセージ</h3>
+        <p className="mt-3 text-[0.95rem] leading-8 text-[#534861]">{result.message}</p>
+      </section>
     </div>
   );
 }
@@ -124,6 +132,7 @@ export default function KataomoiClient() {
   const [question, setQuestion] = useState("");
   const [submittedQuestion, setSubmittedQuestion] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const result = useMemo(() => {
     if (!submittedQuestion) return null;
@@ -133,6 +142,12 @@ export default function KataomoiClient() {
       return null;
     }
   }, [submittedQuestion]);
+
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -192,6 +207,7 @@ export default function KataomoiClient() {
           <LuminaButton type="submit" className="mt-5 w-full rounded-[1rem] py-3 text-base sm:w-auto sm:px-8">片思いの流れを見る</LuminaButton>
         </form>
       </GlassCard>
+      <div ref={resultRef} />
       <GlassCard className="mt-5 rounded-[2rem] p-5 sm:p-6">
         {result ? (
           <ResultView result={result} />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -36,9 +37,14 @@ export default function LimitedVideoPage() {
       maxWidth="content"
       title="月灯りの間"
       description="ここは、白い館の奥にある小さな映写室。必要な夜にだけ、そっと灯りがともります。"
-      backHref="/library"
-      backLabel="光の書庫へ戻る"
+      backHref="/"
+      backLabel="トップへ戻る"
     >
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e6dac8]/80 shadow-[0_26px_56px_-40px_rgba(104,86,66,0.28)]">
+        <Image src="/gazou/eisya.png" alt="月灯りの間のイメージ" width={1050} height={500} className="w-full" priority />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
+      </div>
+
       <GlassCard>
         <p className="text-sm leading-7 text-[#544c42]">この部屋では、ルミナの限定映像を静かに公開していきます。</p>
       </GlassCard>

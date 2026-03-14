@@ -225,6 +225,11 @@ export default function HealingPage() {
       backHref="/"
       backLabel="トップへ戻る"
     >
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e6dac8]/80 shadow-[0_26px_56px_-40px_rgba(104,86,66,0.28)]">
+        <Image src="/gazou/ongakusitu.png" alt="館の休息室のイメージ" width={1050} height={500} className="w-full" priority />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
+      </div>
+
       <GlassCard>
         <p className="text-sm leading-relaxed text-[#544c42]">
           がんばりが続いた日ほど、心を休めるやさしいひとときが必要です。ここではBGMと短い瞑想ガイドで、静かに整える時間をご用意しています。

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
 import { RecordsClient } from "./records-client";
@@ -15,16 +15,14 @@ export default function RecordsPage() {
       maxWidth="content"
       title="白の庭から白の館へ。"
       description="ここは、ルミナの世界観を描いた小さな物語のコーナーです。"
-      backHref="/library"
-      backLabel="光の書庫へ戻る"
+      backHref="/"
+      backLabel="トップへ戻る"
     >
-      <nav className="mb-4 text-sm text-[#6f6556]">
-        <Link href="/library" className="lumina-link">
-          光の書庫
-        </Link>
-        <span className="px-2 text-[#9f9588]">{">"}</span>
-        <span className="text-[#544c42]">白の庭の記録</span>
-      </nav>
+
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e6dac8]/80 shadow-[0_26px_56px_-40px_rgba(104,86,66,0.28)]">
+        <Image src="/gazou/syoko.png" alt="白の庭の記録のイメージ" width={1050} height={500} className="w-full" priority />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
+      </div>
 
       <GlassCard>
         <RecordsClient />

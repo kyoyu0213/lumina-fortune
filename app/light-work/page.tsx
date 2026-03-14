@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { lightWorks } from "@/lib/light-work";
 import { PageShell } from "@/components/ui/page-shell";
@@ -12,9 +13,13 @@ export default function LightWorkPage() {
       backHref="/"
       backLabel="トップへ戻る"
     >
-      <GlassCard>
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e6dac8]/80 shadow-[0_26px_56px_-40px_rgba(104,86,66,0.28)]">
+        <Image src="/gazou/work.png" alt="光のワークのイメージ" width={1050} height={500} className="w-full" priority />
+        <div className="pointer-events-none absolute inset-0 bg-white/25" />
+      </div>
 
-        <section className="mt-8 grid gap-4">
+      <GlassCard className="mt-6">
+        <section className="grid gap-4">
           {lightWorks.map((work) => (
             <Link
               key={work.slug}

@@ -17,9 +17,18 @@ export type StoredConsultationLetterSubmission = {
   createdAt: string;
 };
 
+export type StoredFutureLetterSubmission = {
+  id: string;
+  user: string;
+  message: string;
+  deliverDate: string;
+  createdAt: string;
+};
+
 type UserSubmissionStoreState = {
   wishes: StoredWishSubmission[];
   consultationLetters: StoredConsultationLetterSubmission[];
+  futureLetters: StoredFutureLetterSubmission[];
 };
 
 type UserSubmissionStorageAdapter = {
@@ -27,6 +36,8 @@ type UserSubmissionStorageAdapter = {
   saveWish(entry: StoredWishSubmission, limit: number): Promise<void>;
   listConsultationLetters(): Promise<StoredConsultationLetterSubmission[]>;
   saveConsultationLetter(entry: StoredConsultationLetterSubmission, limit: number): Promise<void>;
+  listFutureLetters(user: string, deliverDate: string): Promise<StoredFutureLetterSubmission[]>;
+  saveFutureLetter(entry: StoredFutureLetterSubmission, limit: number): Promise<void>;
 };
 
 type WishRow = {
@@ -42,9 +53,18 @@ type ConsultationLetterRow = {
   created_at: string;
 };
 
+type FutureLetterRow = {
+  id: string;
+  user_name: string;
+  message: string;
+  deliver_date: string;
+  created_at: string;
+};
+
 const memoryState: UserSubmissionStoreState = {
   wishes: [],
   consultationLetters: [],
+  futureLetters: [],
 };
 
 let hasWarnedMemoryFallback = false;
@@ -90,6 +110,14 @@ function createMemoryAdapter(reason: string): UserSubmissionStorageAdapter {
     async saveConsultationLetter(entry, limit) {
       memoryState.consultationLetters = dedupeById([entry, ...memoryState.consultationLetters]).slice(0, Math.max(1, limit));
     },
+    async listFutureLetters(user, deliverDate) {
+      return dedupeById(memoryState.futureLetters).filter(
+        (item) => item.user === user && item.deliverDate === deliverDate
+      );
+    },
+    async saveFutureLetter(entry, limit) {
+      memoryState.futureLetters = dedupeById([entry, ...memoryState.futureLetters]).slice(0, Math.max(1, limit));
+    },
   };
 }
 
@@ -123,6 +151,26 @@ function toConsultationLetterInsertPayload(entry: StoredConsultationLetterSubmis
     id: entry.id,
     nickname: entry.nickname,
     message: entry.message,
+    created_at: entry.createdAt,
+  };
+}
+
+function mapFutureLetterRow(row: FutureLetterRow): StoredFutureLetterSubmission {
+  return {
+    id: row.id,
+    user: row.user_name,
+    message: row.message,
+    deliverDate: row.deliver_date,
+    createdAt: row.created_at,
+  };
+}
+
+function toFutureLetterInsertPayload(entry: StoredFutureLetterSubmission): FutureLetterRow {
+  return {
+    id: entry.id,
+    user_name: entry.user,
+    message: entry.message,
+    deliver_date: entry.deliverDate,
     created_at: entry.createdAt,
   };
 }
@@ -173,6 +221,22 @@ function createSupabaseAdapter(client: SupabaseStorageClient): UserSubmissionSto
       await client.insertRow("consultation_letters", toConsultationLetterInsertPayload(entry));
       await pruneSupabaseTable(client, "consultation_letters", limit);
     },
+    async listFutureLetters(user, deliverDate) {
+      const rows = await client.selectRows<FutureLetterRow>("future_letters", {
+        columns: "id,user_name,message,deliver_date,created_at",
+        orderBy: "created_at.desc",
+        limit: 100,
+        filters: {
+          user_name: `eq.${user}`,
+          deliver_date: `eq.${deliverDate}`,
+        },
+      });
+      return rows.map(mapFutureLetterRow);
+    },
+    async saveFutureLetter(entry, limit) {
+      await client.insertRow("future_letters", toFutureLetterInsertPayload(entry));
+      await pruneSupabaseTable(client, "future_letters", limit);
+    },
   };
 }
 
@@ -201,6 +265,14 @@ function createMissingConfigAdapter(configState: SupabaseStorageConfigState): Us
       async saveConsultationLetter() {
         console.error("[storage/user-submissions] durable storage is unavailable for consultation letter saves", detail);
         throw new Error("consultation letter storage is not configured");
+      },
+      async listFutureLetters() {
+        console.error("[storage/user-submissions] durable storage is unavailable for future letters", detail);
+        return [];
+      },
+      async saveFutureLetter() {
+        console.error("[storage/user-submissions] durable storage is unavailable for future letter saves", detail);
+        throw new Error("future letter storage is not configured");
       },
     };
   }
@@ -255,6 +327,30 @@ export async function saveStoredConsultationLetter(
     await storageAdapter.saveConsultationLetter(entry, limit);
   } catch (error) {
     logStorageFailure("failed to save consultation letter", error, { letterId: entry.id });
+    throw error;
+  }
+}
+
+export async function listStoredFutureLetters(
+  user: string,
+  deliverDate: string
+): Promise<StoredFutureLetterSubmission[]> {
+  try {
+    return await storageAdapter.listFutureLetters(user, deliverDate);
+  } catch (error) {
+    logStorageFailure("failed to load future letters", error);
+    throw error;
+  }
+}
+
+export async function saveStoredFutureLetter(
+  entry: StoredFutureLetterSubmission,
+  limit: number
+): Promise<void> {
+  try {
+    await storageAdapter.saveFutureLetter(entry, limit);
+  } catch (error) {
+    logStorageFailure("failed to save future letter", error, { letterId: entry.id });
     throw error;
   }
 }

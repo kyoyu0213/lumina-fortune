@@ -112,7 +112,7 @@ const recordsSection: SectionGroup = {
   eyebrow: "Records",
   title: "白の書庫",
   description: "読みものと待ち受け",
-  backgroundImage: "/gazou/IMG_4219.webp",
+  backgroundImage: "/gazou/hondana.png",
   backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,251,243,0.56),rgba(247,241,231,0.62))]",
   items: [
     { title: "白の庭の記録", description: "白の館とルミナについて", href: "/library/records", ctaLabel: "" },
@@ -399,9 +399,9 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
             className="relative overflow-hidden rounded-[2.25rem] border border-[#e6dac7]/85 px-6 py-8 shadow-[0_24px_44px_-34px_rgba(82,69,53,0.35)] sm:px-10 sm:py-10"
           >
             <div className="pointer-events-none absolute inset-0">
-              <Image src="/gazou/yakata.jpg" alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 1200px" priority />
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,253,248,0.94),rgba(246,238,226,0.84))]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.72),transparent_52%)]" />
+              <Image src="/gazou/yakata2.png" alt="" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 1200px" priority />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,253,248,0.82),rgba(246,238,226,0.7))]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.5),transparent_52%)]" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center text-center">
@@ -487,7 +487,15 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                   共有する
                 </button>
               </div>
-              <p className="mt-2 text-sm leading-6 text-[#5e5549]">こんにちは、{visitorName}さん</p>
+              <div className="mt-2 flex items-center gap-2">
+                <p className="text-sm leading-6 text-[#5e5549]">こんにちは、{visitorName}さん</p>
+                <Link
+                  href="/profile"
+                  className="shrink-0 rounded-full border border-[#ddd0b8]/80 bg-white/60 px-2.5 py-0.5 text-[11px] text-[#8a7a64] transition hover:bg-[#fff8ed]"
+                >
+                  {visitorName === "ゲスト" ? "登録" : "変更"}
+                </Link>
+              </div>
               <p className="mt-1 whitespace-pre-line text-sm leading-6 text-[#5e5549]">今日は{dailyWhisper}</p>
             </article>
 

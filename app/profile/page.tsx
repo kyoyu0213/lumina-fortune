@@ -149,14 +149,58 @@ export default function ProfilePage() {
     document.cookie = `${MONTHLY_BIRTH_COOKIE_KEY}=${encodedBirthdate}; ${cookieBase}`;
     document.cookie = `${PROFILE_UPDATED_AT_COOKIE_KEY}=${encodeURIComponent(profile.updatedAt ?? "")}; ${cookieBase}`;
     setErrorMessage("");
-    setSavedMessage("あなたの灯りを受け取りました。これからは、あなたに合わせて言葉を紡ぎます。");
+    setSavedMessage("saved");
     setIsSaving(true);
-
-    window.setTimeout(() => {
-      router.refresh();
-      router.push("/");
-    }, 1200);
+    router.refresh();
   };
+
+  const birthdateFortuneLinks = [
+    { label: "2026年の運勢", href: "/fortune-yearly" },
+    { label: "毎月の運勢", href: "/fortune-monthly" },
+    { label: "基本性格", href: "/basic-personality" },
+    { label: "婚期占い", href: "/marriage-timing" },
+  ];
+
+  if (savedMessage === "saved") {
+    return (
+      <PageShell
+        maxWidth="narrow"
+        title="プロフィール登録"
+        backHref="/"
+        backLabel="トップへ戻る"
+        className="font-serif"
+      >
+        <GlassCard className="rounded-3xl">
+          <p className="text-xs tracking-[0.14em] text-[#8a7a64]">登録完了</p>
+          <h2 className="mt-3 text-xl font-medium text-[#2e2a26]">あなたの灯りを受け取りました</h2>
+          <p className="mt-3 text-sm leading-7 text-[#544c42]">
+            生年月日での占い項目の鑑定結果が自動表示されるようになりました。
+          </p>
+
+          <div className="mt-5">
+            <p className="text-sm font-medium text-[#3b352f]">早速見る</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {birthdateFortuneLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-xl border border-[#e6d8bf] bg-[linear-gradient(160deg,rgba(255,252,246,0.96),rgba(246,238,225,0.92))] px-4 py-3 text-sm text-[#5f564a] shadow-[0_12px_28px_-24px_rgba(116,94,70,0.32)] transition hover:border-[#d9c8a8] hover:bg-[#fffaf2]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Link href="/" className="lumina-btn lumina-btn-secondary rounded-xl px-6">
+              トップへ戻る
+            </Link>
+          </div>
+        </GlassCard>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell
@@ -241,7 +285,6 @@ export default function ProfilePage() {
           </div>
 
           {errorMessage ? <p className="text-sm text-[#8b5e5e]">{errorMessage}</p> : null}
-          {savedMessage ? <p className="text-sm text-[#2f6f50]">{savedMessage}</p> : null}
 
           <div className="flex flex-wrap gap-3 pt-2">
             <LuminaButton type="submit" disabled={isSaving} className="rounded-xl px-6">
