@@ -35,7 +35,8 @@
       "Bash(do npx:*)",
       "Bash(node -e \"const d=require\\(''./scripts/.monthly-gen-progress.json''\\); console.log\\(''Total:'', Object.keys\\(d\\).length\\)\")",
       "Bash(done)",
-      "Bash(node -e \"const d=require\\(''./scripts/.monthly-gen-progress.json''\\); console.log\\(''Total:'', Object.keys\\(d\\).length, ''/ 108''\\)\")"
+      "Bash(node -e \"const d=require\\(''./scripts/.monthly-gen-progress.json''\\); console.log\\(''Total:'', Object.keys\\(d\\).length, ''/ 108''\\)\")",
+      "Bash(npx vitest:*)"
     ]
   }
 }

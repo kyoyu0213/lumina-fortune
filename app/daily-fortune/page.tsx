@@ -575,6 +575,7 @@ export default function DailyFortunePage() {
     const parsed = parseDailyFortuneSections(fullText ?? "");
     return {
       intro: parsed.intro,
+      energy: parsed.energy,
       cardMeaning: parsed.cardMeaning,
       overallFlow: parsed.overallFlow,
       work: parsed.work,
@@ -583,11 +584,15 @@ export default function DailyFortunePage() {
       money: parsed.money,
       todayHitokoto: parsed.todayHitokoto,
       whiteHitokoto: parsed.whiteHitokoto || hakuMessage || "",
+      closing: parsed.closing,
     };
   }, [fullText, hakuMessage]);
   const detailSections = useMemo<FortuneSection[]>(() => {
     const sections: FortuneSection[] = [];
 
+    if (fortuneSections.energy) {
+      sections.push({ heading: "今日のエネルギー", text: fortuneSections.energy });
+    }
     if (fortuneSections.cardMeaning) {
       sections.push({ heading: "カードの意味", text: fortuneSections.cardMeaning });
     }
@@ -1308,6 +1313,9 @@ export default function DailyFortunePage() {
                       <h3 className="mt-1 text-base font-medium text-[#2e2a26]">白のひとこと</h3>
                       <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#544c42]">{fortuneSections.whiteHitokoto}</p>
                     </section>
+                  ) : null}
+                  {fortuneSections.closing ? (
+                    <p className="mt-5 text-center text-sm italic leading-relaxed text-[#8b7e6c]">{fortuneSections.closing}</p>
                   ) : null}
                   {false && fortuneSections.todayHitokoto ? (
                     <section className="mt-4 rounded-2xl border border-[#d9ccb3]/80 bg-[linear-gradient(160deg,rgba(255,251,245,0.94),rgba(246,237,223,0.9))] p-4 shadow-[0_14px_24px_-20px_rgba(96,80,60,0.22)] sm:p-5">

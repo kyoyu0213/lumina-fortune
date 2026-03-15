@@ -22,6 +22,7 @@ type DailyFortuneOutputContext = {
 };
 
 const INTRO_LABEL = "冒頭導入";
+const ENERGY_LABEL = "今日のエネルギー";
 const CARD_MEANING_LABEL = "カードの意味";
 const OVERALL_FLOW_LABEL = "今日の流れ";
 const WORK_FLOW_LABEL = "仕事・学び";
@@ -30,9 +31,11 @@ const ADVICE_LABEL = "アドバイス";
 const MONEY_LABEL = "金運";
 const TODAY_HITOKOTO_LABEL = "今日のひとこと";
 const WHITE_HITOKOTO_LABEL = "白のひとこと";
+const CLOSING_LABEL = "クロージング";
 
 const ALL_LABELS = [
   INTRO_LABEL,
+  ENERGY_LABEL,
   CARD_MEANING_LABEL,
   OVERALL_FLOW_LABEL,
   WORK_FLOW_LABEL,
@@ -41,10 +44,12 @@ const ALL_LABELS = [
   MONEY_LABEL,
   TODAY_HITOKOTO_LABEL,
   WHITE_HITOKOTO_LABEL,
+  CLOSING_LABEL,
 ];
 
 export type DailyFortuneSections = {
   intro: string;
+  energy: string;
   cardMeaning: string;
   overallFlow: string;
   work: string;
@@ -53,6 +58,7 @@ export type DailyFortuneSections = {
   money: string;
   todayHitokoto: string;
   whiteHitokoto: string;
+  closing: string;
 };
 
 const BLOCKED_PHRASES = [
@@ -1423,6 +1429,7 @@ function buildStructuredFortune(text: string, cards: LiteCard[], context: DailyF
 type DailyFortuneJson = {
   summary?: string;
   intro?: string;
+  energy?: string;
   cardMeaning?: string;
   overallFlow?: string;
   workStudy?: string;
@@ -1431,6 +1438,7 @@ type DailyFortuneJson = {
   money?: string | null;
   todayHint?: string;
   whiteHint?: string;
+  closing?: string;
 };
 
 function tryParseFortuneJson(text: string): DailyFortuneJson | null {
@@ -1482,6 +1490,7 @@ function buildFromJson(
   const main = cards[0] ?? { name: "世界", reversed: false };
 
   const intro = buildIntroText(cards, context);
+  const energy = json.energy?.trim() || "";
   const cardMeaning = json.cardMeaning?.trim() || fallbackCardMeaning(main, context);
   const overallFlow = json.overallFlow?.trim() || fallbackOverallFlow(main, context);
   const work = json.workStudy?.trim() || fallbackWorkParagraph(main, context);
@@ -1490,15 +1499,23 @@ function buildFromJson(
   const money = json.money?.trim() || (shouldShowMoney(main) ? fallbackMoney(main) : "");
   const todayHitokoto = json.todayHint?.trim() || fallbackTodayHitokoto(main, context);
   const whiteHitokoto = json.whiteHint?.trim() || fallbackWhiteHitokoto(main);
+  const closing = json.closing?.trim() || "";
 
   const sections = [
     `${INTRO_LABEL}\n${intro}`,
+  ];
+
+  if (energy) {
+    sections.push(`${ENERGY_LABEL}\n${energy}`);
+  }
+
+  sections.push(
     `${CARD_MEANING_LABEL}\n${cardMeaning}`,
     `${OVERALL_FLOW_LABEL}\n${overallFlow}`,
     `${WORK_FLOW_LABEL}\n${work}`,
     `${LOVE_FLOW_LABEL}\n${love}`,
     `${ADVICE_LABEL}\n${advice}`,
-  ];
+  );
 
   if (money) {
     sections.push(`${MONEY_LABEL}\n${money}`);
@@ -1506,6 +1523,10 @@ function buildFromJson(
 
   sections.push(`${TODAY_HITOKOTO_LABEL}\n${todayHitokoto}`);
   sections.push(`${WHITE_HITOKOTO_LABEL}\n${whiteHitokoto}`);
+
+  if (closing) {
+    sections.push(`${CLOSING_LABEL}\n${closing}`);
+  }
 
   return sections.join("\n\n");
 }
@@ -1551,6 +1572,7 @@ export function parseDailyFortuneSections(text: string): DailyFortuneSections {
   const normalized = normalize(text);
   return {
     intro: extractSection(normalized, INTRO_LABEL, labelsAfter(INTRO_LABEL)),
+    energy: extractSection(normalized, ENERGY_LABEL, labelsAfter(ENERGY_LABEL)),
     cardMeaning: extractSection(normalized, CARD_MEANING_LABEL, labelsAfter(CARD_MEANING_LABEL)),
     overallFlow: extractSection(normalized, OVERALL_FLOW_LABEL, labelsAfter(OVERALL_FLOW_LABEL)),
     work: extractSection(normalized, WORK_FLOW_LABEL, labelsAfter(WORK_FLOW_LABEL)),
@@ -1558,6 +1580,7 @@ export function parseDailyFortuneSections(text: string): DailyFortuneSections {
     advice: extractSection(normalized, ADVICE_LABEL, labelsAfter(ADVICE_LABEL)),
     money: extractSection(normalized, MONEY_LABEL, labelsAfter(MONEY_LABEL)),
     todayHitokoto: extractSection(normalized, TODAY_HITOKOTO_LABEL, labelsAfter(TODAY_HITOKOTO_LABEL)),
-    whiteHitokoto: extractSection(normalized, WHITE_HITOKOTO_LABEL, []),
+    whiteHitokoto: extractSection(normalized, WHITE_HITOKOTO_LABEL, labelsAfter(WHITE_HITOKOTO_LABEL)),
+    closing: extractSection(normalized, CLOSING_LABEL, []),
   };
 }
