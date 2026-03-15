@@ -109,7 +109,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// OpenAI形式のメッセージ配列をClaude API用に変換するヘルパー
+// メッセージ配列をClaude API用に変換して呼び出すヘルパー
 async function callClaude(
   messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
   options?: { jsonMode?: boolean }
@@ -1449,7 +1449,10 @@ export async function POST(request: Request) {
 
     return jsonChatResponse(responsePayload);
   } catch (error: unknown) {
-    console.error("OpenAIエラー:", error);
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const errStack = error instanceof Error ? error.stack : undefined;
+    console.error("[lumina] Claude API error:", errMsg);
+    if (errStack) console.error("[lumina] Stack:", errStack);
     return NextResponse.json(
       { error: "ルミナさんとの通信に失敗しました。" },
       { status: 500 }
