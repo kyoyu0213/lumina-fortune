@@ -610,25 +610,23 @@ export default async function ColumnDetailPage({ params }: PageProps) {
             const sectionImage = article.sectionImages?.[sectionIndex];
             return (
               <div key={section.id} className="mb-6">
-                {/* Section divider (ornamental between sections, not before the first) */}
-                {sectionIndex > 0 ? (
-                  sectionImage ? (
-                    <div className="mb-6 overflow-hidden rounded-2xl shadow-[0_10px_24px_-20px_rgba(82,69,53,0.18)]">
-                      <Image
-                        src={sectionImage.src}
-                        alt={sectionImage.alt}
-                        width={700}
-                        height={394}
-                        className="h-auto w-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="mb-6 flex items-center gap-4">
-                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/45 to-transparent" />
-                      <span className="text-[10px] text-[#c9a96e]/70">✦</span>
-                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/45 to-transparent" />
-                    </div>
-                  )
+                {/* Section divider or image between sections */}
+                {sectionImage ? (
+                  <div className="mb-6 overflow-hidden rounded-2xl shadow-[0_10px_24px_-20px_rgba(82,69,53,0.18)]">
+                    <Image
+                      src={sectionImage.src}
+                      alt={sectionImage.alt}
+                      width={700}
+                      height={394}
+                      className="h-auto w-full object-cover"
+                    />
+                  </div>
+                ) : sectionIndex > 0 ? (
+                  <div className="mb-6 flex items-center gap-4">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/45 to-transparent" />
+                    <span className="text-[10px] text-[#c9a96e]/70">✦</span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/45 to-transparent" />
+                  </div>
                 ) : null}
 
                 {/* Section card with background */}

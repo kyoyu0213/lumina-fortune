@@ -1,6 +1,6 @@
 import "server-only";
 
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import {
   getDailyWhisperByDate,
   getDailyWhispersForMonth,
@@ -253,31 +253,25 @@ function getFallbackWhisper(dateKey: string, monthlyMessages: string[]): string 
 }
 
 async function generateWhisperText(dateKey: string, monthlyMessages: string[]): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return getFallbackWhisper(dateKey, monthlyMessages);
   }
 
   try {
-    const openai = new OpenAI({ apiKey });
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.9,
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "daily_whisper",
-          schema: getSchema(),
-          strict: true,
-        },
-      },
+    const anthropic = new Anthropic({ apiKey });
+    const userPrompt = buildUserPromptWithHistory(dateKey, monthlyMessages);
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 256,
+      system: `${DAILY_WHISPER_SYSTEM_PROMPT}\n\n必ずJSONのみを返してください。説明文やマークダウンのコードブロック記法は使わないでください。スキーマ: ${JSON.stringify(getSchema())}`,
       messages: [
-        { role: "system", content: DAILY_WHISPER_SYSTEM_PROMPT },
-        { role: "user", content: buildUserPromptWithHistory(dateKey, monthlyMessages) },
+        { role: "user", content: userPrompt },
       ],
     });
 
-    const rawContent = completion.choices[0]?.message?.content?.trim();
+    const block = response.content[0];
+    const rawContent = block?.type === "text" ? block.text.trim() : "";
     if (!rawContent) {
       return getFallbackWhisper(dateKey, monthlyMessages);
     }

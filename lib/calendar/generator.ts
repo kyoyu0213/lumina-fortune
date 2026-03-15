@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import {
   CalendarMonthData,
   getMonthDateKeys,
@@ -7,7 +7,7 @@ import {
 } from "@/lib/calendar/types";
 import { loadCalendarMonth, saveCalendarMonth, sanitizeCalendarMonthData } from "@/lib/calendar/store";
 
-type OpenAIEntry = {
+type GeneratedEntry = {
   date: string;
   tag: string;
   message: string;
@@ -15,13 +15,13 @@ type OpenAIEntry = {
   affirmation: string;
 };
 
-type OpenAIMonthPayload = {
+type GeneratedMonthPayload = {
   month: string;
-  byNumber: Record<FortuneNumberKey, OpenAIEntry[]>;
+  byNumber: Record<FortuneNumberKey, GeneratedEntry[]>;
 };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 const generationLocks = new Map<string, Promise<CalendarMonthData>>();
@@ -124,7 +124,7 @@ function buildPrompt(month: string, dateKeys: string[]): string {
   ].join("\n");
 }
 
-function toMonthData(payload: OpenAIMonthPayload, month: string): CalendarMonthData {
+function toMonthData(payload: GeneratedMonthPayload, month: string): CalendarMonthData {
   const days = getMonthDateKeys(month);
   const byNumber: CalendarMonthData["byNumber"] = {
     "1": {},
@@ -171,24 +171,14 @@ async function generateCalendarMonthDataInternal(month: string): Promise<Calenda
   const dateKeys = getMonthDateKeys(month);
   const prompt = buildPrompt(month, dateKeys);
 
-  const completion = await Promise.race([
-    openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "lumina_calendar_month",
-          schema: getSchema(),
-          strict: true,
-        },
-      },
-      temperature: 0.7,
+  const systemPrompt = `あなたはJSONのみを返す生成器です。説明文は一切返さず、必ずスキーマどおりのJSONのみ返してください。マークダウンのコードブロック記法は使わないでください。\n\nスキーマ: ${JSON.stringify(getSchema())}`;
+
+  const response = await Promise.race([
+    anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 16384,
+      system: systemPrompt,
       messages: [
-        {
-          role: "system",
-          content:
-            "あなたはJSONのみを返す生成器です。説明文は一切返さず、必ずスキーマどおりのJSONのみ返してください。",
-        },
         {
           role: "user",
           content: prompt,
@@ -200,12 +190,13 @@ async function generateCalendarMonthDataInternal(month: string): Promise<Calenda
     ),
   ]);
 
-  const content = completion.choices[0]?.message?.content;
+  const block = response.content[0];
+  const content = block?.type === "text" ? block.text : "";
   if (!content) {
-    throw new Error("No content returned from OpenAI.");
+    throw new Error("No content returned from Claude.");
   }
 
-  const parsed = JSON.parse(content) as OpenAIMonthPayload;
+  const parsed = JSON.parse(content) as GeneratedMonthPayload;
   if (parsed.month !== month) {
     parsed.month = month;
   }
@@ -264,7 +255,7 @@ export async function getOrGenerateCalendarMonth(month: string, forceRegenerate 
 
   const promise = (async () => {
     try {
-      if (!process.env.OPENAI_API_KEY) {
+      if (!process.env.ANTHROPIC_API_KEY) {
         const fallback = buildFallbackCalendarMonthData(month);
         await saveCalendarMonth(fallback);
         return fallback;

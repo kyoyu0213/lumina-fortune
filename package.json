@@ -18,12 +18,12 @@
     "report:daily-lines": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" report-monthly-daily-lines.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-slot": "^1.2.4",
     "framer-motion": "^12.34.0",
     "html-to-image": "^1.11.13",
     "next": "16.1.6",
-    "openai": "^6.22.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

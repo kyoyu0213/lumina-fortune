@@ -31,6 +31,13 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
     lead: "今の状況がずっと続くわけではありません。",
     readMinutes: 7,
     heroImage: "/gazou/column/timing1.png",
+    sectionImages: {
+      0: { src: "/gazou/column/tenki/kawabe.png", alt: "川辺で佇む女性——手放しかけたとき、恋が動き出す" },
+      1: { src: "/gazou/column/tenki/hikkosi.png", alt: "新しい街への引っ越し——環境の変化が恋の転機になる" },
+      2: { src: "/gazou/column/tenki/Gim.png", alt: "ジムで自分を磨く女性——自分のために動き始めたとき" },
+      3: { src: "/gazou/column/tenki/kisetu.png", alt: "季節の変わり目——記念日や節目が恋を動かす" },
+      4: { src: "/gazou/column/tenki/mouitido.png", alt: "もう一度だけ——最後の一歩を踏み出す勇気" },
+    },
     preview: [
       "今の状況がずっと続くわけではありません。",
       "もう何週間も、何も変わらない。",
@@ -38,9 +45,6 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
       "毎日同じことを考えて、毎晩同じ不安を抱えて、「いつまでこの状態が続くんだろう」とスマホの画面を見つめている。",
     ],
     full: [
-      "もう何週間も、何も変わらない。",
-      "連絡は減ったまま。関係は曖昧なまま。あの人の気持ちもわからないまま。",
-      "毎日同じことを考えて、毎晩同じ不安を抱えて、「いつまでこの状態が続くんだろう」とスマホの画面を見つめている。",
       "占い動画を開いては、「転機」「動き出す」という言葉を探してしまう。少しでも希望が持てる何かを、今夜も探している。",
       "> 「もう動かないのかな、この恋」\n「私がなにかしないと、このまま終わるのかな」\n「でも、何をすればいいかわからない」",
       "——もし今、その真ん中にいるなら、知っておいてほしいことがあります。",
@@ -108,6 +112,15 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
     category: "失恋",
     lead: "彼が何も言ってくれないのは、気持ちがないからじゃないかもしれません。",
     readMinutes: 8,
+    sectionImages: {
+      0: { src: "/gazou/column/honki/Gemini_Generated_Image_i64g6zi64g6zi64g.png", alt: "ネイルを変えた小さな変化に気づく" },
+      1: { src: "/gazou/column/honki/Gemini_Generated_Image_dhuksddhuksddhuk.png", alt: "用事がないのに連絡してくる男性心理" },
+      2: { src: "/gazou/column/honki/Gemini_Generated_Image_sgjp3msgjp3msgjp.png", alt: "カフェで楽しく話すカップル——あなたの話を覚えている" },
+      3: { src: "/gazou/column/honki/Gemini_Generated_Image_mnaalbmnaalbmnaa.png", alt: "他の男の話に反応が変わる瞬間" },
+      4: { src: "/gazou/column/honki/Gemini_Generated_Image_p96oc9p96oc9p96o.png", alt: "桜並木を歩くカップル——あなたの前でだけ不器用になる" },
+      6: { src: "/gazou/column/honki/Gemini_Generated_Image_ckv6mnckv6mnckv6.png", alt: "遊園地デート——あなたのためだけに時間を作る" },
+      7: { src: "/gazou/column/honki/Gemini_Generated_Image_9xesj39xesj39xes.png", alt: "イルミネーションの夜に寄り添う——弱さを見せる信頼" },
+    },
     preview: [
       "彼が何も言ってくれないのは、気持ちがないからじゃないかもしれません。",
       "> 「好きなら、好きって言ってくれればいいのに」",
@@ -115,9 +128,6 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
       "態度はやさしいのに、はっきりしてくれない。なんとなく特別扱いされている気がするけど、気のせいかもしれない。期待していいのか、期待して傷つくのが怖いのか、もうわからない。",
     ],
     full: [
-      "> 「好きなら、好きって言ってくれればいいのに」",
-      "そう思ったこと、何度もあると思います。",
-      "態度はやさしいのに、はっきりしてくれない。なんとなく特別扱いされている気がするけど、気のせいかもしれない。期待していいのか、期待して傷つくのが怖いのか、もうわからない。",
       "> 「結局、私のこと好きなの？ どうでもいいの？」\n「はっきりしてくれないのが一番つらい」",
       "——その気持ち、すごくよくわかります。",
       "でも、男性は「好き」を言葉にするのが本当に苦手です。",

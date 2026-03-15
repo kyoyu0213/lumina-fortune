@@ -27,29 +27,25 @@ let createCallCount = 0;
 let hasUsedLightGuidanceTodayMock = false;
 let markLightGuidanceUsedCallCount = 0;
 
-class MockOpenAI {
-  chat = {
-    completions: {
-      create: async () => {
-        createCallCount += 1;
-        const payload: ChatCompletionPayload = {
-          choices: [
-            {
-              message: {
-                content: [
-                  "カード名: 太陽",
-                  "今日の読み:",
-                  "今は明るい流れに乗りやすい時期です。気負いすぎず、一歩ずつ進めば大丈夫です。",
-                  "行動のヒント:",
-                  "- まずは一つだけ着手する",
-                  "- 迷ったら安心できる選択を優先する",
-                ].join("\n"),
-              },
-            },
-          ],
-        };
-        return payload;
-      },
+class MockAnthropic {
+  messages = {
+    create: async () => {
+      createCallCount += 1;
+      return {
+        content: [
+          {
+            type: "text",
+            text: [
+              "カード名: 太陽",
+              "今日の読み:",
+              "今は明るい流れに乗りやすい時期です。気負いすぎず、一歩ずつ進めば大丈夫です。",
+              "行動のヒント:",
+              "- まずは一つだけ着手する",
+              "- 迷ったら安心できる選択を優先する",
+            ].join("\n"),
+          },
+        ],
+      };
     },
   };
 
@@ -66,8 +62,8 @@ moduleAny._load = function patchedLoad(
   parent: NodeModule | null,
   isMain: boolean
 ) {
-  if (request === "openai") {
-    return { __esModule: true, default: MockOpenAI };
+  if (request === "@anthropic-ai/sdk") {
+    return { __esModule: true, default: MockAnthropic };
   }
 
   if (request === "@/lib/light-guidance-usage") {

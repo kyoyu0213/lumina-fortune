@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import { saveConsultationLetter } from "@/lib/consultation-letters";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
 
@@ -8,8 +8,8 @@ type Body = {
   message?: string;
 };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 const LUMINA_LETTER_SYSTEM_PROMPT = `あなたは「ルミナ」として返信します。
@@ -30,8 +30,8 @@ function buildFallbackReply(nickname: string, message: string): string {
 }
 
 async function buildLuminaLetterReply(nickname: string, message: string): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) {
-    console.warn("[api/consultation-letter] OPENAI_API_KEY is not set; using fallback reply");
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.warn("[api/consultation-letter] ANTHROPIC_API_KEY is not set; using fallback reply");
     return buildFallbackReply(nickname, message);
   }
 
@@ -45,22 +45,23 @@ async function buildLuminaLetterReply(nickname: string, message: string): Promis
   ].join("\n");
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.7,
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1024,
+      system: LUMINA_LETTER_SYSTEM_PROMPT,
       messages: [
-        { role: "system", content: LUMINA_LETTER_SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
       ],
     });
 
-    const text = completion.choices[0]?.message?.content?.trim();
+    const block = response.content[0];
+    const text = block?.type === "text" ? block.text.trim() : "";
     if (!text) {
       return buildFallbackReply(nickname, message);
     }
     return text;
   } catch (error) {
-    console.error("[api/consultation-letter] failed to generate OpenAI reply; using fallback reply", {
+    console.error("[api/consultation-letter] failed to generate Claude reply; using fallback reply", {
       message: error instanceof Error ? error.message : String(error),
       name: error instanceof Error ? error.name : "unknown",
     });
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
       name: error instanceof Error ? error.name : "unknown",
       vercel: process.env.VERCEL === "1",
       nodeEnv: process.env.NODE_ENV,
-      hasOpenAiKey: Boolean(process.env.OPENAI_API_KEY),
+      hasAnthropicKey: Boolean(process.env.ANTHROPIC_API_KEY),
     });
     return NextResponse.json({ ok: false, error: "failed to save letter" }, { status: 500 });
   }

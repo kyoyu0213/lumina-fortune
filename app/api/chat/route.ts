@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import { isLuminaDevMode, luminaDevLog, luminaDevWarn } from "@/lib/config/lumina-dev";
 import { pickRandomCards as pickDailyFortuneCards } from "@/lib/fortune-data";
 import {
@@ -104,10 +104,38 @@ type ChatRouteResponse = {
   meta?: Record<string, unknown>;
 };
 
-// OpenAI初期化
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+// Anthropic初期化
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
+
+// OpenAI形式のメッセージ配列をClaude API用に変換するヘルパー
+async function callClaude(
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+  options?: { jsonMode?: boolean }
+): Promise<string> {
+  const systemMessages = messages.filter((m) => m.role === "system");
+  const nonSystemMessages = messages.filter((m) => m.role !== "system");
+  const systemPrompt = systemMessages.map((m) => m.content).join("\n\n");
+
+  // JSONモード時はシステムプロンプトに指示を追加
+  const finalSystem = options?.jsonMode
+    ? `${systemPrompt}\n\n必ずJSONのみを返してください。説明文やマークダウンのコードブロック記法は使わないでください。`
+    : systemPrompt;
+
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 4096,
+    system: finalSystem,
+    messages: nonSystemMessages.map((m) => ({
+      role: m.role as "user" | "assistant",
+      content: m.content,
+    })),
+  });
+
+  const block = response.content[0];
+  return block?.type === "text" ? block.text : "";
+}
 
 function getJstNowParts(base = new Date()) {
   const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
@@ -1194,7 +1222,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // OpenAI呼び出し
+    // Claude呼び出し
     const recentHistoryMessages = toRecentHistoryMessages(history);
     const completionMessages =
       resolvedMode === "chat"
@@ -1214,15 +1242,8 @@ export async function POST(request: Request) {
               { role: "user" as const, content: prompt },
             ];
 
-    let completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: completionMessages,
-      ...(resolvedMode === "daily-fortune" || resolvedMode === "fortune"
-        ? { response_format: { type: "json_object" as const } }
-        : {}),
-    });
-
-    let rawText = completion.choices[0].message?.content || "";
+    const isJsonMode = resolvedMode === "daily-fortune" || resolvedMode === "fortune";
+    let rawText = await callClaude(completionMessages, { jsonMode: isJsonMode });
     if (resolvedMode === "fortune") {
       luminaDevLog("[lumina] raw model response:", rawText);
     }
@@ -1246,12 +1267,7 @@ export async function POST(request: Request) {
         { role: "user" as const, content: rewrittenHealthPrompt },
       ];
       luminaDevWarn("[lumina] health rewrite route triggered");
-      completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: rewriteMessages,
-        response_format: { type: "json_object" as const },
-      });
-      rawText = completion.choices[0].message?.content || "";
+      rawText = await callClaude(rewriteMessages, { jsonMode: true });
       luminaDevLog("[lumina] raw model response after rewrite:", rawText);
     }
 
@@ -1276,12 +1292,7 @@ export async function POST(request: Request) {
         { role: "user" as const, content: rewrittenMarriagePrompt },
       ];
       luminaDevWarn("[lumina] marriage rewrite route triggered");
-      completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: rewriteMessages,
-        response_format: { type: "json_object" as const },
-      });
-      rawText = completion.choices[0].message?.content || "";
+      rawText = await callClaude(rewriteMessages, { jsonMode: true });
       luminaDevLog("[lumina] raw model response after marriage rewrite:", rawText);
     }
 
