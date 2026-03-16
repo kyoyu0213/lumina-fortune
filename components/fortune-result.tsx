@@ -248,7 +248,20 @@ export default function FortuneResult({
                 </div>
               ) : null}
 
-              <div className="mt-5 grid gap-4 lg:grid-cols-2">
+              {/* アイコン凡例 */}
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-xl border border-[#ead9c7]/60 bg-[#fffcf7] px-4 py-2.5 text-[11px] text-[#7a6b5a] sm:text-xs">
+                {([5, 4, 3, 2, 1] as const).map((level) => {
+                  const m = FLOW_LEVEL_META[level];
+                  return (
+                    <span key={level} className="flex items-center gap-1">
+                      <span className="text-sm">{m.icon}</span>
+                      <span>{m.label}</span>
+                    </span>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 grid gap-4 lg:grid-cols-2">
                 <DailyFlowColumn
                   title="前半"
                   entries={dailySections.firstHalf}
