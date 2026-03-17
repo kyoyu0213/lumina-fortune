@@ -53,6 +53,31 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "motokare-kimochi", title: "元彼の気持ち——別れた後も気になるあの人は、今なにを想っているのか" },
     { slug: "kidokumushi-dansei", title: "既読無視する男性の心の中で、本当は何が起きているのか" },
   ],
+  "enkyori-aenai-fuan": [
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "renai-tenki", title: "恋愛が動く5つのタイミング──止まっているように見える恋にも、転機は来る" },
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+  ],
+  "shitsuren-anata": [
+    { slug: "wakare-danjo-shinri", title: "別れた後の気持ちの変化──男女ですれ違う「悲しみのタイミング」と、復縁の可能性" },
+    { slug: "motokare-kimochi", title: "元彼の気持ち──別れた後も気になるあの人は、今なにを想っているのか" },
+    { slug: "fukuen-kanousei", title: "復縁できるカップルには共通点がある" },
+    { slug: "unmei-sign", title: "運命の人に出会う前に現れる7つのサイン──今のつらさは、始まりの合図かもしれない" },
+    { slug: "renai-tenki", title: "恋愛が動く5つのタイミング──止まっているように見える恋にも、転機は来る" },
+  ],
+  "motokare-renraku-zenchou": [
+    { slug: "motokare-kimochi", title: "元彼の気持ち——別れた後も気になるあの人は、今なにを想っているのか" },
+    { slug: "wakare-danjo-shinri", title: "別れた後の気持ちの変化——男女ですれ違う「悲しみのタイミング」と、復縁の可能性" },
+    { slug: "unmei-sign", title: "運命の人に出会う前に現れる7つのサイン——今のつらさは、始まりの合図かもしれない" },
+    { slug: "renai-tenki", title: "恋愛が動く5つのタイミング——止まっているように見える恋にも、転機は来る" },
+    { slug: "kidoku-yoru", title: "既読がつかない夜に読んでほしい話" },
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動——言葉にしない愛情の見つけ方" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "kidokumushi-dansei", title: "既読無視する男性の心の中で、本当は何が起きているのか" },
+  ],
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -144,6 +169,39 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "enkyori-aenai-fuan": {
+    title: "遠距離で会えない不安に押しつぶされそうな夜に──会えない時間が関係を壊すとは限らない - ルミナ",
+    description:
+      "遠距離恋愛の不安を抱えるあなたへ。会えない時間はつらい。でもその時間が二人の関係を壊すとは限らない理由と、今夜できることを白の魔女ルミナがお伝えします。",
+    openGraph: {
+      title: "遠距離で会えない不安に押しつぶされそうな夜に──会えない時間が関係を壊すとは限らない",
+      description:
+        "遠距離恋愛の不安を抱えるあなたへ。会えない時間はつらい。でもその時間が二人の関係を壊すとは限らない理由と、今夜できることを白の魔女ルミナがお伝えします。",
+      type: "article",
+    },
+  },
+  "shitsuren-anata": {
+    title: "失恋したあなたへ──あなたの魅力は、恋愛の結果では決まらない - ルミナ",
+    description:
+      "失恋の痛みの中にいるあなたへ。恋がうまくいかなかった＝魅力がない、ではありません。あなたの魅力は恋愛の結果では決まらない。白の魔女ルミナがやさしくお伝えします。",
+    openGraph: {
+      title: "失恋したあなたへ──あなたの魅力は、恋愛の結果では決まらない",
+      description:
+        "失恋の痛みの中にいるあなたへ。恋がうまくいかなかった＝魅力がない、ではありません。あなたの魅力は恋愛の結果では決まらない。白の魔女ルミナがやさしくお伝えします。",
+      type: "article",
+    },
+  },
+  "motokare-renraku-zenchou": {
+    title: "元彼から連絡が来る前に起きる7つの前兆｜あなたの直感は間違っていない - ルミナ",
+    description:
+      "元彼から連絡が来る前に現れる7つの前兆を紹介。夢に出る、匂いで思い出す、偶然の一致が続く——あなたの直感を信じてほしい理由を、白の魔女ルミナがやさしくお伝えします。",
+    openGraph: {
+      title: "元彼から連絡が来る前に起きる7つの前兆——あなたの直感は、きっと間違っていません",
+      description:
+        "元彼から連絡が来る前に現れる7つの前兆を紹介。夢に出る、匂いで思い出す、偶然の一致が続く——あなたの直感を信じてほしい理由を、白の魔女ルミナがやさしくお伝えします。",
+      type: "article",
+    },
+  },
   "kidoku-yoru": {
     title: "既読がつかない夜に読んでほしい話｜既読無視は終わりじゃない - ルミナ",
     description:
@@ -230,6 +288,33 @@ const ARTICLE_JSONLD: Record<string, object> = {
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
+  "enkyori-aenai-fuan": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "遠距離で会えない不安に押しつぶされそうな夜に──会えない時間が関係を壊すとは限らない",
+    description:
+      "遠距離恋愛の不安を抱えるあなたへ。会えない時間はつらい。でもその時間が二人の関係を壊すとは限らない理由と、今夜できることを白の魔女ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "shitsuren-anata": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "失恋したあなたへ──あなたの魅力は、恋愛の結果では決まらない",
+    description:
+      "失恋の痛みの中にいるあなたへ。恋がうまくいかなかった＝魅力がない、ではありません。あなたの魅力は恋愛の結果では決まらない。白の魔女ルミナがやさしくお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "motokare-renraku-zenchou": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "元彼から連絡が来る前に起きる7つの前兆——あなたの直感は、きっと間違っていません",
+    description:
+      "元彼から連絡が来る前に現れる7つの前兆を紹介。夢に出る、匂いで思い出す、偶然の一致が続く——あなたの直感を信じてほしい理由を、白の魔女ルミナがやさしくお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
   "kidoku-yoru": {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -289,7 +374,7 @@ function normalizeComparableText(input: string): string {
 }
 
 function shouldShowConsultationButton(slug: string, paragraph: string): boolean {
-  if (slug !== "for-your-heartbreak") return false;
+  if (slug !== "shitsuren-anata") return false;
 
   const normalized = normalizeText(paragraph);
   return normalized.includes("心の準備ができたら、ルミナの占いで") && normalized.includes("あなたに訪れる次の縁");
@@ -297,12 +382,12 @@ function shouldShowConsultationButton(slug: string, paragraph: string): boolean 
 
 function shouldShowAffirmationConsultationButton(slug: string, paragraph: string): boolean {
   if (
-    slug !== "work-failure-night" &&
-    slug !== "when-anxiety-wont-stop" &&
+    slug !== "shigoto-shippai" &&
+    slug !== "fuan-yoru" &&
     slug !== "when-wishes-dont-come-true" &&
-    slug !== "when-wishes-feel-far" &&
-    slug !== "why-fortune-telling-feels-accurate" &&
-    slug !== "for-you-who-wants-to-manifest"
+    slug !== "negai-kanawanai" &&
+    slug !== "uranai-ataru-chigai" &&
+    slug !== "hikiyose-negai"
   ) {
     return false;
   }
@@ -437,17 +522,17 @@ export default async function ColumnDetailPage({ params }: PageProps) {
   if (affirmationNormalized) {
     bodyParagraphs = bodyParagraphs.filter((paragraph, index) => {
       if (
-        slug !== "when-anxiety-wont-stop" &&
+        slug !== "fuan-yoru" &&
         slug !== "when-wishes-dont-come-true" &&
-        slug !== "when-wishes-feel-far" &&
-        slug !== "why-fortune-telling-feels-accurate" &&
-        slug !== "for-you-who-wants-to-manifest"
+        slug !== "negai-kanawanai" &&
+        slug !== "uranai-ataru-chigai" &&
+        slug !== "hikiyose-negai"
       ) {
         return true;
       }
       const normalized = normalizeComparableText(paragraph);
       const isTrailingDuplicate = index === bodyParagraphs.length - 1 && normalized === affirmationNormalized;
-      const isBrokenTodayLabel = slug === "for-you-who-wants-to-manifest" && normalized.includes("莉頑律縺ｮ縺ｲ縺ｨ縺薙→");
+      const isBrokenTodayLabel = slug === "hikiyose-negai" && normalized.includes("莉頑律縺ｮ縺ｲ縺ｨ縺薙→");
       return !(isTrailingDuplicate || isBrokenTodayLabel);
     });
   }
@@ -494,7 +579,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
     }
 
     if (block.type === "quote") {
-      const isClosingQuote = slug === "wakare-danjo-shinri" && index === totalCount - 1;
+      const isClosingQuote = false;
       return (
         <div key={`${article.slug}-quote-${index}`}>
           <blockquote className="rounded-xl border-l-[3px] border-[#c9a96e]/70 bg-[#fdf8ee] px-5 py-4 text-[0.95rem] italic leading-[2.2] text-[#4a4239]">
@@ -551,13 +636,13 @@ export default async function ColumnDetailPage({ params }: PageProps) {
         <header className="mb-6 overflow-hidden rounded-2xl border border-[#d8c8ab]/50 bg-white/85 shadow-[0_14px_32px_-20px_rgba(82,69,53,0.16)] backdrop-blur">
           {/* Eyecatch / Hero Image */}
           {article.heroImage ? (
-            <div className="overflow-hidden">
+            <div className="aspect-[16/9] overflow-hidden">
               <Image
                 src={article.heroImage}
                 alt={article.title}
                 width={700}
                 height={394}
-                className="h-auto w-full object-cover"
+                className="h-full w-full object-cover"
                 priority
               />
             </div>
@@ -649,7 +734,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           })}
         </article>
 
-        {/* 今日のひとこと */}
+        {/* 今日のひとこと + CTA統合 */}
         <section className="mb-6 rounded-2xl border border-[#d8c8ab]/50 bg-[linear-gradient(160deg,rgba(253,247,234,0.9),rgba(255,252,245,0.85))] p-6 shadow-[0_12px_28px_-20px_rgba(82,69,53,0.18)] sm:p-8">
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/40 to-transparent" />
@@ -659,21 +744,9 @@ export default async function ColumnDetailPage({ params }: PageProps) {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/40 to-transparent" />
           </div>
           <p className="mt-4 text-center text-[1rem] italic leading-[2] text-[#5a4f42]">{affirmation}</p>
-          {shouldShowAffirmationConsultationButton(article.slug, affirmation) ? (
-            <div className="mt-5 text-center">
-              <LuminaLinkButton href="/consultation" tone="secondary" className="px-5">
-                個人鑑定を依頼する
-              </LuminaLinkButton>
-            </div>
-          ) : null}
-        </section>
 
-        {/* CTA sections (unchanged logic) */}
-        {slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "renai-tenki" ? (
-          <section className="mb-6 rounded-2xl border border-[#d8c8ab]/50 bg-[linear-gradient(165deg,rgba(255,252,245,0.85),rgba(248,240,225,0.8))] p-6 shadow-[0_12px_28px_-20px_rgba(82,69,53,0.16)] sm:p-8">
-            <p className="text-center text-[0.92rem] leading-relaxed text-[#6f6556]">
-              あなたの恋の流れを、カードに聞いてみませんか。
-            </p>
+          {/* CTA buttons integrated */}
+          {(slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "renai-tenki" || slug === "shitsuren-anata" || slug === "enkyori-aenai-fuan") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kataomoi" tone="primary" className="px-5">
                 あなたの恋の流れを見てみる（片思い占い）
@@ -682,14 +755,8 @@ export default async function ColumnDetailPage({ params }: PageProps) {
                 あの人の本音を読み解く（あの人の気持ち占い）
               </LuminaLinkButton>
             </div>
-          </section>
-        ) : null}
-
-        {slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" ? (
-          <section className="mb-6 rounded-2xl border border-[#d8c8ab]/50 bg-[linear-gradient(165deg,rgba(255,252,245,0.85),rgba(248,240,225,0.8))] p-6 shadow-[0_12px_28px_-20px_rgba(82,69,53,0.16)] sm:p-8">
-            <p className="text-center text-[0.92rem] leading-relaxed text-[#6f6556]">
-              あの人の沈黙の奥にある気持ちを、カードに聞いてみませんか。
-            </p>
+          )}
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
@@ -698,14 +765,8 @@ export default async function ColumnDetailPage({ params }: PageProps) {
                 あなたの恋の流れを見てみる（片思い占い）
               </LuminaLinkButton>
             </div>
-          </section>
-        ) : null}
-
-        {slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" ? (
-          <section className="mb-6 rounded-2xl border border-[#d8c8ab]/50 bg-[linear-gradient(165deg,rgba(255,252,245,0.85),rgba(248,240,225,0.8))] p-6 shadow-[0_12px_28px_-20px_rgba(82,69,53,0.16)] sm:p-8">
-            <p className="text-center text-[0.92rem] leading-relaxed text-[#6f6556]">
-              あの人との間に残っている光を、カードに聞いてみませんか。
-            </p>
+          )}
+          {(slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" || slug === "motokare-renraku-zenchou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/fukuen" tone="primary" className="px-5">
                 復縁の可能性を見てみる（復縁占い）
@@ -714,8 +775,8 @@ export default async function ColumnDetailPage({ params }: PageProps) {
                 あの人の本音を読み解く（あの人の気持ち占い）
               </LuminaLinkButton>
             </div>
-          </section>
-        ) : null}
+          )}
+        </section>
 
         {/* 個人鑑定への導線（全コラム共通） */}
         <section className="mb-6 rounded-2xl border border-[#d8cde7]/50 bg-[linear-gradient(160deg,rgba(250,246,255,0.88),rgba(244,236,252,0.82))] p-6 shadow-[0_12px_28px_-20px_rgba(95,79,128,0.18)] sm:p-8">
