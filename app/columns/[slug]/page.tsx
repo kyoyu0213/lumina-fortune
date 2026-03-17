@@ -78,6 +78,20 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
     { slug: "kidokumushi-dansei", title: "既読無視する男性の心の中で、本当は何が起きているのか" },
   ],
+  "toshishita-dansei-honki-sign": [
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+    { slug: "enkyori-aenai-fuan", title: "遠距離で会えない不安に押しつぶされそうな夜に──会えない時間が関係を壊すとは限らない" },
+  ],
+  "dansei-tsumetaku-naru-riyuu": [
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+    { slug: "toshishita-dansei-honki-sign", title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+  ],
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -213,6 +227,28 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "toshishita-dansei-honki-sign": {
+    title: "年下男性の本気の5つのサイン｜脈ありの見分け方を占い師が解説 - ルミナ",
+    description:
+      "年下男性が本気で好きな年上女性にだけ見せる5つのサインを占い師ルミナが解説。LINEや態度に現れる脈ありの見分け方、年の差恋愛の不安を解消するヒントをお届けします。",
+    openGraph: {
+      title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？",
+      description:
+        "年下男性が本気で好きな年上女性にだけ見せる5つのサインを占い師ルミナが解説。LINEや態度に現れる脈ありの見分け方、年の差恋愛の不安を解消するヒントをお届けします。",
+      type: "article",
+    },
+  },
+  "dansei-tsumetaku-naru-riyuu": {
+    title: "男性が急に冷たくなる7つの理由｜嫌われたわけじゃない彼の本音を占い師が解説 - ルミナ",
+    description:
+      "昨日まで優しかった彼が急にそっけない。嫌われた？それとも…？男性が急に冷たくなる7つの理由と、そのときにやってはいけないこと・やるべきことを白の魔女ルミナがお伝えします。",
+    openGraph: {
+      title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること",
+      description:
+        "昨日まで優しかった彼が急にそっけない。嫌われた？それとも…？男性が急に冷たくなる7つの理由と、そのときにやってはいけないこと・やるべきことを白の魔女ルミナがお伝えします。",
+      type: "article",
+    },
+  },
 };
 
 const ARTICLE_JSONLD: Record<string, object> = {
@@ -321,6 +357,24 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "既読がつかない夜に読んでほしい話",
     description:
       "既読無視や既読スルーが続いて不安な夜に。返信こない時間の意味と、脈なしだと決めつけてしまう前に知ってほしいことを、やさしい言葉でお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "toshishita-dansei-honki-sign": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？",
+    description:
+      "年下男性が本気で好きな年上女性にだけ見せる5つのサインを占い師ルミナが解説。LINEや態度に現れる脈ありの見分け方、年の差恋愛の不安を解消するヒントをお届けします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "dansei-tsumetaku-naru-riyuu": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること",
+    description:
+      "昨日まで優しかった彼が急にそっけない。嫌われた？それとも…？男性が急に冷たくなる7つの理由と、そのときにやってはいけないこと・やるべきことを白の魔女ルミナがお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -756,7 +810,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）

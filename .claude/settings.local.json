@@ -36,7 +36,10 @@
       "Bash(node -e \"const d=require\\(''./scripts/.monthly-gen-progress.json''\\); console.log\\(''Total:'', Object.keys\\(d\\).length\\)\")",
       "Bash(done)",
       "Bash(node -e \"const d=require\\(''./scripts/.monthly-gen-progress.json''\\); console.log\\(''Total:'', Object.keys\\(d\\).length, ''/ 108''\\)\")",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(ls -la /c/Users/yuri3/lumina-fortune/app/columns/[slug]/)",
+      "Bash(ls -d /c/Users/yuri3/lumina-fortune/public/gazou/column/*/)",
+      "Bash(xargs -I {} basename {})"
     ]
   }
 }

@@ -8,6 +8,8 @@ import { LuminaButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
 import { listColumnArticles, listColumnCategories, type ColumnCategory } from "@/lib/columns";
 
+const ITEMS_PER_PAGE = 12;
+
 type FilterValue = "すべて" | ColumnCategory;
 const CATEGORY_LABELS: Record<string, string> = {
   仕事: "仕事",
@@ -33,8 +35,20 @@ function stripTitleEmoji(title: string): string {
 
 export default function ColumnsPage() {
   const [filter, setFilter] = useState<FilterValue>("すべて");
+  const [page, setPage] = useState(1);
   const categories = useMemo(() => listColumnCategories(), []);
   const articles = useMemo(() => listColumnArticles(filter), [filter]);
+
+  const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
+  const paginatedArticles = articles.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  const handleFilterChange = (newFilter: FilterValue) => {
+    setFilter(newFilter);
+    setPage(1);
+  };
 
   return (
     <PageShell
@@ -49,7 +63,7 @@ export default function ColumnsPage() {
           <LuminaButton
             type="button"
             tone={filter === "すべて" ? "primary" : "secondary"}
-            onClick={() => setFilter("すべて")}
+            onClick={() => handleFilterChange("すべて")}
           >
             すべて
           </LuminaButton>
@@ -58,7 +72,7 @@ export default function ColumnsPage() {
               key={category}
               type="button"
               tone={filter === category ? "primary" : "secondary"}
-              onClick={() => setFilter(category)}
+              onClick={() => handleFilterChange(category)}
             >
               {CATEGORY_LABELS[category] ?? category}
             </LuminaButton>
@@ -79,7 +93,7 @@ export default function ColumnsPage() {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {articles.map((article) => (
+        {paginatedArticles.map((article) => (
           <Link
             key={article.slug}
             href={`/columns/${article.slug}`}
@@ -110,6 +124,28 @@ export default function ColumnsPage() {
           </Link>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => {
+                setPage(p);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`flex h-9 w-9 items-center justify-center rounded-lg border text-sm font-medium transition ${
+                p === page
+                  ? "border-[#c9a96e] bg-[#c9a96e]/15 text-[#8b7340]"
+                  : "border-[#e1d5bf]/60 bg-white/60 text-[#7f725f] hover:border-[#d4c4a8] hover:bg-[#fff8ed]/80"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      )}
     </PageShell>
   );
 }
