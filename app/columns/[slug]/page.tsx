@@ -99,6 +99,27 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
     { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
   ],
+  "suki-to-shuchaku-no-chigai": [
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+    { slug: "shitsuren-anata", title: "失恋したあなたへ──あなたの魅力は、恋愛の結果では決まらない" },
+  ],
+  "aishou-couple": [
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "toshishita-dansei-honki-sign", title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？" },
+  ],
+  "myakuari-sign": [
+    { slug: "toshishita-dansei-honki-sign", title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+  ],
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -256,6 +277,39 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "aishou-couple": {
+    title: "相性がいいカップルの5つの共通点｜似ているより大切なことを占い師が解説 - ルミナ",
+    description:
+      "相性がいいカップルの共通点は「趣味が同じ」ではありません。本当に大切なのは、違いを受け入れて同じ方向を向けること。占いの現場で見てきた実例とともに解説します。",
+    openGraph: {
+      title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと",
+      description:
+        "相性がいいカップルの共通点は「趣味が同じ」ではありません。本当に大切なのは、違いを受け入れて同じ方向を向けること。占いの現場で見てきた実例とともに解説します。",
+      type: "article",
+    },
+  },
+  "myakuari-sign": {
+    title: "男性の脈ありサイン7つ｜好きな女性にだけ見せる行動を占い師が解説 - ルミナ",
+    description:
+      "彼のあの行動は脈あり？ 男性が本気で好きな女性にだけ見せる7つのサインを、占いの現場で見てきた実例とともに解説。あなたの恋が動き出すヒントがここにあります。",
+    openGraph: {
+      title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説",
+      description:
+        "彼のあの行動は脈あり？ 男性が本気で好きな女性にだけ見せる7つのサインを、占いの現場で見てきた実例とともに解説。あなたの恋が動き出すヒントがここにあります。",
+      type: "article",
+    },
+  },
+  "suki-to-shuchaku-no-chigai": {
+    title: "「好き」と「執着」の違いとは？自分の気持ちを整理する5つの問いかけ｜占い師が解説 - ルミナ",
+    description:
+      "好きなのか、執着なのか。その答えがわからなくて苦しい夜に。自分の気持ちの正体を知るための5つの問いかけと、今夜からできる感情の整理法を白の魔女ルミナがお伝えします。",
+    openGraph: {
+      title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ",
+      description:
+        "好きなのか、執着なのか。その答えがわからなくて苦しい夜に。自分の気持ちの正体を知るための5つの問いかけと、今夜からできる感情の整理法を白の魔女ルミナがお伝えします。",
+      type: "article",
+    },
+  },
   "dekiai-sareru-josei": {
     title: "彼に溺愛される女性が絶対にしない5つのこと｜愛される秘訣を占い師が解説 - ルミナ",
     description:
@@ -393,6 +447,33 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること",
     description:
       "昨日まで優しかった彼が急にそっけない。嫌われた？それとも…？男性が急に冷たくなる7つの理由と、そのときにやってはいけないこと・やるべきことを白の魔女ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "aishou-couple": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと",
+    description:
+      "相性がいいカップルの共通点は「趣味が同じ」ではありません。本当に大切なのは、違いを受け入れて同じ方向を向けること。占いの現場で見てきた実例とともに解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "myakuari-sign": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説",
+    description:
+      "彼のあの行動は脈あり？ 男性が本気で好きな女性にだけ見せる7つのサインを、占いの現場で見てきた実例とともに解説。あなたの恋が動き出すヒントがここにあります。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "suki-to-shuchaku-no-chigai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ",
+    description:
+      "好きなのか、執着なのか。その答えがわからなくて苦しい夜に。自分の気持ちの正体を知るための5つの問いかけと、今夜からできる感情の整理法を白の魔女ルミナがお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -679,17 +760,25 @@ export default async function ColumnDetailPage({ params }: PageProps) {
       );
     }
 
-    // 力のカードのイラストを本文前に挿入
-    const isStrengthCardParagraph = slug === "dekiai-sareru-josei" && block.content.startsWith("タロットの「力」のカードには");
+    // タロットカードのイラストを本文前にインライン挿入
+    type InlineCard = { src: string; alt: string } | null;
+    let inlineCard: InlineCard = null;
+    if (slug === "dekiai-sareru-josei" && block.content.startsWith("タロットの「力」のカードには")) {
+      inlineCard = { src: "/gazou/column/dekiai/666bc71f-1ad8-4731-9421-16057ab7d9f4.png", alt: "タロットカード「力」──優しく手を添えて猛獣を手なずける女性" };
+    } else if (slug === "suki-to-shuchaku-no-chigai" && block.content.startsWith("タロットに「硬貨の5」というカード")) {
+      inlineCard = { src: "/gazou/column/syucyaku/026e387b-3c50-44ce-acf9-042ae3831b81.png", alt: "タロットカード「硬貨の5」──すぐ後ろにある光に気づけない二人" };
+    } else if (slug === "suki-to-shuchaku-no-chigai" && block.content.startsWith("タロットに「悪魔」というカード")) {
+      inlineCard = { src: "/gazou/column/syucyaku/a16574bf-633e-47e9-8b98-fcc7853884c2.png", alt: "タロットカード「悪魔」──自分から鎖を握りしめている" };
+    }
 
     return (
       <div key={`${article.slug}-p-${index}`}>
-        {isStrengthCardParagraph ? (
+        {inlineCard ? (
           <div className="my-6 flex justify-center">
             <div className="w-[180px] overflow-hidden rounded-xl border border-[#d8c8ab]/50 shadow-[0_10px_24px_-16px_rgba(82,69,53,0.22)] sm:w-[220px]">
               <Image
-                src="/gazou/column/dekiai/666bc71f-1ad8-4731-9421-16057ab7d9f4.png"
-                alt="タロットカード「力」──優しく手を添えて猛獣を手なずける女性"
+                src={inlineCard.src}
+                alt={inlineCard.alt}
                 width={220}
                 height={330}
                 className="h-auto w-full"
@@ -863,7 +952,17 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {slug === "dekiai-sareru-josei" && (
+          {(slug === "suki-to-shuchaku-no-chigai" || slug === "myakuari-sign") && (
+            <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
+                あの人の本音を読み解く（あの人の気持ち占い）
+              </LuminaLinkButton>
+              <LuminaLinkButton href="/compatibility" tone="secondary" className="px-5">
+                ふたりの相性を見てみる（相性占い）
+              </LuminaLinkButton>
+            </div>
+          )}
+          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
                 ふたりの相性を見てみる（相性占い）
