@@ -117,7 +117,7 @@ const recordsSection: SectionGroup = {
   backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,251,243,0.56),rgba(247,241,231,0.62))]",
   items: [
     { title: "白の庭の記録", description: "白の館とルミナについて", href: "/library/records", ctaLabel: "" },
-    { title: "館の書棚（コラム）", description: "心を落ち着ける読み物", href: "/columns", ctaLabel: "" },
+    { title: "羽根ペンの部屋（コラム）", description: "心を落ち着ける読み物", href: "/columns", ctaLabel: "" },
     { title: "光の待ち受け", description: "静かな光を受け取る待ち受け", href: "/lucky-wallpapers", ctaLabel: "" },
     { title: "月灯りの間", description: "限定動画を公開", href: "/library/limited-video", ctaLabel: "" },
   ],

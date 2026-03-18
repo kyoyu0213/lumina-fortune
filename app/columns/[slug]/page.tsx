@@ -92,6 +92,13 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "toshishita-dansei-honki-sign", title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？" },
     { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
   ],
+  "dekiai-sareru-josei": [
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+    { slug: "toshishita-dansei-honki-sign", title: "年下の彼が見せる「本気」の5つのサイン──その愛情表現、見逃していませんか？" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+  ],
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -249,6 +256,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "dekiai-sareru-josei": {
+    title: "彼に溺愛される女性が絶対にしない5つのこと｜愛される秘訣を占い師が解説 - ルミナ",
+    description:
+      "溺愛される女性はテクニックを使っていない。むしろ「しないこと」に秘密がありました。彼にずっと愛される女性の在り方を、白の魔女ルミナが占いの現場から見えた実例とともにお伝えします。",
+    openGraph: {
+      title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした",
+      description:
+        "溺愛される女性はテクニックを使っていない。むしろ「しないこと」に秘密がありました。彼にずっと愛される女性の在り方を、白の魔女ルミナが占いの現場から見えた実例とともにお伝えします。",
+      type: "article",
+    },
+  },
 };
 
 const ARTICLE_JSONLD: Record<string, object> = {
@@ -375,6 +393,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること",
     description:
       "昨日まで優しかった彼が急にそっけない。嫌われた？それとも…？男性が急に冷たくなる7つの理由と、そのときにやってはいけないこと・やるべきことを白の魔女ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "dekiai-sareru-josei": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした",
+    description:
+      "溺愛される女性はテクニックを使っていない。むしろ「しないこと」に秘密がありました。彼にずっと愛される女性の在り方を、白の魔女ルミナが占いの現場から見えた実例とともにお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -681,7 +708,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
         <nav className="mb-5 flex items-center gap-1.5 text-[12px] text-[#a09484]">
           <Link href="/" className="transition hover:text-[#6f6556]">トップ</Link>
           <span aria-hidden>/</span>
-          <Link href="/columns" className="transition hover:text-[#6f6556]">館の書棚</Link>
+          <Link href="/columns" className="transition hover:text-[#6f6556]">羽根ペンの部屋</Link>
           <span aria-hidden>/</span>
           <span className="text-[#6f6556]">{article.title.length > 20 ? `${article.title.slice(0, 20)}...` : article.title}</span>
         </nav>
@@ -820,6 +847,16 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
+          {slug === "dekiai-sareru-josei" && (
+            <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
+                ふたりの相性を見てみる（相性占い）
+              </LuminaLinkButton>
+              <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="secondary" className="px-5">
+                あの人の本音を読み解く（あの人の気持ち占い）
+              </LuminaLinkButton>
+            </div>
+          )}
           {(slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" || slug === "motokare-renraku-zenchou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/fukuen" tone="primary" className="px-5">
@@ -893,7 +930,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
         {/* Bottom navigation */}
         <div className="flex items-center justify-center gap-4 pb-1">
           <LuminaLinkButton href="/columns" tone="secondary" className="px-6">
-            館の書棚に戻る
+            羽根ペンの部屋に戻る
           </LuminaLinkButton>
           <LuminaLinkButton href="/" tone="secondary" className="px-6">
             トップへ戻る

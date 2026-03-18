@@ -53,8 +53,8 @@ export default function ColumnsPage() {
   return (
     <PageShell
       maxWidth="wide"
-      title="館の書棚"
-      description="静かな夜に開ける、小さな読み物を集めた書棚です。"
+      title="羽根ペンの部屋"
+      description="ルミナが白い羽根ペンで綴った、あなたへの言葉たち。"
       backHref="/"
       backLabel="トップへ戻る"
     >
@@ -83,7 +83,7 @@ export default function ColumnsPage() {
       <div className="relative mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
         <Image
           src="/gazou/dokusyo.png"
-          alt="館の書棚"
+          alt="羽根ペンの部屋"
           width={1050}
           height={500}
           className="h-auto w-full object-cover"
@@ -91,6 +91,10 @@ export default function ColumnsPage() {
         />
         <div className="pointer-events-none absolute inset-0 bg-white/25" />
       </div>
+
+      <p className="mt-5 text-center text-[0.92rem] leading-[2] tracking-wide text-[#7f725f]">
+        ルミナが白い羽根ペンで綴った、あなたへの言葉たち。<br className="hidden sm:inline" />眠れない夜に、答えが見つからない日に、そっと開いてみてください。
+      </p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {paginatedArticles.map((article) => (
