@@ -120,6 +120,13 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
     { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
   ],
+  "sukisake-dansei": [
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+  ],
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -299,6 +306,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "sukisake-dansei": {
+    title: "好き避けする男性の5つの特徴｜嫌い避けとの見分け方を占い師が解説 - ルミナ",
+    description:
+      "彼にそっけない態度を取られて不安なあなたへ。それは嫌われたのではなく、好き避けかもしれません。好き避けする男性の5つの特徴と嫌い避けとの見分け方を、占いの現場から解説します。",
+    openGraph: {
+      title: "好き避けする男性の5つの特徴｜嫌い避けとの見分け方を占い師が解説",
+      description:
+        "彼にそっけない態度を取られて不安なあなたへ。それは嫌われたのではなく、好き避けかもしれません。好き避けする男性の5つの特徴と嫌い避けとの見分け方を、占いの現場から解説します。",
+      type: "article",
+    },
+  },
   "suki-to-shuchaku-no-chigai": {
     title: "「好き」と「執着」の違いとは？自分の気持ちを整理する5つの問いかけ｜占い師が解説 - ルミナ",
     description:
@@ -465,6 +483,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説",
     description:
       "彼のあの行動は脈あり？ 男性が本気で好きな女性にだけ見せる7つのサインを、占いの現場で見てきた実例とともに解説。あなたの恋が動き出すヒントがここにあります。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "sukisake-dansei": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "好き避けする男性の5つの特徴｜嫌われたと思ったら、実は好意だった",
+    description:
+      "彼にそっけない態度を取られて不安なあなたへ。それは嫌われたのではなく、好き避けかもしれません。好き避けする男性の5つの特徴と嫌い避けとの見分け方を、占いの現場から解説します。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -952,7 +979,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "suki-to-shuchaku-no-chigai" || slug === "myakuari-sign") && (
+          {(slug === "suki-to-shuchaku-no-chigai" || slug === "myakuari-sign" || slug === "sukisake-dansei") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
