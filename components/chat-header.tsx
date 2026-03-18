@@ -17,7 +17,7 @@ export function ChatHeader({ onBackToTop }: ChatHeaderProps) {
   }
 
   return (
-    <header className="relative z-20 border-b border-[#e1d5bf]/72 bg-[linear-gradient(160deg,rgba(255,252,246,0.86),rgba(248,242,231,0.8))] px-4 py-3 backdrop-blur-sm">
+    <header className="relative z-20 shrink-0 border-b border-[#e1d5bf]/72 bg-[linear-gradient(160deg,rgba(255,252,246,0.86),rgba(248,242,231,0.8))] px-4 py-3 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-white via-[#f9f5ec] to-[#efe8d8] ring-2 ring-[#e1d5bf]/75">

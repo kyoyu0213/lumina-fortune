@@ -553,7 +553,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative z-10 flex min-h-screen flex-col"
+            className="relative z-10 flex h-dvh flex-col overflow-hidden"
           >
             {isLuminaDevMode ? (
               <div className="pointer-events-none absolute right-4 top-4 z-20 rounded-full border border-[#d8c8a8]/80 bg-[#fff7e8]/90 px-3 py-1 text-[11px] tracking-[0.12em] text-[#8a775d]">

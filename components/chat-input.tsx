@@ -31,31 +31,23 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-t border-[#e1d5bf]/72 bg-[linear-gradient(160deg,rgba(255,252,246,0.86),rgba(248,242,231,0.8))] px-4 py-3 [padding-bottom:calc(0.75rem+env(safe-area-inset-bottom))] [padding-left:calc(1rem+env(safe-area-inset-left))] [padding-right:calc(1rem+env(safe-area-inset-right))] backdrop-blur-sm"
+      className="shrink-0 border-t border-[#e1d5bf]/72 bg-[linear-gradient(160deg,rgba(255,252,246,0.86),rgba(248,242,231,0.8))] px-4 py-2.5 [padding-bottom:calc(0.625rem+env(safe-area-inset-bottom))] [padding-left:calc(1rem+env(safe-area-inset-left))] [padding-right:calc(1rem+env(safe-area-inset-right))] backdrop-blur-sm"
     >
       <div className="mx-auto max-w-3xl">
-        <p className="mb-3 text-sm leading-relaxed text-[#6f6556]">
-          {"\u6c17\u306b\u306a\u308b\u3053\u3068\u3092\u3072\u3068\u3064\u9001\u3063\u3066\u304f\u3060\u3055\u3044\u3002\u30eb\u30df\u30ca\u304c\u30ab\u30fc\u30c9\u3067\u9759\u304b\u306b\u8aad\u307f\u89e3\u304d\u307e\u3059\u3002"}
-        </p>
-
-        <div className="mb-3">
-          <section className="rounded-2xl border border-[#e5d8c1]/72 bg-white/45 p-3">
-            <p className="text-xs font-medium tracking-[0.12em] text-[#8a7a64]">
-              {"\u3053\u3093\u306a\u3053\u3068\u3092\u30ab\u30fc\u30c9\u306b\u805e\u3051\u307e\u3059"}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {visiblePresetQuestions.map((example) => (
-                <button
-                  key={example}
-                  type="button"
-                  onClick={() => setValue(example)}
-                  className="rounded-full border border-[#dbcdb6]/78 bg-[#fcf7ee] px-3 py-1.5 text-left text-xs text-[#5d5449] transition hover:bg-[#f8f1e4]"
-                >
-                  {example}
-                </button>
-              ))}
-            </div>
-          </section>
+        {/* 質問例：横スクロール */}
+        <div className="mb-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-2 whitespace-nowrap pb-1">
+            {visiblePresetQuestions.map((example) => (
+              <button
+                key={example}
+                type="button"
+                onClick={() => setValue(example)}
+                className="shrink-0 rounded-full border border-[#dbcdb6]/78 bg-[#fcf7ee] px-3 py-1.5 text-xs text-[#5d5449] transition hover:bg-[#f8f1e4]"
+              >
+                {example}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex gap-2">
@@ -65,14 +57,14 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             onChange={(event) => setValue(event.target.value)}
             placeholder={"\u4f8b\uff1a\u5f7c\u306f\u79c1\u306e\u3053\u3068\u3092\u3069\u3046\u601d\u3063\u3066\u3044\u307e\u3059\u304b\uff1f"}
             disabled={disabled}
-            className="lumina-input min-w-0 flex-1 rounded-full px-4 py-3 text-[#2e2a26] placeholder:text-[#9a8f7e] focus:outline-none"
+            className="lumina-input min-w-0 flex-1 rounded-full px-4 py-2.5 text-[#2e2a26] placeholder:text-[#9a8f7e] focus:outline-none"
           />
           <motion.button
             type="submit"
             disabled={disabled || !value.trim()}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="lumina-btn lumina-btn-primary !w-auto shrink-0 px-4 py-3 sm:px-6 disabled:opacity-50"
+            className="lumina-btn lumina-btn-primary !w-auto shrink-0 px-4 py-2.5 sm:px-6 disabled:opacity-50"
           >
             {"\u9001\u4fe1"}
           </motion.button>
