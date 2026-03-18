@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
-import { listColumnArticles, listColumnCategories, type ColumnCategory } from "@/lib/columns";
+import { listColumnArticles, listColumnCategories, type ColumnCategory, type ColumnArticle } from "@/lib/columns";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -33,11 +33,53 @@ function stripTitleEmoji(title: string): string {
   return title.replace(/^📖\s*/, "");
 }
 
+/**
+ * 1ページ目だけ各カテゴリがバランスよく並ぶように並び替える。
+ * 非恋愛カテゴリの記事を先頭付近に分散配置する。
+ */
+function balanceFirstPage(articles: ColumnArticle[]): ColumnArticle[] {
+  const nonLove = articles.filter((a) => a.category !== "失恋");
+  const love = articles.filter((a) => a.category === "失恋");
+
+  if (nonLove.length === 0) return articles;
+
+  // 1ページ目用: 非恋愛記事を均等に挟み込む
+  const firstPageSize = ITEMS_PER_PAGE;
+  const result: ColumnArticle[] = [];
+  const nonLoveCopy = [...nonLove];
+  const loveCopy = [...love];
+
+  // 非恋愛記事を均等間隔で配置（2, 5, 8, 11番目あたり）
+  const interval = Math.max(2, Math.floor(firstPageSize / (nonLoveCopy.length + 1)));
+
+  let loveIdx = 0;
+  let nonLoveIdx = 0;
+  for (let i = 0; i < firstPageSize && (loveIdx < loveCopy.length || nonLoveIdx < nonLoveCopy.length); i++) {
+    if (nonLoveIdx < nonLoveCopy.length && i > 0 && i % interval === 1) {
+      result.push(nonLoveCopy[nonLoveIdx++]);
+    } else if (loveIdx < loveCopy.length) {
+      result.push(loveCopy[loveIdx++]);
+    } else if (nonLoveIdx < nonLoveCopy.length) {
+      result.push(nonLoveCopy[nonLoveIdx++]);
+    }
+  }
+
+  // 残りを追加（2ページ目以降）
+  while (loveIdx < loveCopy.length) result.push(loveCopy[loveIdx++]);
+  while (nonLoveIdx < nonLoveCopy.length) result.push(nonLoveCopy[nonLoveIdx++]);
+
+  return result;
+}
+
 export default function ColumnsPage() {
   const [filter, setFilter] = useState<FilterValue>("すべて");
   const [page, setPage] = useState(1);
   const categories = useMemo(() => listColumnCategories(), []);
-  const articles = useMemo(() => listColumnArticles(filter), [filter]);
+  const articles = useMemo(() => {
+    const raw = listColumnArticles(filter);
+    // フィルタが「すべて」のときだけバランス調整
+    return filter === "すべて" ? balanceFirstPage(raw) : raw;
+  }, [filter]);
 
   const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
   const paginatedArticles = articles.slice(
@@ -54,7 +96,7 @@ export default function ColumnsPage() {
     <PageShell
       maxWidth="wide"
       title="羽根ペンの部屋"
-      description="ルミナが白い羽根ペンで綴った、あなたへの言葉たち。"
+      description="ルミナが白い羽根ペンで綴った、あなたへの言葉たち。眠れない夜に、答えが見つからない日に、そっと開いてみてください。"
       backHref="/"
       backLabel="トップへ戻る"
     >
@@ -80,22 +122,6 @@ export default function ColumnsPage() {
         </div>
       </GlassCard>
 
-      <div className="relative mt-4 overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
-        <Image
-          src="/gazou/dokusyo.png"
-          alt="羽根ペンの部屋"
-          width={1050}
-          height={500}
-          className="h-auto w-full object-cover"
-          priority
-        />
-        <div className="pointer-events-none absolute inset-0 bg-white/25" />
-      </div>
-
-      <p className="mt-5 text-center text-[0.92rem] leading-[2] tracking-wide text-[#7f725f]">
-        ルミナが白い羽根ペンで綴った、あなたへの言葉たち。<br className="hidden sm:inline" />眠れない夜に、答えが見つからない日に、そっと開いてみてください。
-      </p>
-
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {paginatedArticles.map((article) => (
           <Link
@@ -112,6 +138,8 @@ export default function ColumnsPage() {
                   className="object-cover"
                   sizes="130px"
                 />
+                {/* 世界観に合わせたオーバーレイ */}
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,237,0.25),rgba(232,218,195,0.18))]" />
               </div>
             ) : null}
             <div className="flex flex-1 flex-col px-4 py-3.5">

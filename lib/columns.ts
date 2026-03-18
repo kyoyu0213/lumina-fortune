@@ -2107,6 +2107,13 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
     category: "失恋",
     lead: "溺愛される女性は、「愛される努力」をしていません。ただ、あることを「しない」だけなのです。",
     readMinutes: 12,
+    heroImage: "/gazou/column/dekiai/92f2fac1-57fa-465b-ad1b-f633405a83c6.png",
+    sectionImages: {
+      0: { src: "/gazou/column/dekiai/0b0eab38-db1e-4d34-9218-7ad7a4dbd2ce.png", alt: "愛される努力に疲れた女性──私ばかり頑張ってる" },
+      1: { src: "/gazou/column/dekiai/c1d7adca-3f56-43f1-a028-902c28c230a9.png", alt: "ベンチに座るカップル──尽くしすぎは愛を遠ざける" },
+      3: { src: "/gazou/column/dekiai/12f760cf-9071-4175-ae33-757c9b1c5768.png", alt: "公園で笑い合うカップル──素直な弱さこそ最強の魅力" },
+      5: { src: "/gazou/column/dekiai/d146b32a-03a3-4b54-af7b-51c676f4c789.png", alt: "鏡の前の女性と白い羽根──自分で自分を幸せにする" },
+    },
     preview: [
       "「どうすれば、もっと彼に大切にしてもらえるんだろう」",
       "そう思って「溺愛される女性 特徴」と検索した方、きっと多いのではないでしょうか。",

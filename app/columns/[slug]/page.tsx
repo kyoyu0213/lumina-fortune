@@ -679,8 +679,24 @@ export default async function ColumnDetailPage({ params }: PageProps) {
       );
     }
 
+    // 力のカードのイラストを本文前に挿入
+    const isStrengthCardParagraph = slug === "dekiai-sareru-josei" && block.content.startsWith("タロットの「力」のカードには");
+
     return (
       <div key={`${article.slug}-p-${index}`}>
+        {isStrengthCardParagraph ? (
+          <div className="my-6 flex justify-center">
+            <div className="w-[180px] overflow-hidden rounded-xl border border-[#d8c8ab]/50 shadow-[0_10px_24px_-16px_rgba(82,69,53,0.22)] sm:w-[220px]">
+              <Image
+                src="/gazou/column/dekiai/666bc71f-1ad8-4731-9421-16057ab7d9f4.png"
+                alt="タロットカード「力」──優しく手を添えて猛獣を手なずける女性"
+                width={220}
+                height={330}
+                className="h-auto w-full"
+              />
+            </div>
+          </div>
+        ) : null}
         <p className="text-[1rem] leading-[2.2] text-[#3a342c]">{renderInlineMarkdown(block.content)}</p>
         {shouldShowConsultationButton(article.slug, block.content) ? (
           <div className="mt-3">
