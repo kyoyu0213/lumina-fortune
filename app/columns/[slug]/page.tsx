@@ -160,6 +160,12 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
   ],
+  "enkyori-renai": [
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+    { slug: "taisetsu-ni-sareteinai", title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？" },
+    { slug: "kenntaiki-norikoeru", title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント" },
+    { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
+  ],
   "shokuba-renai": [
     { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
     { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
@@ -492,6 +498,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "enkyori-renai": {
+    title: "遠距離恋愛を乗り越える5つのコツ｜会えない時間の過ごし方を占い師が解説 - ルミナ",
+    description:
+      "遠距離恋愛は不安がつきもの。でも、会えない時間の過ごし方次第で二人の関係はもっと強くなれます。遠距離を乗り越えるための5つのコツを占い師がお伝えします。",
+    openGraph: {
+      title: "遠距離恋愛を乗り越える5つのコツ｜会えない時間が、二人を強くする",
+      description:
+        "遠距離恋愛は不安がつきもの。でも、会えない時間の過ごし方次第で二人の関係はもっと強くなれます。遠距離を乗り越えるための5つのコツを占い師がお伝えします。",
+      type: "article",
+    },
+  },
   "shokuba-renai": {
     title: "職場恋愛の片思い｜バレずに距離を縮める5つのステップを占い師が解説 - ルミナ",
     description:
@@ -766,6 +783,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "幸せなはずなのに不安──その気持ちの正体と、自分をゆるす5つの視点",
     description:
       "彼氏がいるのに不安。幸せなはずなのに満たされない。その気持ちの正体と、不安を感じる自分をゆるすための5つの視点を占い師ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "enkyori-renai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "遠距離恋愛を乗り越える5つのコツ｜会えない時間が、二人を強くする",
+    description:
+      "遠距離恋愛は不安がつきもの。でも、会えない時間の過ごし方次第で二人の関係はもっと強くなれます。遠距離を乗り越えるための5つのコツを占い師がお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -1275,7 +1301,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
