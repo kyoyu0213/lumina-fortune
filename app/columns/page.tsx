@@ -29,13 +29,15 @@ const CATEGORY_EMOJI: Record<string, string> = {
   占い: "🔮",
 };
 
+
 function stripTitleEmoji(title: string): string {
   return title.replace(/^📖\s*/, "");
 }
 
 /**
- * 1ページ目だけ各カテゴリがバランスよく並ぶように並び替える。
- * 非恋愛カテゴリの記事を先頭付近に分散配置する。
+ * 1ページ目に全カテゴリのコラムをバランスよく配置する。
+ * 非恋愛コラム（仕事・不安・願い・占い）を全て1ページ目に入れ、
+ * 残りの枠を恋愛コラムで埋める。恋愛一色に見えないようにする。
  */
 function balanceFirstPage(articles: ColumnArticle[]): ColumnArticle[] {
   const nonLove = articles.filter((a) => a.category !== "失恋");
@@ -43,30 +45,34 @@ function balanceFirstPage(articles: ColumnArticle[]): ColumnArticle[] {
 
   if (nonLove.length === 0) return articles;
 
-  // 1ページ目用: 非恋愛記事を均等に挟み込む
-  const firstPageSize = ITEMS_PER_PAGE;
+  // 1ページ目: 非恋愛を全部入れて、残り枠を恋愛で埋める
+  const loveForFirstPage = Math.max(0, ITEMS_PER_PAGE - nonLove.length);
   const result: ColumnArticle[] = [];
+
+  // 恋愛と非恋愛を交互に配置（非恋愛が均等に散らばるように）
   const nonLoveCopy = [...nonLove];
-  const loveCopy = [...love];
+  const loveCopy = love.slice(0, loveForFirstPage);
+  const loveRemaining = love.slice(loveForFirstPage);
 
-  // 非恋愛記事を均等間隔で配置（2, 5, 8, 11番目あたり）
-  const interval = Math.max(2, Math.floor(firstPageSize / (nonLoveCopy.length + 1)));
+  // 恋愛N件の間に非恋愛を均等に挟む
+  // 例: 恋愛5件 + 非恋愛7件 = 12件 → 1恋愛, 1非恋愛, 1恋愛, 1非恋愛...
+  let li = 0;
+  let ni = 0;
+  const ratio = nonLoveCopy.length > 0 ? loveCopy.length / nonLoveCopy.length : 999;
 
-  let loveIdx = 0;
-  let nonLoveIdx = 0;
-  for (let i = 0; i < firstPageSize && (loveIdx < loveCopy.length || nonLoveIdx < nonLoveCopy.length); i++) {
-    if (nonLoveIdx < nonLoveCopy.length && i > 0 && i % interval === 1) {
-      result.push(nonLoveCopy[nonLoveIdx++]);
-    } else if (loveIdx < loveCopy.length) {
-      result.push(loveCopy[loveIdx++]);
-    } else if (nonLoveIdx < nonLoveCopy.length) {
-      result.push(nonLoveCopy[nonLoveIdx++]);
+  for (let i = 0; i < ITEMS_PER_PAGE; i++) {
+    // 恋愛と非恋愛を交互に、比率に応じて配置
+    if (ni < nonLoveCopy.length && (li >= loveCopy.length || (li / Math.max(ni, 0.5)) >= ratio)) {
+      result.push(nonLoveCopy[ni++]);
+    } else if (li < loveCopy.length) {
+      result.push(loveCopy[li++]);
+    } else if (ni < nonLoveCopy.length) {
+      result.push(nonLoveCopy[ni++]);
     }
   }
 
-  // 残りを追加（2ページ目以降）
-  while (loveIdx < loveCopy.length) result.push(loveCopy[loveIdx++]);
-  while (nonLoveIdx < nonLoveCopy.length) result.push(nonLoveCopy[nonLoveIdx++]);
+  // 2ページ目以降: 残りの恋愛コラム
+  for (const a of loveRemaining) result.push(a);
 
   return result;
 }

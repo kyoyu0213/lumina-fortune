@@ -38,8 +38,17 @@ type ChatConversationState = {
   lightGuidanceCount?: number;
 };
 
+type StoredLightGuidanceSnapshot = {
+  dateKey: string;
+  userQuestion: string;
+  cards: TarotCardData[];
+  messageParts: ChatMessagePart[];
+  conversationState: ChatConversationState | null;
+};
+
 const FALLBACK_WELCOME = "Failed to load the welcome message. Please try again in a moment.";
 const FALLBACK_CHAT = "Something went wrong while getting a response. Please try again.";
+const LIGHT_GUIDANCE_DAILY_SNAPSHOT_KEY = "lumina-light-guidance-daily-snapshot";
 
 const FORTUNE_PART_DELAYS: Record<ChatMessagePart["type"], number> = {
   intro: 0,
@@ -137,6 +146,75 @@ function buildClientFallbackMessageParts(text: string, cards?: TarotCardData[] |
   ];
 }
 
+function isTarotCardData(value: unknown): value is TarotCardData {
+  if (!value || typeof value !== "object") return false;
+  const record = value as Record<string, unknown>;
+
+  return (
+    typeof record.id === "string" &&
+    typeof record.name === "string" &&
+    typeof record.meaning === "string" &&
+    typeof record.reversed === "boolean"
+  );
+}
+
+function isChatMessagePart(value: unknown): value is ChatMessagePart {
+  if (!value || typeof value !== "object") return false;
+  const record = value as Record<string, unknown>;
+
+  switch (record.type) {
+    case "intro":
+    case "reading-short":
+    case "reading-detail":
+      return typeof record.text === "string";
+    case "animation":
+      return record.animation === "white-bird-delivers-card";
+    case "card":
+      return (
+        typeof record.cardName === "string" &&
+        (record.orientation === "upright" || record.orientation === "reversed")
+      );
+    default:
+      return false;
+  }
+}
+
+function loadDailyLightGuidanceSnapshot(): StoredLightGuidanceSnapshot | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.localStorage.getItem(LIGHT_GUIDANCE_DAILY_SNAPSHOT_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<StoredLightGuidanceSnapshot>;
+    if (parsed.dateKey !== getJstDateKey()) {
+      window.localStorage.removeItem(LIGHT_GUIDANCE_DAILY_SNAPSHOT_KEY);
+      return null;
+    }
+    if (typeof parsed.userQuestion !== "string") return null;
+    if (!Array.isArray(parsed.cards) || !parsed.cards.every(isTarotCardData)) return null;
+    if (!Array.isArray(parsed.messageParts) || !parsed.messageParts.every(isChatMessagePart)) return null;
+
+    return {
+      dateKey: parsed.dateKey,
+      userQuestion: parsed.userQuestion,
+      cards: parsed.cards,
+      messageParts: parsed.messageParts,
+      conversationState:
+        parsed.conversationState && typeof parsed.conversationState === "object"
+          ? parsed.conversationState
+          : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function saveDailyLightGuidanceSnapshot(snapshot: StoredLightGuidanceSnapshot) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LIGHT_GUIDANCE_DAILY_SNAPSHOT_KEY, JSON.stringify(snapshot));
+}
+
 export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientProps) {
   const searchParams = useSearchParams();
   const initialAutoStartRef = useRef(false);
@@ -188,6 +266,24 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
   useEffect(() => clearFortuneStageTimeouts, [clearFortuneStageTimeouts]);
 
   const handleStart = useCallback(async () => {
+    const savedSnapshot = loadDailyLightGuidanceSnapshot();
+    if (savedSnapshot) {
+      const messageId = `fortune-restored-${savedSnapshot.dateKey}`;
+      const restoredMessage = createFortuneMessage(
+        messageId,
+        savedSnapshot.userQuestion,
+        savedSnapshot.cards,
+        savedSnapshot.messageParts,
+        favoriteIds
+      );
+
+      setStarted(true);
+      setMessages([{ ...restoredMessage, visiblePartCount: savedSnapshot.messageParts.length }]);
+      setConversationState(savedSnapshot.conversationState);
+      setIsTyping(false);
+      return;
+    }
+
     setStarted(true);
 
     const typingId = `typing-${Date.now()}`;
@@ -263,7 +359,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
     } finally {
       setIsTyping(false);
     }
-  }, []);
+  }, [favoriteIds]);
 
   const handleSend = useCallback(
     async (text: string) => {
@@ -362,7 +458,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
 
         if (!res.ok) throw new Error(data.error ?? FALLBACK_CHAT);
         setIsLuminaDevMode(Boolean(data.meta?.devMode));
-        setConversationState(data.conversationState ?? null);
+          setConversationState(data.conversationState ?? null);
 
         if (data.gate) {
           setMessages((prev) =>
@@ -433,6 +529,13 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
               readingText,
             });
           }
+          saveDailyLightGuidanceSnapshot({
+            dateKey: getJstDateKey(),
+            userQuestion: moderation.normalizedText,
+            cards: data.cards,
+            messageParts: normalizedMessageParts,
+            conversationState: data.conversationState ?? null,
+          });
 
           if (data.meta?.devMode) {
             console.log("[lumina] render state:", {

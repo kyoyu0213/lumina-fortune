@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { LuminaLinkButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
 import { TableOfContents } from "@/components/columns/table-of-contents";
+import { CardImageModal } from "@/components/columns/card-image-modal";
 import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
 
 const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
@@ -126,6 +127,70 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
     { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
     { slug: "honki-koudou", title: "男性が本気で好きな女性にだけ見せる8つの行動──言葉にしない愛情の見つけ方" },
+  ],
+  "ishiki-shitemorau": [
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+  ],
+  "aitai-josei": [
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+    { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+  ],
+  "dansei-chinmoku": [
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン｜占い師が解説" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+    { slug: "dansei-tsumetaku-naru-riyuu", title: "男性が急に冷たくなる7つの理由──嫌われたわけじゃない。彼の心で起きていること" },
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+  ],
+  "kenntaiki-norikoeru": [
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴｜追いかけなくても選ばれる理由" },
+    { slug: "dansei-chinmoku", title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした" },
+  ],
+  "kenka-nakanaori": [
+    { slug: "dansei-chinmoku", title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません" },
+    { slug: "kenntaiki-norikoeru", title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める──あなたの気持ちを整理する5つの問いかけ" },
+  ],
+  "shokuba-renai": [
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
+    { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+  ],
+  "shiawase-nanoni-fuan": [
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "taisetsu-ni-sareteinai", title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？" },
+    { slug: "kenntaiki-norikoeru", title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
+  ],
+  "taisetsu-ni-sareteinai": [
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "dansei-chinmoku", title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "kenntaiki-norikoeru", title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント" },
+  ],
+  "tarot-renai": [
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
+    { slug: "taisetsu-ni-sareteinai", title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？" },
+    { slug: "uranai-ataru-chigai", title: "占いが当たる人と当たらない人の決定的な違い" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+  ],
+  "suuhijutsu-aishou": [
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚｜あなたの恋に寄り添うカードの意味" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "taisetsu-ni-sareteinai", title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？" },
+    { slug: "uranai-ataru-chigai", title: "占いが当たる人と当たらない人の決定的な違い" },
   ],
 };
 
@@ -339,6 +404,116 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "ishiki-shitemorau": {
+    title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なことを占い師が解説 - ルミナ",
+    description:
+      "好きな人に意識してもらいたい。でも駆け引きは苦手。そんなあなたに、テクニックではなく「あなたらしさ」で彼の心に残る5つの方法をお伝えします。",
+    openGraph: {
+      title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと",
+      description:
+        "好きな人に意識してもらいたい。でも駆け引きは苦手。そんなあなたに、テクニックではなく「あなたらしさ」で彼の心に残る5つの方法をお伝えします。",
+      type: "article",
+    },
+  },
+  "aitai-josei": {
+    title: "男性がまた会いたいと思う女性の5つの特徴｜追いかけなくても選ばれる理由を占い師が解説 - ルミナ",
+    description:
+      "男性がまた会いたいと思う女性には、共通する特徴があります。追いかけるのではなく、自然と選ばれる女性の5つの特徴を、占いの現場から解説します。",
+    openGraph: {
+      title: "男性が「また会いたい」と思う女性の5つの特徴｜追いかけなくても選ばれる理由",
+      description:
+        "男性がまた会いたいと思う女性には、共通する特徴があります。追いかけるのではなく、自然と選ばれる女性の5つの特徴を、占いの現場から解説します。",
+      type: "article",
+    },
+  },
+  "dansei-chinmoku": {
+    title: "男性が急に黙る5つの理由｜沈黙の心理を占い師が解説 - ルミナ",
+    description:
+      "彼が急に黙ってしまう。怒ってる？冷めた？──不安になるその沈黙、実は男性特有の心理が隠れています。男性が黙る5つの理由と、そのときの接し方を占い師が解説します。",
+    openGraph: {
+      title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません",
+      description:
+        "彼が急に黙ってしまう。怒ってる？冷めた？──不安になるその沈黙、実は男性特有の心理が隠れています。男性が黙る5つの理由と、そのときの接し方を占い師が解説します。",
+      type: "article",
+    },
+  },
+  "kenntaiki-norikoeru": {
+    title: "倦怠期の乗り越え方5つ｜マンネリは関係が深まるサインを占い師が解説 - ルミナ",
+    description:
+      "倦怠期はカップルの終わりではなく、関係が深まる入口です。ドキドキが減ったと感じたときに試してほしい5つのヒントを、占いの現場から解説します。",
+    openGraph: {
+      title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント",
+      description:
+        "倦怠期はカップルの終わりではなく、関係が深まる入口です。ドキドキが減ったと感じたときに試してほしい5つのヒントを、占いの現場から解説します。",
+      type: "article",
+    },
+  },
+  "kenka-nakanaori": {
+    title: "彼氏との喧嘩後の仲直り方法5つ｜関係を深めるきっかけに変える方法を占い師が解説 - ルミナ",
+    description:
+      "彼氏と喧嘩してしまった。仲直りしたいけど、どう切り出せばいいかわからない。喧嘩を関係が深まるきっかけに変える5つのステップを占い師が解説します。",
+    openGraph: {
+      title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ",
+      description:
+        "彼氏と喧嘩してしまった。仲直りしたいけど、どう切り出せばいいかわからない。喧嘩を関係が深まるきっかけに変える5つのステップを占い師が解説します。",
+      type: "article",
+    },
+  },
+  "taisetsu-ni-sareteinai": {
+    title: "彼氏に大切にされていないと感じたら｜愛情表現のすれ違いに気づく5つの視点 - ルミナ",
+    description:
+      "彼に大切にされていないと感じるとき、本当に足りないのは彼の愛情でしょうか。愛し方のすれ違いに気づく5つの視点を、占い師の視点からお伝えします。",
+    openGraph: {
+      title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？",
+      description:
+        "彼に大切にされていないと感じるとき、本当に足りないのは彼の愛情でしょうか。愛し方のすれ違いに気づく5つの視点を、占い師の視点からお伝えします。",
+      type: "article",
+    },
+  },
+  "tarot-renai": {
+    title: "恋愛占いでよく出るタロットカード7枚｜カードの意味と読み方を占い師が解説 - ルミナ",
+    description:
+      "恋愛占いでよく出るタロットカード7枚を厳選。それぞれのカードが恋愛においてどんなメッセージを持つのか、占い師が実例を交えてやさしく解説します。",
+    openGraph: {
+      title: "恋愛占いでよく出るタロットカード7枚｜あなたの恋に寄り添うカードの意味",
+      description:
+        "恋愛占いでよく出るタロットカード7枚を厳選。それぞれのカードが恋愛においてどんなメッセージを持つのか、占い師が実例を交えてやさしく解説します。",
+      type: "article",
+    },
+  },
+  "suuhijutsu-aishou": {
+    title: "数秘術で見る恋愛相性｜運命数でわかる二人の相性を占い師が解説 - ルミナ",
+    description:
+      "数秘術で恋愛の相性がわかるって本当？誕生日から計算する運命数の出し方と、各ナンバーの恋愛傾向、相性の見方をやさしく解説します。",
+    openGraph: {
+      title: "数秘術で見る恋愛相性｜誕生日でわかる、二人の本質的なつながり",
+      description:
+        "数秘術で恋愛の相性がわかるって本当？誕生日から計算する運命数の出し方と、各ナンバーの恋愛傾向、相性の見方をやさしく解説します。",
+      type: "article",
+    },
+  },
+  "shokuba-renai": {
+    title: "職場恋愛の片思い｜バレずに距離を縮める5つのステップを占い師が解説 - ルミナ",
+    description:
+      "職場で好きな人ができた。でもバレたくない、失敗したら気まずい。そんな悩みを持つあなたに、職場恋愛ならではの距離の縮め方を5つのステップでお伝えします。",
+    openGraph: {
+      title: "職場恋愛の片思い──バレずに距離を縮める5つのステップ",
+      description:
+        "職場で好きな人ができた。でもバレたくない、失敗したら気まずい。そんな悩みを持つあなたに、職場恋愛ならではの距離の縮め方を5つのステップでお伝えします。",
+      type: "article",
+    },
+  },
+  "shiawase-nanoni-fuan": {
+    title: "幸せなはずなのに不安な理由｜恋愛で満たされない気持ちの正体を占い師が解説 - ルミナ",
+    description:
+      "彼氏がいるのに不安。幸せなはずなのに満たされない。その気持ちの正体と、不安を感じる自分をゆるすための5つの視点を占い師ルミナがお伝えします。",
+    openGraph: {
+      title: "幸せなはずなのに不安──その気持ちの正体と、自分をゆるす5つの視点",
+      description:
+        "彼氏がいるのに不安。幸せなはずなのに満たされない。その気持ちの正体と、不安を感じる自分をゆるすための5つの視点を占い師ルミナがお伝えします。",
+      type: "article",
+    },
+  },
 };
 
 const ARTICLE_JSONLD: Record<string, object> = {
@@ -510,6 +685,96 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "彼に溺愛される女性が絶対にしない5つのこと──愛される秘訣は「頑張らない」ことでした",
     description:
       "溺愛される女性はテクニックを使っていない。むしろ「しないこと」に秘密がありました。彼にずっと愛される女性の在り方を、白の魔女ルミナが占いの現場から見えた実例とともにお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "ishiki-shitemorau": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと",
+    description:
+      "好きな人に意識してもらいたい。でも駆け引きは苦手。そんなあなたに、テクニックではなく「あなたらしさ」で彼の心に残る5つの方法をお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "aitai-josei": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "男性が「また会いたい」と思う女性の5つの特徴｜追いかけなくても選ばれる理由",
+    description:
+      "男性がまた会いたいと思う女性には、共通する特徴があります。追いかけるのではなく、自然と選ばれる女性の5つの特徴を、占いの現場から解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "dansei-chinmoku": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません",
+    description:
+      "彼が急に黙ってしまう。怒ってる？冷めた？──不安になるその沈黙、実は男性特有の心理が隠れています。男性が黙る5つの理由と、そのときの接し方を占い師が解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "kenntaiki-norikoeru": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント",
+    description:
+      "倦怠期はカップルの終わりではなく、関係が深まる入口です。ドキドキが減ったと感じたときに試してほしい5つのヒントを、占いの現場から解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "kenka-nakanaori": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ",
+    description:
+      "彼氏と喧嘩してしまった。仲直りしたいけど、どう切り出せばいいかわからない。喧嘩を関係が深まるきっかけに変える5つのステップを占い師が解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "taisetsu-ni-sareteinai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？",
+    description:
+      "彼に大切にされていないと感じるとき、本当に足りないのは彼の愛情でしょうか。愛し方のすれ違いに気づく5つの視点を、占い師の視点からお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "tarot-renai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "恋愛占いでよく出るタロットカード7枚｜あなたの恋に寄り添うカードの意味",
+    description:
+      "恋愛占いでよく出るタロットカード7枚を厳選。それぞれのカードが恋愛においてどんなメッセージを持つのか、占い師が実例を交えてやさしく解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "suuhijutsu-aishou": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "数秘術で見る恋愛相性｜誕生日でわかる、二人の本質的なつながり",
+    description:
+      "数秘術で恋愛の相性がわかるって本当？誕生日から計算する運命数の出し方と、各ナンバーの恋愛傾向、相性の見方をやさしく解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "shiawase-nanoni-fuan": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "幸せなはずなのに不安──その気持ちの正体と、自分をゆるす5つの視点",
+    description:
+      "彼氏がいるのに不安。幸せなはずなのに満たされない。その気持ちの正体と、不安を感じる自分をゆるすための5つの視点を占い師ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "shokuba-renai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "職場恋愛の片思い──バレずに距離を縮める5つのステップ",
+    description:
+      "職場で好きな人ができた。でもバレたくない、失敗したら気まずい。そんな悩みを持つあなたに、職場恋愛ならではの距離の縮め方を5つのステップでお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -796,22 +1061,48 @@ export default async function ColumnDetailPage({ params }: PageProps) {
       inlineCard = { src: "/gazou/column/syucyaku/026e387b-3c50-44ce-acf9-042ae3831b81.png", alt: "タロットカード「硬貨の5」──すぐ後ろにある光に気づけない二人" };
     } else if (slug === "suki-to-shuchaku-no-chigai" && block.content.startsWith("タロットに「悪魔」というカード")) {
       inlineCard = { src: "/gazou/column/syucyaku/a16574bf-633e-47e9-8b98-fcc7853884c2.png", alt: "タロットカード「悪魔」──自分から鎖を握りしめている" };
+    } else if (slug === "suuhijutsu-aishou") {
+      const numMap: Record<string, { src: string; alt: string }> = {
+        "自分の意思が強く、恋愛でもリード": { src: "/gazou/unmei/unmei1.png", alt: "運命数1──はじまりの灯火" },
+        "相手の気持ちに敏感で、二人の関係": { src: "/gazou/unmei/unmei2.png", alt: "運命数2──月影の調律者" },
+        "明るく社交的で、恋愛にもワクワク": { src: "/gazou/unmei/unmei3.png", alt: "運命数3──祝福の歌い手" },
+        "誠実で堅実。恋愛にも安定感を求め": { src: "/gazou/unmei/unmei4.png", alt: "運命数4──大地の守り手" },
+        "好奇心旺盛で、変化と刺激を楽しむ": { src: "/gazou/unmei/unmei5.png", alt: "運命数5──風を渡る旅人" },
+        "面倒見がよく、パートナーを全力で": { src: "/gazou/unmei/unmei6.png", alt: "運命数6──愛を育てる灯" },
+        "知的で内省的。表面的な関係よりも": { src: "/gazou/unmei/unmei7.png", alt: "運命数7──静寂の賢者" },
+        "目標に向かって全力で進むパワフル": { src: "/gazou/unmei/unmei8.png", alt: "運命数8──現実を築く王" },
+        "広い視野と深い共感力を持つタイプ": { src: "/gazou/unmei/unmei9.png", alt: "運命数9──終わりなき慈愛" },
+      };
+      for (const [prefix, card] of Object.entries(numMap)) {
+        if (block.content.startsWith(prefix)) {
+          inlineCard = card;
+          break;
+        }
+      }
+    } else if (slug === "taisetsu-ni-sareteinai" && block.content.startsWith("男性は、表情だけでは気持ちを察しづらいところがあるかもしれません")) {
+      inlineCard = { src: "/gazou/column/taisetu/1b4d5876-619c-412d-8ec7-f669343da74d.png", alt: "タロットカード「吊るされた男」──視点を変えることで見える光" };
+    } else if (slug === "tarot-renai") {
+      const tarotInlineMap: Record<string, { src: string; alt: string }> = {
+        "恋愛占いでいちばんよく登場するカードの一つが「恋人」": { src: "/gazou/column/renaidederutarot/06-the-lovers.jpg", alt: "タロットカード「恋人」" },
+        "女帝のカードが出たとき": { src: "/gazou/column/renaidederutarot/03-the-empress.jpg", alt: "タロットカード「女帝」" },
+        "力のカードには、女性がライオンの口を静かに": { src: "/gazou/column/renaidederutarot/08-strength.jpg", alt: "タロットカード「力」" },
+        "悪魔のカードが出ると、ドキッとする": { src: "/gazou/column/renaidederutarot/15-the-devil.jpg", alt: "タロットカード「悪魔」" },
+        "女教皇は、私ルミナがいちばん大切にしている": { src: "/gazou/column/renaidederutarot/02-the-high-priestess.jpg", alt: "タロットカード「女教皇」" },
+        "月のカードは、恋愛のご相談でとてもよく登場する": { src: "/gazou/column/renaidederutarot/18-the-moon.jpg", alt: "タロットカード「月」" },
+        "最後にご紹介するのは、タロットの中でいちばん幸せなカード": { src: "/gazou/column/renaidederutarot/19-the-sun.jpg", alt: "タロットカード「太陽」" },
+      };
+      for (const [prefix, card] of Object.entries(tarotInlineMap)) {
+        if (block.content.startsWith(prefix)) {
+          inlineCard = card;
+          break;
+        }
+      }
     }
 
     return (
       <div key={`${article.slug}-p-${index}`}>
         {inlineCard ? (
-          <div className="my-6 flex justify-center">
-            <div className="w-[180px] overflow-hidden rounded-xl border border-[#d8c8ab]/50 shadow-[0_10px_24px_-16px_rgba(82,69,53,0.22)] sm:w-[220px]">
-              <Image
-                src={inlineCard.src}
-                alt={inlineCard.alt}
-                width={220}
-                height={330}
-                className="h-auto w-full"
-              />
-            </div>
-          </div>
+          <CardImageModal src={inlineCard.src} alt={inlineCard.alt} size={slug === "suuhijutsu-aishou" ? "md" : "sm"} />
         ) : null}
         <p className="text-[1rem] leading-[2.2] text-[#3a342c]">{renderInlineMarkdown(block.content)}</p>
         {shouldShowConsultationButton(article.slug, block.content) ? (
@@ -910,6 +1201,20 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               <div key={section.id} className="mb-6">
                 {/* Section divider or image between sections */}
                 {sectionImage ? (
+                  sectionImage.src.includes("/renaidederutarot/") && !sectionImage.src.includes(".png") ? (
+                    /* タロットカード画像：カードサイズで中央表示 */
+                    <div className="mb-6 flex justify-center">
+                      <div className="w-[160px] overflow-hidden rounded-xl border border-[#d8c8ab]/50 shadow-[0_10px_24px_-16px_rgba(82,69,53,0.22)] sm:w-[200px]">
+                        <Image
+                          src={sectionImage.src}
+                          alt={sectionImage.alt}
+                          width={200}
+                          height={340}
+                          className="h-auto w-full"
+                        />
+                      </div>
+                    </div>
+                  ) : (
                   <div className="mb-6 overflow-hidden rounded-2xl shadow-[0_10px_24px_-20px_rgba(82,69,53,0.18)]">
                     <Image
                       src={sectionImage.src}
@@ -919,6 +1224,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
                       className="h-auto w-full object-cover"
                     />
                   </div>
+                  )
                 ) : sectionIndex > 0 ? (
                   <div className="mb-6 flex items-center gap-4">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4c4a8]/45 to-transparent" />
@@ -969,7 +1275,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
@@ -989,7 +1295,17 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple") && (
+          {slug === "tarot-renai" && (
+            <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <LuminaLinkButton href="/?start=tarot" tone="primary" className="px-5">
+                タロット占いを試してみる
+              </LuminaLinkButton>
+              <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="secondary" className="px-5">
+                あの人の本音を読み解く（あの人の気持ち占い）
+              </LuminaLinkButton>
+            </div>
+          )}
+          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
                 ふたりの相性を見てみる（相性占い）

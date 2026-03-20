@@ -11,115 +11,47 @@ import {
 
 const generationLocks = new Map<string, Promise<DailyWhisperRecord>>();
 
+/**
+ * ルミナらしい「今日のひとこと」──前向きな気づきや人生のヒントを
+ * やさしく、でも芯のある言葉で届ける。思わずシェアしたくなるような一言。
+ */
 const FALLBACK_WHISPERS = [
-  "薄明かりが背を押す日",
-  "月影が迷いをほどく気配",
-  "風紋が答えを運ぶ予感",
-  "白露が心を澄ます兆し",
-  "静かな扉が開くタイミング",
-  "灯芯に願いが宿るきっかけ",
-  "朝霧が歩幅を整える日",
-  "星屑が本音を照らす気配",
-  "水鏡に道筋が映る予感",
-  "羽音が追い風を告げる兆し",
-  "花雫が余白を満たすタイミング",
-  "銀糸が縁を結ぶきっかけ",
-  "凪いだ空に福音が差す日",
-  "琥珀の灯が揺らぐ気配",
-  "朝露に直感が宿る予感",
-  "舟影が流れを変える兆し",
-  "白波が縛りを解くタイミング",
-  "梢風が新章を呼ぶきっかけ",
-  "宵星が静けさを編む日",
-  "光粒がめぐりを寄せる気配",
-  "雲間に吉兆がひらく予感",
-  "鈴音が縁先を知らせる兆し",
-  "野花が視界を和らげるタイミング",
-  "真珠の息が満ちるきっかけ",
+  "人が変わるのを待つより、自分から変わるほうがずっと早い。そしてその変化は、必ず誰かに届きます",
+  "理想の自分と今の自分に差があるのは当たり前。焦らなくていい。その差こそが、あなたを前に進ませる力になるから",
+  "何かのせい、誰かのせいにしている間は、幸運の扉はなかなか開きません。手放した瞬間に、風が変わります",
+  "言葉だけの優しさは忘れられるけれど、行動で見せてくれた優しさは、ずっと胸に残ります",
+  "運気が変わる手前が、いちばんつらく苦しいもの。今がつらいなら、あと一歩で流れが変わるサインかもしれません",
+  "人を喜ばせることに夢中になれる人は、気づいたら自分もいちばん楽しくなっている。それが幸せの正体です",
+  "「私なんか」と思った瞬間、可能性の扉が一つ閉じてしまう。あなたの価値は、あなたが決めていいのです",
+  "うまくいかない日があるから、うまくいった日の喜びが何倍にもなる。今日の涙は、明日の笑顔の種です",
+  "誰かに愛されたいなら、まず自分を愛してあげてください。あなたが自分に向ける優しさが、周りにも広がっていきます",
+  "完璧じゃなくていい。完璧じゃないあなたを好きでいてくれる人が、本当に大切な人です",
+  "過去を変えることはできないけれど、過去の意味を変えることはできる。あの経験が今のあなたを作っています",
+  "「もう遅い」と思ったときが、実はいちばん早いタイミング。始めるのに遅すぎることなんてありません",
+  "比べるなら、他の誰かではなく、昨日の自分と。ほんの少しでも前に進めたなら、それで十分です",
+  "心配ごとの9割は実際には起こりません。今夜の不安は、明日の朝にはきっと小さくなっています",
+  "あなたが今日がんばったこと、誰も気づいていないように見えても、ちゃんと見ている人はいます",
+  "「ありがとう」は魔法の言葉。口に出すたびに、あなたの周りの空気がほんの少しあたたかくなります",
+  "弱さを見せられる人は、本当は誰よりも強い人。完璧なふりをしなくていいのです",
+  "答えが出ない夜は、答えを出さなくていい夜。焦らず、ただ呼吸を整えるだけで大丈夫",
+  "幸せは追いかけると逃げていく。でも、目の前のことを丁寧にしていると、いつの間にかそばにいます",
+  "あなたが「当たり前」だと思っていることは、誰かにとっての「ありえないほどの幸せ」かもしれません",
+  "嫌われることを恐れて自分を殺すより、ありのままで好かれる方がずっと楽で、ずっと幸せです",
+  "涙の数だけ優しくなれるのは本当。今つらい分だけ、あなたは誰かの痛みがわかる人になれます",
+  "待っているだけでは何も変わらない。でも「待つ」と決めた強さは、いつか必ず実を結びます",
+  "好きなことをしている時間は、人生のごほうび。忙しい毎日の中でも、その時間だけは手放さないでくださいね",
 ];
 
 const FORBIDDEN_TERMS = [
-  "カード",
-  "タロット",
-  "ルノルマン",
-  "大アルカナ",
-  "小アルカナ",
-  "ワンド",
-  "カップ",
-  "ソード",
-  "ペンタクル",
-  "愚者",
-  "魔術師",
-  "女教皇",
-  "女帝",
-  "皇帝",
-  "法王",
-  "恋人",
-  "戦車",
-  "力",
-  "隠者",
-  "運命の輪",
-  "正義",
-  "吊るされた男",
-  "死神",
-  "節制",
-  "悪魔",
-  "塔",
-  "星",
-  "月",
-  "太陽",
-  "審判",
-  "世界",
+  "カード", "タロット", "ルノルマン", "大アルカナ", "小アルカナ",
+  "ワンド", "カップ", "ソード", "ペンタクル",
 ];
-
-const ENDINGS = ["日", "気配", "予感", "兆し", "タイミング", "きっかけ"] as const;
-const METAPHOR_TERMS = [
-  "薄明かり",
-  "月影",
-  "風紋",
-  "白露",
-  "扉",
-  "灯芯",
-  "朝霧",
-  "星屑",
-  "水鏡",
-  "羽音",
-  "花雫",
-  "銀糸",
-  "凪いだ空",
-  "琥珀",
-  "朝露",
-  "舟影",
-  "白波",
-  "梢風",
-  "宵星",
-  "光粒",
-  "雲間",
-  "鈴音",
-  "野花",
-  "真珠",
-];
-const TERM_STOPWORDS = new Set([
-  "今日",
-  "明日",
-  "気持ち",
-  "心",
-  "流れ",
-  "静か",
-  "やさしさ",
-  "余白",
-  "答え",
-  "予感",
-  "気配",
-  "兆し",
-  "日",
-  "タイミング",
-  "きっかけ",
-]);
 
 const DAILY_WHISPER_SYSTEM_PROMPT = [
-  "あなたは「白の館 LUMINA」のトップページに表示する短い日替わりメッセージを書きます。",
-  "これは「今日のルミナのささやき」であり、毎日の占い本文とは別物です。",
+  "あなたは白の魔女ルミナです。",
+  "「白の館 LUMINA」のトップページに表示する、日替わりの「ルミナのささやき」を書きます。",
+  "占いの予言ではなく、読んだ人が「なるほど」と納得したり、前向きな気持ちになれる言葉を届けてください。",
+  "思わず誰かにシェアしたくなるような、心に残る一言です。",
   "JSONのみを返してください。",
 ].join("\n");
 
@@ -139,21 +71,39 @@ function buildUserPrompt(dateKey: string): string {
     `対象日: ${dateKey}`,
     "",
     "次の条件を守って、日本語で1つだけ生成してください。",
-    "- トップページ用の短い日別運勢",
-    "- 1日1文のみ",
-    "- 最大24文字",
-    "- 短く余韻のある文章",
-    "- 占いの雰囲気を保つ",
-    "- 静かでやわらかい語り口",
-    "- 改行しない",
-    "- 句点は付けなくてよい",
-    "- カード名や具体的な鑑定結果は出さない",
-    "- 恋愛や仕事など特定テーマに寄せすぎない",
-    "- 同月に使った単語を繰り返さない",
-    "- 同月に使った比喩表現を繰り返さない",
-    "- 語尾は「日 / 気配 / 予感 / 兆し / タイミング / きっかけ」から自然に選ぶ",
-    "- 同じ語尾を同月で3回以上使わない",
-    "- 返答はJSONの message に本文だけを入れる",
+    "",
+    "■ トーン",
+    "- 白の魔女ルミナが読者にそっと語りかけるような、やさしく芯のある言葉",
+    "- 占いの予言ではなく、人生の気づき・前向きなヒント・心が軽くなる視点",
+    "- 読んだ人が「なるほど」「確かに」と思わず頷いてしまうような言葉",
+    "- 思わずスクショしてシェアしたくなるような名言感",
+    "",
+    "■ 形式",
+    "- 1〜2文（40〜80文字程度）",
+    "- 改行は1回まで許可",
+    "- 句点（。）は使ってよい",
+    "- カード名や具体的な占い結果は出さない",
+    "- 「です・ます」調で統一",
+    "",
+    "■ テーマの例（ローテーションして偏らないようにする）",
+    "- 自分を変える勇気 / 自己肯定感 / 焦らなくていい",
+    "- 人間関係の知恵 / 優しさの本質 / 感謝の力",
+    "- つらい時期の乗り越え方 / 小さな幸せに気づく力",
+    "- 行動することの大切さ / 比較をやめる / 完璧主義を手放す",
+    "- 恋愛のヒント / 自分を大切にすること / 直感を信じる",
+    "",
+    "■ 避けること",
+    "- 抽象的すぎて何を言っているかわからない詩的表現",
+    "- 「光」「風」「星」「月」だけで構成されるふわっとした文",
+    "- 占い用語（カード名、アルカナ等）",
+    "- 説教臭い言い方・上から目線",
+    "",
+    "■ 良い例",
+    "- 「人が変わるのを待つより、自分から変わるほうがずっと早い。そしてその変化は、必ず誰かに届きます」",
+    "- 「完璧じゃなくていい。完璧じゃないあなたを好きでいてくれる人が、本当に大切な人です」",
+    "- 「心配ごとの9割は実際には起こりません。今夜の不安は、明日の朝にはきっと小さくなっています」",
+    "",
+    "返答はJSONの message に本文だけを入れてください。",
   ].join("\n");
 }
 
@@ -165,7 +115,7 @@ function buildUserPromptWithHistory(dateKey: string, monthlyMessages: string[]):
       ? [
           "同月の既存メッセージ:",
           ...monthlyMessages.map((message) => `- ${message}`),
-          "上記と単語・比喩・語尾が重ならない新作にしてください。",
+          "上記とテーマ・表現が重ならない新作にしてください。",
         ].join("\n")
       : "同月の既存メッセージはまだありません。",
   ].join("\n");
@@ -173,68 +123,38 @@ function buildUserPromptWithHistory(dateKey: string, monthlyMessages: string[]):
 
 function normalizeGeneratedMessage(message: string): string {
   const normalized = message
-    .replace(/\r\n/g, "")
-    .replace(/\n/g, "")
+    .replace(/\r\n/g, "\n")
     .replace(/[「」"]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/\n{2,}/g, "\n")
     .trim();
 
-  const firstSentence = normalized
-    .split(/(?<=[。！？])/)
-    .map((chunk) => chunk.trim())
-    .filter(Boolean)[0] ?? normalized;
+  // 最大2文まで許可
+  const lines = normalized.split("\n").filter(Boolean);
+  if (lines.length > 2) {
+    return lines.slice(0, 2).join("\n");
+  }
 
-  return firstSentence.replace(/[。！？]+$/g, "").trim();
-}
-
-function extractTerms(message: string): string[] {
-  return Array.from(message.matchAll(/[一-龠々ぁ-んァ-ヶー]{2,}/g))
-    .map((match) => match[0])
-    .filter((term) => !TERM_STOPWORDS.has(term));
-}
-
-function extractMetaphors(message: string): string[] {
-  return METAPHOR_TERMS.filter((term) => message.includes(term));
-}
-
-function resolveEnding(message: string): (typeof ENDINGS)[number] | null {
-  return ENDINGS.find((ending) => message.endsWith(ending)) ?? null;
+  return normalized;
 }
 
 function isValidWhisper(message: string, monthlyMessages: string[]): boolean {
   const compact = message.trim();
-  const compactLength = compact.length;
+  if (!compact) return false;
+
+  // 文字数チェック（改行込みで10〜120文字）
+  const charCount = compact.replace(/\n/g, "").length;
+  if (charCount < 10 || charCount > 120) return false;
+
+  // 行数チェック（最大2行）
   const lineCount = compact.split("\n").filter(Boolean).length;
+  if (lineCount > 2) return false;
 
-  if (!compact || compactLength > 24) {
-    return false;
-  }
-  if (lineCount !== 1) {
-    return false;
-  }
-  if (/[。！？].+[。！？]/.test(compact)) {
-    return false;
-  }
-  if (FORBIDDEN_TERMS.some((term) => compact.includes(term))) {
-    return false;
-  }
-  const currentTerms = new Set(extractTerms(compact));
-  const currentMetaphors = new Set(extractMetaphors(compact));
-  const currentEnding = resolveEnding(compact);
+  // 占い用語チェック
+  if (FORBIDDEN_TERMS.some((term) => compact.includes(term))) return false;
 
-  const previousTerms = new Set(monthlyMessages.flatMap((entry) => extractTerms(entry)));
-  const previousMetaphors = new Set(monthlyMessages.flatMap((entry) => extractMetaphors(entry)));
-  const endingCount = monthlyMessages.filter((entry) => resolveEnding(entry) === currentEnding).length;
+  // 同月の既存メッセージと完全一致チェック
+  if (monthlyMessages.some((existing) => existing === compact)) return false;
 
-  if ([...currentTerms].some((term) => previousTerms.has(term))) {
-    return false;
-  }
-  if ([...currentMetaphors].some((term) => previousMetaphors.has(term))) {
-    return false;
-  }
-  if (!currentEnding || endingCount >= 2) {
-    return false;
-  }
   return true;
 }
 
@@ -249,7 +169,7 @@ function getFallbackWhisper(dateKey: string, monthlyMessages: string[]): string 
     }
   }
 
-  return "月灯りが道を示す日";
+  return "あなたが今日がんばったこと、ちゃんと見ている人はいます";
 }
 
 async function generateWhisperText(dateKey: string, monthlyMessages: string[]): Promise<string> {

@@ -523,7 +523,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                   {visitorName === "ゲスト" ? "登録" : "変更"}
                 </Link>
               </div>
-              <p className="mt-1 whitespace-pre-line text-sm leading-6 text-[#5e5549]">今日は{dailyWhisper}</p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-6 text-[#5e5549]">{dailyWhisper}</p>
             </article>
 
             <article className="rounded-[1.8rem] border border-[#e2d6c0]/85 bg-[rgba(245,239,227,0.92)] px-4 py-3 shadow-[0_14px_28px_-24px_rgba(82,69,53,0.22)]">
