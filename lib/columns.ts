@@ -3309,6 +3309,14 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
     category: "失恋",
     lead: "距離は、二人の気持ちの強さを測るものさしではありません。会えない時間の過ごし方こそが、二人の未来を決めるのです。",
     readMinutes: 12,
+    heroImage: "/gazou/column/enkyorinookotu/2a7e0437-ecbc-4849-a42a-f2e2c7ee3a48.png",
+    sectionImages: {
+      1: { src: "/gazou/column/enkyorinookotu/fb272617-9cad-4467-b712-45e12aa29dbb.png", alt: "離れていても電話で笑い合う二人──連絡の頻度を決めておく" },
+      2: { src: "/gazou/column/enkyorinookotu/bb8bf77c-2537-4ff0-a6dc-b85e4001ce2d.png", alt: "ソファで読書を楽しむ女性──会えない時間を自分の時間として楽しむ" },
+      4: { src: "/gazou/column/enkyorinookotu/90326c90-255a-4211-9f87-35a6040c249c.png", alt: "久しぶりに会えて抱き合うカップル──会えた時間を全力で大切にする" },
+      7: { src: "/gazou/column/enkyorinookotu/0fc0a6a6-23df-4fd3-b1a1-73a977d9539c.png", alt: "カフェで手帳に将来の計画を書く二人──いつか一緒にいるための未来の話" },
+      8: { src: "/gazou/column/enkyorinookotu/195ce450-5103-4cd3-9d0c-da6da7bca7bd.png", alt: "ソファで寄り添い笑い合うカップル──距離を乗り越えた先にある幸せ" },
+    },
     preview: [
       "会いたいのに会えない。隣にいてほしいのに、画面越しでしか顔が見られない。友達のカップルが楽しそうにデートしているのを見ると、胸がぎゅっと痛くなる。──遠距離恋愛をしている方なら、一度は感じたことのある気持ちではないでしょうか。",
       "こんばんは、白の魔女ルミナです。",
