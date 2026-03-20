@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -159,12 +160,17 @@ export default function KataomoiClient() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isDailyLocked("unrequited_love")) {
+      setErrorMessage(DAILY_LIMIT_MESSAGE);
+      return;
+    }
     const nextQuestion = question.trim();
     if (!nextQuestion) {
       setErrorMessage("知りたいことを書いてから、カードを開いてください。");
       return;
     }
     setErrorMessage("");
+    markDailyUsed("unrequited_love");
     setSubmittedQuestion(nextQuestion);
   };
 

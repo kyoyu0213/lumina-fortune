@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -130,12 +131,17 @@ export default function KareNoKimochiClient() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isDailyLocked("their_feelings")) {
+      setErrorMessage(DAILY_LIMIT_MESSAGE);
+      return;
+    }
     const nextQuestion = question.trim();
     if (!nextQuestion) {
       setErrorMessage("あの人について知りたいことを書いてから、カードを開いてください。");
       return;
     }
     setErrorMessage("");
+    markDailyUsed("their_feelings");
     setSubmittedQuestion(nextQuestion);
   };
 

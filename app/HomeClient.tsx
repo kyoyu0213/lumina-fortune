@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
+import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
 
 import { FloatingFeathers } from "@/components/floating-feathers";
 import { WelcomeScreen } from "@/components/welcome-screen";
@@ -363,6 +364,21 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
 
   const handleSend = useCallback(
     async (text: string) => {
+      // 1日1回制限チェック
+      if (isDailyLocked("light_guidance_tarot")) {
+        setMessages((prev) => [
+          ...prev,
+          { id: `user-${Date.now()}`, sender: "user" as const, text, time: getCurrentTime() },
+          {
+            id: `lumina-limit-${Date.now()}`,
+            sender: "lumina" as const,
+            text: DAILY_LIMIT_MESSAGE,
+            time: getCurrentTime(),
+          },
+        ]);
+        return;
+      }
+
       const chatUserKey = getOrCreateChatVisitorKey();
       const moderation = runClientModerationCheck(text, chatUserKey, {
         maxLength: 500,
@@ -550,6 +566,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
           setMessages((prev) =>
             prev.map((m) => (m.id === typingId ? { ...fortuneMessage } : m))
           );
+          markDailyUsed("light_guidance_tarot");
           revealFortuneMessageParts(messageId, normalizedMessageParts);
         } else {
           if (data.meta?.devMode) {

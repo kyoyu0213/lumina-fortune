@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -152,6 +153,10 @@ export default function FukuenClient() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isDailyLocked("reconciliation")) {
+      setErrorMessage(DAILY_LIMIT_MESSAGE);
+      return;
+    }
 
     const nextQuestion = question.trim();
     if (!nextQuestion) {
@@ -160,6 +165,7 @@ export default function FukuenClient() {
     }
 
     setErrorMessage("");
+    markDailyUsed("reconciliation");
     setSubmittedQuestion(nextQuestion);
   };
 
