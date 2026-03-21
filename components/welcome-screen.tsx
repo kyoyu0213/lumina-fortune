@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { SpecialOccasionCard } from "@/components/special-occasion-card";
+import { listColumnArticles } from "@/lib/columns";
 import { BRAND } from "@/lib/brand";
 import { trackEvent } from "@/lib/analytics/track";
 import { getInitialBirthdate } from "@/lib/profile/getProfile";
@@ -343,6 +344,100 @@ type WelcomeScreenProps = {
   onStartTarot?: () => void;
 };
 
+/** 羽根ペンの部屋ショーケース（Top用：最新4本表示） */
+function ColumnShowcase() {
+  const articles = listColumnArticles().slice(0, 4);
+  if (articles.length === 0) return null;
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    仕事: "仕事", 失恋: "恋愛", 不安: "不安", 願い: "願い", 占い: "占い",
+  };
+
+  return (
+    <section id="column-showcase" className="relative mx-auto w-full max-w-6xl px-4">
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#ebe1cf]/80 bg-[rgba(255,252,247,0.58)] shadow-[0_18px_32px_-30px_rgba(82,69,53,0.24)] backdrop-blur-[1px] px-5 py-6 sm:px-8 sm:py-7">
+        <div className="pointer-events-none absolute inset-0">
+          <Image src="/gazou/syoko.png" alt="" fill className="object-cover opacity-[0.82]" sizes="(max-width: 768px) 100vw, 1200px" />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,251,243,0.56),rgba(247,241,231,0.62))]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(255,255,255,0.34),transparent_34%),radial-gradient(circle_at_86%_76%,rgba(231,214,181,0.18),transparent_28%)]" />
+        </div>
+
+        <div className="relative z-10">
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-[#8d7f69]">Column</p>
+            <h2 className="mt-2 text-2xl font-medium tracking-[0.04em] text-[#2f2a25] sm:text-[1.7rem]">羽根ペンの部屋</h2>
+            <p className="mt-1 text-sm leading-7 text-[#6b6053]">あなたの恋に寄り添う読みもの</p>
+          </motion.div>
+
+          {/* PC: 2×2グリッド / スマホ: 横スクロール */}
+          <div className="mt-5 hidden gap-3 sm:grid sm:grid-cols-2">
+            {articles.map((article) => (
+              <Link
+                key={article.slug}
+                href={`/columns/${article.slug}`}
+                className="group flex overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
+              >
+                {article.heroImage ? (
+                  <div className="relative h-auto w-[100px] shrink-0">
+                    <Image src={article.heroImage} alt="" fill className="object-cover" sizes="100px" />
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,237,0.25),rgba(232,218,195,0.18))]" />
+                  </div>
+                ) : null}
+                <div className="flex flex-1 flex-col px-3 py-3">
+                  <span className="self-start rounded-full border border-[#d8c8ab]/60 bg-[#fff8ed]/80 px-2 py-0.5 text-[10px] font-medium text-[#7f725f]">
+                    {CATEGORY_LABELS[article.category] ?? "コラム"}
+                  </span>
+                  <p className="mt-1 line-clamp-2 text-[0.82rem] font-medium leading-snug text-[#2e2a26] group-hover:text-[#4a3f2f]">
+                    {article.title}
+                  </p>
+                  <p className="mt-1 line-clamp-1 text-[0.75rem] text-[#8a7d6e]">
+                    {article.lead.slice(0, 50)}…
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* スマホ: 横スクロール */}
+          <div className="mt-5 flex gap-3 overflow-x-auto pb-2 sm:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {articles.map((article) => (
+              <Link
+                key={article.slug}
+                href={`/columns/${article.slug}`}
+                className="group flex w-[280px] shrink-0 overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
+              >
+                {article.heroImage ? (
+                  <div className="relative h-auto w-[90px] shrink-0">
+                    <Image src={article.heroImage} alt="" fill className="object-cover" sizes="90px" />
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,237,0.25),rgba(232,218,195,0.18))]" />
+                  </div>
+                ) : null}
+                <div className="flex flex-1 flex-col px-3 py-3">
+                  <span className="self-start rounded-full border border-[#d8c8ab]/60 bg-[#fff8ed]/80 px-2 py-0.5 text-[10px] font-medium text-[#7f725f]">
+                    {CATEGORY_LABELS[article.category] ?? "コラム"}
+                  </span>
+                  <p className="mt-1 line-clamp-2 text-[0.82rem] font-medium leading-snug text-[#2e2a26]">
+                    {article.title}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-5 text-center">
+            <Link
+              href="/columns"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#c6b497]/70 bg-[linear-gradient(160deg,rgba(255,252,246,0.96),rgba(247,239,226,0.92))] px-5 py-2.5 text-[13px] font-medium tracking-[0.02em] text-[#675b4a] shadow-[0_10px_22px_-18px_rgba(82,69,53,0.35)] transition hover:border-[#bca883]/85 hover:bg-[#faf3e7]"
+            >
+              すべてのコラムを読む →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onStartTarot }: WelcomeScreenProps) {
   const dailyWhisper = initialDailyWhisper?.trim() || DEFAULT_WHISPER_MESSAGE;
   const [featherNotice, setFeatherNotice] = useState<string | null>(null);
@@ -600,6 +695,8 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
           <CardSection section={loveFortuneSection} columns="two" />
 
           <CardSection section={fortuneSection} />
+
+          <ColumnShowcase />
 
           <CardSection section={recordsSection} columns="two" />
           <CardSection section={mansionSection} />
