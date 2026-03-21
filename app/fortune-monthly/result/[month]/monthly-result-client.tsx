@@ -84,12 +84,14 @@ export default function MonthlyResultClient({ month, initialBirthdate }: Props) 
       halfYearSectionTitle={`今月 ${month}月前半・後半`}
       firstHalfTitle={`${month}月前半`}
       secondHalfTitle={`${month}月後半`}
+      /* 一時非表示: 月ナビゲーション（有料化時に以下6行のコメントを外す）
       previousLinkHref={previousMonth ? `/fortune-monthly/result/${previousMonth}` : undefined}
       previousLinkLabel={previousMonth ? `${previousMonth}月へ` : undefined}
       bottomLinkHref="/fortune-monthly/result"
       bottomLinkLabel="月一覧を見る"
       nextLinkHref={nextMonth ? `/fortune-monthly/result/${nextMonth}` : undefined}
       nextLinkLabel={nextMonth ? `${nextMonth}月へ` : undefined}
+      */
     />
   );
 }

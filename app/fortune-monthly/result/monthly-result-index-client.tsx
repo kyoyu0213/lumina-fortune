@@ -45,7 +45,15 @@ export default function MonthlyResultIndexClient({ initialBirthdate }: Props) {
     if (!isHydrated && !initialBirthdate) return;
     if (!birthdate || !fortuneName) {
       router.replace("/fortune-monthly");
+      return;
     }
+    // --- 一時変更: 月一覧を表示せず、当月の結果ページへ直接リダイレクト ---
+    // 有料コンテンツ化時にこのブロックを削除すれば月一覧に戻せます
+    const currentMonth = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" })
+    ).getMonth() + 1;
+    router.replace(`/fortune-monthly/result/${currentMonth}`);
+    // --- 一時変更ここまで ---
   }, [birthdate, fortuneName, initialBirthdate, isHydrated, router]);
 
   if (!birthdate || !fortuneName) {
