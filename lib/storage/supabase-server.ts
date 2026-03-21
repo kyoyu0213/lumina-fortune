@@ -29,14 +29,18 @@ export type SupabaseStorageConfigState =
 function getSupabaseEnv() {
   const url = process.env.SUPABASE_URL?.trim() || process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "";
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || "";
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY?.trim() || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || "";
+  const accessKey = serviceRoleKey || anonKey;
+  const keyType = serviceRoleKey ? "service_role" : anonKey ? "anon" : "missing";
 
-  return { url, serviceRoleKey };
+  return { url, accessKey, keyType };
 }
 
-function buildHeaders(serviceRoleKey: string): SupabaseHeaders {
+function buildHeaders(accessKey: string): SupabaseHeaders {
   return {
-    apikey: serviceRoleKey,
-    Authorization: `Bearer ${serviceRoleKey}`,
+    apikey: accessKey,
+    Authorization: `Bearer ${accessKey}`,
     "Content-Type": "application/json",
   };
 }
@@ -82,8 +86,8 @@ async function parseErrorBody(response: Response): Promise<string> {
   }
 }
 
-function createRestClient(baseUrl: string, serviceRoleKey: string): SupabaseStorageClient {
-  const headers = buildHeaders(serviceRoleKey);
+function createRestClient(baseUrl: string, accessKey: string): SupabaseStorageClient {
+  const headers = buildHeaders(accessKey);
 
   return {
     async selectRows<T>(
@@ -151,17 +155,18 @@ function createRestClient(baseUrl: string, serviceRoleKey: string): SupabaseStor
 }
 
 export function createSupabaseServerStorageClient(): SupabaseStorageConfigState {
-  const { url, serviceRoleKey } = getSupabaseEnv();
+  const { url, accessKey, keyType } = getSupabaseEnv();
   const missing: string[] = [];
 
   if (!url) missing.push("SUPABASE_URL");
-  if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  if (!accessKey) missing.push("SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY");
 
   if (missing.length > 0) {
     console.error("[storage/supabase-server] missing Supabase server environment variables", {
       missing,
       hasUrl: Boolean(url),
-      hasServiceRoleKey: Boolean(serviceRoleKey),
+      hasAccessKey: Boolean(accessKey),
+      keyType,
       vercel: process.env.VERCEL === "1",
       nodeEnv: process.env.NODE_ENV,
     });
@@ -170,7 +175,7 @@ export function createSupabaseServerStorageClient(): SupabaseStorageConfigState 
 
   return {
     state: "ready",
-    client: createRestClient(url, serviceRoleKey),
+    client: createRestClient(url, accessKey),
     missing: [],
   };
 }
