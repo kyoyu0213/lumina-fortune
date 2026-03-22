@@ -283,15 +283,18 @@ function NavigationCardItem({ item, featured = false, compact = false }: { item:
 }
 
 function CardSection({ section, columns = "three", compact = false }: { section: SectionGroup; columns?: "two" | "three"; compact?: boolean }) {
+  // スマホ: 横スクロール、PC: グリッド
   const gridClass =
     section.id === "love-fortune" || section.id === "fortune-tarot"
-      ? "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+      ? "flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3 xl:grid-cols-5 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink"
       : section.id === "first-visit"
-        ? "grid grid-cols-1 gap-3 sm:grid-cols-3"
+        ? "flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink"
         : section.id === "mansion"
-          ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+          ? "flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 xl:grid-cols-4 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink"
           : section.id === "records"
-            ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+            ? "flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 xl:grid-cols-4 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink"
+          : section.id === "consultation"
+            ? "flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink"
           : columns === "two"
             ? "grid grid-cols-1 gap-4 md:grid-cols-2"
             : "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3";
@@ -315,7 +318,7 @@ function CardSection({ section, columns = "three", compact = false }: { section:
               </div>
               <div className="flex-1">
                 <SectionHeader eyebrow={section.eyebrow} title={section.title} description={section.description} />
-                <div className="mt-4 grid grid-cols-1 content-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-4 flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3 [&>*]:min-w-[260px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink">
                   {section.items.map((item, index) => (
                     <NavigationCardItem key={item.href} item={item} featured={index === 0 && columns === "two"} compact={compact} />
                   ))}
@@ -344,9 +347,24 @@ type WelcomeScreenProps = {
   onStartTarot?: () => void;
 };
 
-/** 羽根ペンの部屋ショーケース（Top用：最新4本表示） */
+/** 羽根ペンの部屋ショーケース（Top用：最新4本、カテゴリ混合） */
 function ColumnShowcase() {
-  const articles = listColumnArticles().slice(0, 4);
+  const all = listColumnArticles();
+  // 非恋愛（占い・仕事・不安・願い）から最新1本 + 恋愛から最新3本
+  const nonLove = all.filter((a) => a.category !== "失恋");
+  const love = all.filter((a) => a.category === "失恋");
+  const picked: typeof all = [];
+  if (nonLove.length > 0) picked.push(nonLove[0]);
+  for (const a of love) {
+    if (picked.length >= 4) break;
+    picked.push(a);
+  }
+  // まだ4本に満たなければ非恋愛から追加
+  for (const a of nonLove.slice(1)) {
+    if (picked.length >= 4) break;
+    picked.push(a);
+  }
+  const articles = picked.slice(0, 4);
   if (articles.length === 0) return null;
 
   const CATEGORY_LABELS: Record<string, string> = {
@@ -540,7 +558,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                 白の魔女ルミナがあなたの悩みに寄り添います。
               </p>
 
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+              <div className="mt-5 flex flex-row flex-wrap justify-center gap-2.5 sm:gap-3">
                 {heroActions.map((action) => (
                   <span
                     key={action.href}
@@ -550,8 +568,8 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                       href={action.href}
                       className={
                         action.tone === "primary"
-                          ? "inline-flex min-h-11 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-6 text-sm font-medium text-white shadow-[0_14px_28px_-18px_rgba(106,86,52,0.52)] transition hover:bg-[#b59558]"
-                          : "inline-flex min-h-11 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-[rgba(255,251,244,0.94)] px-6 text-sm font-medium text-[#695e50] shadow-[0_8px_20px_-18px_rgba(82,69,53,0.2)] transition hover:bg-[#fff7eb]"
+                          ? "inline-flex min-h-10 items-center justify-center rounded-full border border-[#c7ab73]/90 bg-[#c1a062] px-4 text-[13px] font-medium text-white shadow-[0_14px_28px_-18px_rgba(106,86,52,0.52)] transition hover:bg-[#b59558] sm:min-h-11 sm:px-6 sm:text-sm"
+                          : "inline-flex min-h-10 items-center justify-center rounded-full border border-[#d4c19f]/85 bg-[rgba(255,251,244,0.94)] px-4 text-[13px] font-medium text-[#695e50] shadow-[0_8px_20px_-18px_rgba(82,69,53,0.2)] transition hover:bg-[#fff7eb] sm:min-h-11 sm:px-6 sm:text-sm"
                       }
                     >
                       {action.label}
@@ -579,7 +597,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
                 <h2 className="mt-1 text-xl font-medium tracking-[0.04em] text-[#2f2a25]">はじめまして、白の館へようこそ</h2>
                 <p className="mt-2 text-sm text-[#6a6054]">まずはこちらからお試しください</p>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0 [&>*]:min-w-[220px] [&>*]:shrink-0 sm:[&>*]:min-w-0 sm:[&>*]:shrink">
                 {firstVisitSection.items.map((item) => (
                   <NavigationCardItem key={item.href} item={item} compact />
                 ))}

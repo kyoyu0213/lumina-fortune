@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
-import { listColumnArticles, listColumnCategories, type ColumnCategory, type ColumnArticle } from "@/lib/columns";
+import { listColumnArticles, listColumnCategories, listAllTags, type ColumnCategory, type ColumnArticle, type ColumnTag } from "@/lib/columns";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -79,13 +79,32 @@ function balanceFirstPage(articles: ColumnArticle[]): ColumnArticle[] {
 
 export default function ColumnsPage() {
   const [filter, setFilter] = useState<FilterValue>("すべて");
+  const [selectedTags, setSelectedTags] = useState<ColumnTag[]>([]);
   const [page, setPage] = useState(1);
   const categories = useMemo(() => listColumnCategories(), []);
+  const allTags = useMemo(() => listAllTags(), []);
+
+  // カテゴリ表示名→タグ名のマッピング（カテゴリフィルターでタグも考慮）
+  const CATEGORY_TO_TAG: Record<string, ColumnTag> = {
+    仕事: "仕事", 不安: "不安", 願い: "願い", 占い: "占い",
+  };
+
   const articles = useMemo(() => {
-    const raw = listColumnArticles(filter);
-    // フィルタが「すべて」のときだけバランス調整
-    return filter === "すべて" ? balanceFirstPage(raw) : raw;
-  }, [filter]);
+    let raw = listColumnArticles("すべて").filter((a) => !a.hidden);
+    // カテゴリフィルター適用（カテゴリ一致 OR タグにカテゴリ名を含む）
+    if (filter !== "すべて") {
+      const tagName = CATEGORY_TO_TAG[filter];
+      raw = raw.filter((a) =>
+        a.category === filter || (tagName && a.tags?.includes(tagName))
+      );
+    }
+    // タグフィルター適用（選択タグを1つでも持っていれば表示）
+    if (selectedTags.length > 0) {
+      raw = raw.filter((a) => selectedTags.some((tag) => a.tags?.includes(tag)));
+    }
+    // フィルタが「すべて」かつタグ未選択のときだけバランス調整
+    return filter === "すべて" && selectedTags.length === 0 ? balanceFirstPage(raw) : raw;
+  }, [filter, selectedTags]);
 
   const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
   const paginatedArticles = articles.slice(
@@ -95,6 +114,20 @@ export default function ColumnsPage() {
 
   const handleFilterChange = (newFilter: FilterValue) => {
     setFilter(newFilter);
+    setSelectedTags([]);
+    setPage(1);
+  };
+
+  const handleTagToggle = (tag: ColumnTag) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+    setFilter("すべて"); // タグ選択時はカテゴリフィルターをリセット
+    setPage(1);
+  };
+
+  const handleClearTags = () => {
+    setSelectedTags([]);
     setPage(1);
   };
 
@@ -110,7 +143,7 @@ export default function ColumnsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <LuminaButton
             type="button"
-            tone={filter === "すべて" ? "primary" : "secondary"}
+            tone={filter === "すべて" && selectedTags.length === 0 ? "primary" : "secondary"}
             onClick={() => handleFilterChange("すべて")}
           >
             すべて
@@ -119,10 +152,21 @@ export default function ColumnsPage() {
             <LuminaButton
               key={category}
               type="button"
-              tone={filter === category ? "primary" : "secondary"}
+              tone={filter === category && selectedTags.length === 0 ? "primary" : "secondary"}
               onClick={() => handleFilterChange(category)}
             >
               {CATEGORY_LABELS[category] ?? category}
+            </LuminaButton>
+          ))}
+          {/* タグフィルター（カテゴリと同じサイズ・デザインで表示） */}
+          {(["カップル", "片思い", "男性心理"] as ColumnTag[]).map((tag) => (
+            <LuminaButton
+              key={tag}
+              type="button"
+              tone={selectedTags.includes(tag) ? "primary" : "secondary"}
+              onClick={() => handleTagToggle(tag)}
+            >
+              {tag}
             </LuminaButton>
           ))}
         </div>

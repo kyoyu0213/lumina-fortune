@@ -166,6 +166,31 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "kenntaiki-norikoeru", title: "倦怠期は「終わり」ではなく「始まり」──二人の関係が深まる5つのヒント" },
     { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
   ],
+  "umakuiku-hito": [
+    { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "renaiun-agaru", title: "恋愛運が上がる5つの習慣｜占い師が教える、今日からできること" },
+  ],
+  "first-date": [
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+    { slug: "shokuba-renai", title: "職場恋愛の片思い──バレずに距離を縮める5つのステップ" },
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
+    { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
+  ],
+  "kaiwa-wadai": [
+    { slug: "shokuba-renai", title: "職場恋愛の片思い──バレずに距離を縮める5つのステップ" },
+    { slug: "dansei-chinmoku", title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+  ],
+  "renaiun-agaru": [
+    { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
+    { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚｜あなたの恋に寄り添うカードの意味" },
+    { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
+    { slug: "suuhijutsu-aishou", title: "数秘術で見る恋愛相性｜誕生日でわかる、二人の本質的なつながり" },
+  ],
   "shokuba-renai": [
     { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
     { slug: "ishiki-shitemorau", title: "好きな人に意識してもらう5つの方法｜駆け引きより大切なこと" },
@@ -509,6 +534,50 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "umakuiku-hito": {
+    title: "恋がうまくいく人の5つの共通点｜占い師が見てきた幸せな恋愛の秘訣 - ルミナ",
+    description:
+      "恋がうまくいく人は何が違うのか。占い師がたくさんのカップルを見てきた中で気づいた5つの共通点をお伝えします。特別な才能ではなく、小さな心がけの違いです。",
+    openGraph: {
+      title: "恋がうまくいく人の5つの共通点｜特別な才能ではなく、小さな心がけ",
+      description:
+        "恋がうまくいく人は何が違うのか。占い師がたくさんのカップルを見てきた中で気づいた5つの共通点をお伝えします。特別な才能ではなく、小さな心がけの違いです。",
+      type: "article",
+    },
+  },
+  "first-date": {
+    title: "初デートで失敗しない5つのコツ｜緊張するあなたへ占い師が伝えたいこと - ルミナ",
+    description:
+      "初デートが決まってドキドキしているあなたへ。失敗しないために大切な5つのコツと、緊張をほぐす考え方を占い師ルミナがお伝えします。",
+    openGraph: {
+      title: "初デートで失敗しない5つのコツ｜緊張するあなたに占い師が伝えたいこと",
+      description:
+        "初デートが決まってドキドキしているあなたへ。失敗しないために大切な5つのコツと、緊張をほぐす考え方を占い師ルミナがお伝えします。",
+      type: "article",
+    },
+  },
+  "kaiwa-wadai": {
+    title: "好きな人との会話が盛り上がる5つの話題｜沈黙が怖くなくなるヒントを占い師が解説 - ルミナ",
+    description:
+      "好きな人の前だと何を話していいかわからない。そんなあなたに、自然と会話が盛り上がる5つの話題と、沈黙が怖くなくなる考え方をお伝えします。",
+    openGraph: {
+      title: "好きな人との会話が盛り上がる5つの話題｜沈黙が怖くなくなるヒント",
+      description:
+        "好きな人の前だと何を話していいかわからない。そんなあなたに、自然と会話が盛り上がる5つの話題と、沈黙が怖くなくなる考え方をお伝えします。",
+      type: "article",
+    },
+  },
+  "renaiun-agaru": {
+    title: "恋愛運が上がる5つの習慣｜占い師が教える今日からできること - ルミナ",
+    description:
+      "恋愛運を上げたいなら、特別なことは必要ありません。占い師ルミナが、今日からすぐに始められる5つの習慣をお伝えします。",
+    openGraph: {
+      title: "恋愛運が上がる5つの習慣｜占い師が教える、今日からできること",
+      description:
+        "恋愛運を上げたいなら、特別なことは必要ありません。占い師ルミナが、今日からすぐに始められる5つの習慣をお伝えします。",
+      type: "article",
+    },
+  },
   "shokuba-renai": {
     title: "職場恋愛の片思い｜バレずに距離を縮める5つのステップを占い師が解説 - ルミナ",
     description:
@@ -792,6 +861,42 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "遠距離恋愛を乗り越える5つのコツ｜会えない時間が、二人を強くする",
     description:
       "遠距離恋愛は不安がつきもの。でも、会えない時間の過ごし方次第で二人の関係はもっと強くなれます。遠距離を乗り越えるための5つのコツを占い師がお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "umakuiku-hito": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "恋がうまくいく人の5つの共通点｜特別な才能ではなく、小さな心がけ",
+    description:
+      "恋がうまくいく人は何が違うのか。占い師がたくさんのカップルを見てきた中で気づいた5つの共通点をお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "first-date": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "初デートで失敗しない5つのコツ｜緊張するあなたに占い師が伝えたいこと",
+    description:
+      "初デートが決まってドキドキしているあなたへ。失敗しないために大切な5つのコツと、緊張をほぐす考え方を占い師ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "kaiwa-wadai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "好きな人との会話が盛り上がる5つの話題｜沈黙が怖くなくなるヒント",
+    description:
+      "好きな人の前だと何を話していいかわからない。そんなあなたに、自然と会話が盛り上がる5つの話題と、沈黙が怖くなくなる考え方をお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "renaiun-agaru": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "恋愛運が上がる5つの習慣｜占い師が教える、今日からできること",
+    description:
+      "恋愛運を上げたいなら、特別なことは必要ありません。占い師ルミナが、今日からすぐに始められる5つの習慣をお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -1301,7 +1406,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
@@ -1321,17 +1426,17 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {slug === "tarot-renai" && (
+          {(slug === "tarot-renai" || slug === "renaiun-agaru") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/?start=tarot" tone="primary" className="px-5">
                 タロット占いを試してみる
               </LuminaLinkButton>
-              <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="secondary" className="px-5">
-                あの人の本音を読み解く（あの人の気持ち占い）
+              <LuminaLinkButton href="/daily-fortune" tone="secondary" className="px-5">
+                今日の運勢を見る
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou") && (
+          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou" || slug === "kaiwa-wadai") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
                 ふたりの相性を見てみる（相性占い）

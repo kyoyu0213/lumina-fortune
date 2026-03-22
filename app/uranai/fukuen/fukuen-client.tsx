@@ -243,7 +243,7 @@ export default function FukuenClient() {
 
           <div className="mt-4">
             <p className="text-sm font-medium text-[#5b5348]">こんなことが聞けます</p>
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <div className="mt-3 flex max-h-[200px] flex-wrap gap-2.5 overflow-y-auto sm:max-h-none">
               {FUKUEN_QUESTION_CHIPS.map((chip) => (
                 <button
                   key={chip}

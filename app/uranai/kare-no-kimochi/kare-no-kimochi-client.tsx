@@ -180,7 +180,7 @@ export default function KareNoKimochiClient() {
           <textarea id="kare-no-kimochi-question" value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="例: あの人は私をどう思っていますか？" rows={5} className="lumina-input mt-3 w-full rounded-[1.3rem] px-4 py-4 text-base leading-7" />
           <div className="mt-4">
             <p className="text-sm font-medium text-[#5b5348]">こんなことが聞けます</p>
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <div className="mt-3 flex max-h-[200px] flex-wrap gap-2.5 overflow-y-auto sm:max-h-none">
               {KARE_NO_KIMOCHI_QUESTION_CHIPS.map((chip) => (
                 <button key={chip} type="button" onClick={() => setQuestion(chip)} className="rounded-full border border-[#e6d8bf] bg-[linear-gradient(160deg,rgba(255,252,246,0.96),rgba(246,238,225,0.92))] px-4 py-2.5 text-left text-sm leading-6 text-[#5f564a] shadow-[0_12px_28px_-24px_rgba(116,94,70,0.32)] transition hover:border-[#d9c8a8] hover:bg-[#fffaf2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cbb9d8]">
                   {chip}
