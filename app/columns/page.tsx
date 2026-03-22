@@ -119,10 +119,9 @@ export default function ColumnsPage() {
   };
 
   const handleTagToggle = (tag: ColumnTag) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-    setFilter("すべて"); // タグ選択時はカテゴリフィルターをリセット
+    // 同じタグを再度押したら解除、違うタグなら切り替え（単一選択）
+    setSelectedTags((prev) => prev.includes(tag) ? [] : [tag]);
+    setFilter("すべて");
     setPage(1);
   };
 
