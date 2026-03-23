@@ -185,13 +185,13 @@ export default function ConsultationPage() {
                 </p>
                 <div className="mt-3 overflow-hidden rounded-lg border border-[#e7dcc7]/80 bg-white/90">
                   <iframe
-                    src="/PDF/luminayukakantei%20(1).pdf#view=FitH"
+                    src="/PDF/1.pdf#view=FitH"
                     title="PCで見る方向け鑑定例PDF"
                     className="h-[420px] w-full"
                   />
                 </div>
                 <a
-                  href="/PDF/luminayukakantei%20(1).pdf"
+                  href="/PDF/1.pdf"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-2 inline-block text-xs text-[#6f6556] underline decoration-[#b7a98f] underline-offset-4"
@@ -209,13 +209,13 @@ export default function ConsultationPage() {
                 </p>
                 <div className="mt-3 overflow-hidden rounded-lg border border-[#e7dcc7]/80 bg-white/90">
                   <iframe
-                    src="/PDF/kanteisyomobile.pdf#view=FitH"
+                    src="/PDF/2.pdf#view=FitH"
                     title="スマホで見る方向け鑑定例PDF"
                     className="h-[420px] w-full"
                   />
                 </div>
                 <a
-                  href="/PDF/kanteisyomobile.pdf"
+                  href="/PDF/2.pdf"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-2 inline-block text-xs text-[#6f6556] underline decoration-[#b7a98f] underline-offset-4"
