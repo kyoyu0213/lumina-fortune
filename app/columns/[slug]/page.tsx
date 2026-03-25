@@ -7,6 +7,7 @@ import { PageShell } from "@/components/ui/page-shell";
 import { TableOfContents } from "@/components/columns/table-of-contents";
 import { CardImageModal } from "@/components/columns/card-image-modal";
 import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
+import { CoconalaWidget } from "@/components/columns/coconala-widget";
 
 const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
   "wakare-danjo-shinri": [
@@ -209,6 +210,20 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "umakuiku-hito", title: "恋がうまくいく人の5つの共通点" },
     { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
     { slug: "enkyori-renai", title: "遠距離恋愛を乗り越える5つのコツ" },
+  ],
+  "birthday-present": [
+    { slug: "aitai-josei", title: "男性が「また会いたい」と思う女性の5つの特徴" },
+    { slug: "motto-nakayoku", title: "彼ともっと仲良くなる5つの習慣" },
+    { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
+    { slug: "first-date", title: "初デートで失敗しない5つのコツ" },
+    { slug: "enkyori-renai", title: "遠距離恋愛を乗り越える5つのコツ" },
+  ],
+  "suki-yume": [
+    { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚" },
+    { slug: "shiawase-nanoni-fuan", title: "幸せなはずなのに不安" },
+    { slug: "kataomoi-nagai", title: "片思いが長い人に共通する5つのこと" },
+    { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違い" },
   ],
   "kidoku-through": [
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
@@ -585,6 +600,28 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       title: "彼ともっと仲良くなる5つの習慣｜付き合っているからこそ大切にしたいこと",
       description:
         "彼ともっと仲良くなりたい。付き合っているからこそ忘れがちな、二人の関係を深める5つの習慣を占い師ルミナがお伝えします。",
+      type: "article",
+    },
+  },
+  "birthday-present": {
+    title: "彼の誕生日プレゼントの選び方5つ｜何をあげるかより大切なことを占い師が解説 - ルミナ",
+    description:
+      "彼の誕生日プレゼント、何がいいか悩んでいませんか。大切なのは「何をあげるか」ではなく「どう選ぶか」。喜ばれるプレゼント選びの5つのコツをお伝えします。",
+    openGraph: {
+      title: "彼の誕生日プレゼント、何がいい？──選び方で差がつく5つのコツ",
+      description:
+        "彼の誕生日プレゼント、何がいいか悩んでいませんか。大切なのは「何をあげるか」ではなく「どう選ぶか」。喜ばれるプレゼント選びの5つのコツをお伝えします。",
+      type: "article",
+    },
+  },
+  "suki-yume": {
+    title: "好きな人が夢に出てきた意味5つ｜占い師が読み解く夢のメッセージ - ルミナ",
+    description:
+      "好きな人が夢に出てきた。あの夢に意味はあるの？占い師ルミナが、夢のパターン別に隠されたメッセージを読み解きます。",
+    openGraph: {
+      title: "好きな人が夢に出てきた──その夢が伝えている5つの意味",
+      description:
+        "好きな人が夢に出てきた。あの夢に意味はあるの？占い師ルミナが、夢のパターン別に隠されたメッセージを読み解きます。",
       type: "article",
     },
   },
@@ -966,6 +1003,24 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "マッチングアプリで初めて会う前に知っておきたい5つのこと｜安心して恋を始めるために",
     description:
       "マッチングアプリで気になる人と初めて会うことになった。嬉しい反面、不安もいっぱい。会う前に知っておきたい5つのことを、あなたの安全と恋を守るためにお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "birthday-present": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "彼の誕生日プレゼント、何がいい？──選び方で差がつく5つのコツ",
+    description:
+      "彼の誕生日プレゼント、何がいいか悩んでいませんか。大切なのは「何をあげるか」ではなく「どう選ぶか」。喜ばれるプレゼント選びの5つのコツをお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "suki-yume": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "好きな人が夢に出てきた──その夢が伝えている5つの意味",
+    description:
+      "好きな人が夢に出てきた。あの夢に意味はあるの？占い師ルミナが、夢のパターン別に隠されたメッセージを読み解きます。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -1530,7 +1585,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           <p className="mt-4 text-center text-[1rem] italic leading-[2] text-[#5a4f42]">{affirmation}</p>
 
           {/* CTA buttons integrated */}
-          {(slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "renai-tenki" || slug === "shitsuren-anata" || slug === "enkyori-aenai-fuan" || slug === "kataomoi-nagai") && (
+          {(slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "renai-tenki" || slug === "shitsuren-anata" || slug === "enkyori-aenai-fuan" || slug === "kataomoi-nagai" || slug === "suki-yume") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kataomoi" tone="primary" className="px-5">
                 あなたの恋の流れを見てみる（片思い占い）
@@ -1540,7 +1595,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through" || slug === "birthday-present") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
@@ -1606,6 +1661,9 @@ export default async function ColumnDetailPage({ params }: PageProps) {
             </LuminaLinkButton>
           </div>
         </section>
+
+        {/* ココナラウィジェット（テスト: shigoto-shippai のみ） */}
+        {slug === "shigoto-shippai" && <CoconalaWidget />}
 
         {/* Related columns */}
         {RELATED_COLUMNS[slug] ? (
