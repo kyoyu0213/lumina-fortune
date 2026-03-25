@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type CoconalaService = {
   serviceId: string;
@@ -23,28 +23,33 @@ const SERVICES: CoconalaService[] = [
 
 /**
  * ココナラウィジェット
- * coconala_widget.js はDOMを走査して .coconala-widget を探しiframeに変換する。
- * Next.jsのSPA遷移後にも動作するよう、マウント時にスクリプトを動的挿入する。
+ * coconala_widget.js はページ内の .coconala-widget を探してiframeに変換する。
+ * SPAではDOMレンダリング後にスクリプトを挿入する必要がある。
  */
 export function CoconalaWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 既存のスクリプトを削除して再挿入（ウィジェットを再描画させる）
-    const oldScript = document.getElementById("coconala-wjs");
-    if (oldScript) oldScript.remove();
+    // DOM描画完了を待ってからスクリプトを挿入
+    const timer = setTimeout(() => {
+      // 既存のウィジェットスクリプトを完全に削除
+      const oldScript = document.getElementById("coconala-wjs");
+      if (oldScript) oldScript.remove();
 
-    const script = document.createElement("script");
-    script.id = "coconala-wjs";
-    script.src = "https://coconala.com/js/coconala_widget.js";
-    script.async = true;
-    containerRef.current.appendChild(script);
+      // 新しいスクリプトをbodyの末尾に追加（coconalaの仕様に合わせる）
+      const script = document.createElement("script");
+      script.id = "coconala-wjs";
+      script.src = "https://coconala.com/js/coconala_widget.js";
+      script.async = true;
+      script.onload = () => setLoaded(true);
+      document.body.appendChild(script);
+    }, 100);
 
     return () => {
-      // クリーンアップ: アンマウント時にスクリプト除去
-      script.remove();
+      clearTimeout(timer);
     };
   }, []);
 
@@ -56,7 +61,7 @@ export function CoconalaWidget() {
       </div>
       <div ref={containerRef} className="space-y-4">
         {SERVICES.map((service) => (
-          <div key={service.serviceId} className="flex justify-center">
+          <div key={service.serviceId}>
             <a
               className="coconala-widget"
               href={service.href}
