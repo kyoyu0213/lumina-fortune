@@ -158,7 +158,7 @@ export default function ColumnsPage() {
             </LuminaButton>
           ))}
           {/* タグフィルター（カテゴリと同じサイズ・デザインで表示） */}
-          {(["カップル", "片思い", "男性心理"] as ColumnTag[]).map((tag) => (
+          {(["カップル", "片思い", "男性心理", "復縁"] as ColumnTag[]).map((tag) => (
             <LuminaButton
               key={tag}
               type="button"

@@ -65,7 +65,7 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
   "shitsuren-anata": [
     { slug: "wakare-danjo-shinri", title: "別れた後の気持ちの変化──男女ですれ違う「悲しみのタイミング」と、復縁の可能性" },
     { slug: "motokare-kimochi", title: "元彼の気持ち──別れた後も気になるあの人は、今なにを想っているのか" },
-    { slug: "fukuen-kanousei", title: "復縁できるカップルには共通点がある" },
+    { slug: "fukuen-couple", title: "復縁できるカップルには共通点がある" },
     { slug: "unmei-sign", title: "運命の人に出会う前に現れる7つのサイン──今のつらさは、始まりの合図かもしれない" },
     { slug: "renai-tenki", title: "恋愛が動く5つのタイミング──止まっているように見える恋にも、転機は来る" },
   ],
@@ -217,6 +217,19 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
     { slug: "first-date", title: "初デートで失敗しない5つのコツ" },
     { slug: "enkyori-renai", title: "遠距離恋愛を乗り越える5つのコツ" },
+  ],
+  "kokuhaku-mayou": [
+    { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚" },
+    { slug: "shiawase-nanoni-fuan", title: "幸せなはずなのに不安──その気持ちの正体と、自分をゆるす5つの視点" },
+    { slug: "shokuba-renai", title: "職場恋愛の片思い──バレずに距離を縮める5つのステップ" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点" },
+    { slug: "umakuiku-hito", title: "恋がうまくいく人の5つの共通点" },
+  ],
+  "fukuen-couple": [
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
+    { slug: "shiawase-nanoni-fuan", title: "幸せなはずなのに不安" },
+    { slug: "kataomoi-nagai", title: "片思いが長い人に共通する5つのこと" },
   ],
   "suki-yume": [
     { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚" },
@@ -611,6 +624,28 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       title: "彼の誕生日プレゼント、何がいい？──選び方で差がつく5つのコツ",
       description:
         "彼の誕生日プレゼント、何がいいか悩んでいませんか。大切なのは「何をあげるか」ではなく「どう選ぶか」。喜ばれるプレゼント選びの5つのコツをお伝えします。",
+      type: "article",
+    },
+  },
+  "kokuhaku-mayou": {
+    title: "告白されたけど迷うときに考えたい5つのこと｜返事を急がなくていい理由を占い師が解説 - ルミナ",
+    description:
+      "告白されたけど、すぐに返事ができない。好きかわからない。そんなとき、返事を出す前に自分の心に聞いてほしい5つのことを占い師ルミナがお伝えします。",
+    openGraph: {
+      title: "告白されたけど迷っている──返事を出す前に、自分に聞いてほしい5つのこと",
+      description:
+        "告白されたけど、すぐに返事ができない。好きかわからない。そんなとき、返事を出す前に自分の心に聞いてほしい5つのことを占い師ルミナがお伝えします。",
+      type: "article",
+    },
+  },
+  "fukuen-couple": {
+    title: "復縁できるカップルの特徴5つ｜可能性を見極めるポイントを占い師が解説 - ルミナ",
+    description:
+      "復縁できるカップルには共通する特徴があります。あなたと元カレに当てはまるものはありますか？復縁の可能性を見極める5つのポイントを占い師がお伝えします。",
+    openGraph: {
+      title: "復縁できるカップルに共通する5つの特徴｜あなたたちに当てはまるものはありますか？",
+      description:
+        "復縁できるカップルには共通する特徴があります。あなたと元カレに当てはまるものはありますか？復縁の可能性を見極める5つのポイントを占い師がお伝えします。",
       type: "article",
     },
   },
@@ -1012,6 +1047,24 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "彼の誕生日プレゼント、何がいい？──選び方で差がつく5つのコツ",
     description:
       "彼の誕生日プレゼント、何がいいか悩んでいませんか。大切なのは「何をあげるか」ではなく「どう選ぶか」。喜ばれるプレゼント選びの5つのコツをお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "kokuhaku-mayou": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "告白されたけど迷っている──返事を出す前に、自分に聞いてほしい5つのこと",
+    description:
+      "告白されたけど、すぐに返事ができない。好きかわからない。そんなとき、返事を出す前に自分の心に聞いてほしい5つのことを占い師ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "fukuen-couple": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "復縁できるカップルに共通する5つの特徴｜あなたたちに当てはまるものはありますか？",
+    description:
+      "復縁できるカップルには共通する特徴があります。あなたと元カレに当てはまるものはありますか？復縁の可能性を見極める5つのポイントを占い師がお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -1625,7 +1678,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou" || slug === "kaiwa-wadai" || slug === "motto-nakayoku" || slug === "matching-app") && (
+          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou" || slug === "kaiwa-wadai" || slug === "motto-nakayoku" || slug === "matching-app" || slug === "kokuhaku-mayou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
                 ふたりの相性を見てみる（相性占い）
@@ -1635,7 +1688,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" || slug === "motokare-renraku-zenchou") && (
+          {(slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" || slug === "motokare-renraku-zenchou" || slug === "fukuen-couple" || slug === "fukuen-couple") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/fukuen" tone="primary" className="px-5">
                 復縁の可能性を見てみる（復縁占い）
@@ -1662,8 +1715,8 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* ココナラウィジェット（テスト: shigoto-shippai のみ） */}
-        {slug === "shigoto-shippai" && <CoconalaWidget />}
+        {/* ココナラウィジェット（全コラム共通） */}
+        <CoconalaWidget />
 
         {/* Related columns */}
         {RELATED_COLUMNS[slug] ? (
