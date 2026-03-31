@@ -13,7 +13,7 @@ import {
 } from "@/lib/visit-streak";
 
 const PROFILE_STORAGE_KEY = "lumina_profile";
-const MONTHLY_WALLPAPER_SRC = "/matiuke/gentei/gentei2.jpg";
+const MONTHLY_WALLPAPER_SRC = "/matiuke/gentei/20260401.png";
 
 export function WallpapersClient() {
   const [record, setRecord] = useState<VisitStreakRecord | null>(null);

@@ -238,6 +238,13 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "kenka-nakanaori", title: "彼氏との喧嘩のあと、上手に仲直りするための5つのステップ" },
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違い" },
   ],
+  "kincho-shinai": [
+    { slug: "kawaii-shunkan", title: "男性が「この子可愛いな」と思う7つの瞬間" },
+    { slug: "first-date", title: "初デートで失敗しない5つのコツ" },
+    { slug: "shokuba-renai", title: "職場恋愛の片思い──バレずに距離を縮める5つのステップ" },
+    { slug: "kataomoi-nagai", title: "片思いが長い人に共通する5つのこと" },
+    { slug: "shiawase-nanoni-fuan", title: "幸せなはずなのに不安" },
+  ],
   "kidoku-through": [
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
     { slug: "renaiun-agaru", title: "恋愛運が上がる5つの習慣｜占い師が教える、今日からできること" },
@@ -646,6 +653,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       title: "復縁できるカップルに共通する5つの特徴｜あなたたちに当てはまるものはありますか？",
       description:
         "復縁できるカップルには共通する特徴があります。あなたと元カレに当てはまるものはありますか？復縁の可能性を見極める5つのポイントを占い師がお伝えします。",
+      type: "article",
+    },
+  },
+  "kincho-shinai": {
+    title: "好きな人の前で緊張しなくなる方法5つ｜ありのままでいられるヒントを占い師が解説 - ルミナ",
+    description:
+      "好きな人の前だと緊張して自分が出せない。そんなあなたに、無理に緊張をなくすのではなく、緊張したままでも自然体でいられる5つのヒントをお伝えします。",
+    openGraph: {
+      title: "好きな人の前で緊張してしまうあなたへ──自然体でいられる5つのヒント",
+      description:
+        "好きな人の前だと緊張して自分が出せない。そんなあなたに、無理に緊張をなくすのではなく、緊張したままでも自然体でいられる5つのヒントをお伝えします。",
       type: "article",
     },
   },
@@ -1149,6 +1167,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
+  "kincho-shinai": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "好きな人の前で緊張してしまうあなたへ──自然体でいられる5つのヒント",
+    description:
+      "好きな人の前だと緊張して自分が出せない。そんなあなたに、無理に緊張をなくすのではなく、緊張したままでも自然体でいられる5つのヒントをお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
 };
 
 type PageProps = {
@@ -1648,7 +1675,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through" || slug === "birthday-present") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through" || slug === "birthday-present" || slug === "kincho-shinai") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
