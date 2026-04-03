@@ -50,13 +50,13 @@ type TemplateFields = {
 const NUMBER_NAMES: Record<FortuneNumber, string> = {
   1: "はじまりの灯火",
   2: "月影の調律者",
-  3: "星語りの歌い手",
+  3: "祝福の歌い手",
   4: "大地の守り手",
-  5: "風渡りの旅人",
-  6: "愛の灯を守る人",
-  7: "静寂の観測者",
-  8: "光冠の実現者",
-  9: "祈りの継ぎ手",
+  5: "風を渡る旅人",
+  6: "愛を育てる灯",
+  7: "静寂の賢者",
+  8: "現実を築く王",
+  9: "終わりなき慈愛",
 };
 
 const NUMBER_CORES: Record<FortuneNumber, string> = {
@@ -89,7 +89,7 @@ const MONTH_THEMES: Record<FortuneMonth, { season: string; focus: string }> = {
 // ── High-quality reference examples (from priority overrides) ──
 
 const STYLE_REFERENCE = `
-=== 高品質な参考例（運命数8「光冠の実現者」の1月） ===
+=== 高品質な参考例（運命数8「現実を築く王」の1月） ===
 
 introTitle: "現実を動かす力を、静かに整える1月"
 introBody: "1月は、今年の目標を現実の形へ落とし込んでいくための土台づくりの月です。気持ちが前に出やすい時期ですが、勢いだけで進むより、条件や順番を整えた方が結果は安定します。\\n\\n大きく見せるより、確かな一歩を選ぶこと。今月はその落ち着きが、あとから大きな強さになります。"

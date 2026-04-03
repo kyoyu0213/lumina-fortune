@@ -347,24 +347,9 @@ type WelcomeScreenProps = {
   onStartTarot?: () => void;
 };
 
-/** 羽根ペンの部屋ショーケース（Top用：最新4本、カテゴリ混合） */
+/** 羽根ペンの部屋ショーケース（Top用：最新4本表示） */
 function ColumnShowcase() {
-  const all = listColumnArticles();
-  // 非恋愛（占い・仕事・不安・願い）から最新1本 + 恋愛から最新3本
-  const nonLove = all.filter((a) => a.category !== "失恋");
-  const love = all.filter((a) => a.category === "失恋");
-  const picked: typeof all = [];
-  if (nonLove.length > 0) picked.push(nonLove[0]);
-  for (const a of love) {
-    if (picked.length >= 4) break;
-    picked.push(a);
-  }
-  // まだ4本に満たなければ非恋愛から追加
-  for (const a of nonLove.slice(1)) {
-    if (picked.length >= 4) break;
-    picked.push(a);
-  }
-  const articles = picked.slice(0, 4);
+  const articles = listColumnArticles().slice(0, 4);
   if (articles.length === 0) return null;
 
   const CATEGORY_LABELS: Record<string, string> = {
