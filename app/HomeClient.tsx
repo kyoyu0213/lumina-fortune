@@ -364,7 +364,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
 
   const handleSend = useCallback(
     async (text: string) => {
-      // 1日1回制限チェック
+      // 1日3回制限チェック
       if (isDailyLocked("light_guidance_tarot")) {
         setMessages((prev) => [
           ...prev,

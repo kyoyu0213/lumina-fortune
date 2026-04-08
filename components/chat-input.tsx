@@ -34,9 +34,9 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
       className="shrink-0 border-t border-[#e1d5bf]/72 bg-[linear-gradient(160deg,rgba(255,252,246,0.86),rgba(248,242,231,0.8))] px-4 py-2.5 [padding-bottom:calc(0.625rem+env(safe-area-inset-bottom))] [padding-left:calc(1rem+env(safe-area-inset-left))] [padding-right:calc(1rem+env(safe-area-inset-right))] backdrop-blur-sm"
     >
       <div className="mx-auto max-w-3xl">
-        {/* 質問例：横スクロール */}
-        <div className="mb-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex gap-2 whitespace-nowrap pb-1">
+        {/* 質問例：スマホは横スクロール、PCは折り返し */}
+        <div className="mb-2 overflow-x-auto md:overflow-x-visible [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-2 whitespace-nowrap pb-1 md:flex-wrap md:whitespace-normal">
             {visiblePresetQuestions.map((example) => (
               <button
                 key={example}
