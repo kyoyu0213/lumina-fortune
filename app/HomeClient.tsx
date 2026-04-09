@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
+import { trackEvent } from "@/lib/track-event";
 
 import { FloatingFeathers } from "@/components/floating-feathers";
 import { WelcomeScreen } from "@/components/welcome-screen";
@@ -262,6 +263,8 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
 
   useEffect(() => {
     setFavoriteIds(readFavoriteGuidance().map((item) => item.id));
+    // テスト送信（確認後に削除）
+    void trackEvent({ event_name: "test_event", page: "/" });
   }, []);
 
   useEffect(() => clearFortuneStageTimeouts, [clearFortuneStageTimeouts]);
