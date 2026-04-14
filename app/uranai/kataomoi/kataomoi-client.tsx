@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
+import { trackEvent } from "@/lib/track-event";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -13,6 +14,7 @@ import {
   type KataomoiReading,
 } from "@/lib/kataomoi-reading";
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
+import { ConsultationCta } from "@/components/consultation-cta";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -126,6 +128,8 @@ function ResultView({ result }: { result: KataomoiReading }) {
         <h3 className="mt-2 text-[1.1rem] font-medium text-[#2f2a27]">ルミナからのメッセージ</h3>
         <p className="mt-3 text-[0.95rem] leading-8 text-[#534861]">{result.message}</p>
       </section>
+
+      <ConsultationCta page="/uranai/kataomoi" label="unrequited_love" />
     </div>
   );
 }
@@ -152,9 +156,19 @@ export default function KataomoiClient() {
     interpretationFrame: templateResult?.interpretationFrame,
   });
 
+  const fortuneTrackedRef = useRef(false);
+
+  useEffect(() => {
+    void trackEvent({ event_name: "page_view", page: "/uranai/kataomoi", label: "unrequited_love" });
+  }, []);
+
   useEffect(() => {
     if (templateResult && resultRef.current) {
       resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (templateResult && !fortuneTrackedRef.current) {
+      fortuneTrackedRef.current = true;
+      void trackEvent({ event_name: "fortune_used", page: "/uranai/kataomoi", label: "unrequited_love" });
     }
   }, [templateResult]);
 

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import type { FavoriteGuidanceItem } from "@/lib/chat-favorite-guidance";
 import type { ChatMessagePart } from "@/lib/chat-message-parts";
+import { trackEvent } from "@/lib/track-event";
 
 import type { TarotCardData } from "./tarot-card";
 import { AssistantMessagePart } from "./chat-message-parts";
@@ -100,6 +101,7 @@ function GuidanceActions({
         <div className="mt-4">
           <Link
             href="/consultation"
+            onClick={() => void trackEvent({ event_name: "consultation_click", page: "/", label: "light_guidance" })}
             className="inline-flex items-center rounded-full border border-[#cfc2e2] bg-[linear-gradient(160deg,#ffffff,#f1e8fb)] px-4 py-2 text-sm font-medium text-[#5f5472] transition hover:border-[#bdaed7] hover:bg-[#f8f2ff] hover:text-[#4f4660]"
           >
             個人鑑定を依頼する

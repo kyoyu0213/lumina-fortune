@@ -8,6 +8,7 @@ import { TableOfContents } from "@/components/columns/table-of-contents";
 import { CardImageModal } from "@/components/columns/card-image-modal";
 import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
 import { CoconalaWidget } from "@/components/columns/coconala-widget";
+import { FukuenCtaSection } from "@/components/fukuen-cta-section";
 
 const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
   "wakare-danjo-shinri": [
@@ -1726,6 +1727,13 @@ export default async function ColumnDetailPage({ params }: PageProps) {
             </div>
           )}
         </section>
+
+        {/* 復縁系コラム：個別鑑定＆noteへの導線 */}
+        {(slug === "motokare-kimochi" || slug === "wakare-danjo-shinri" || slug === "motokare-renraku-zenchou" || slug === "fukuen-couple") && (
+          <div className="mb-6">
+            <FukuenCtaSection />
+          </div>
+        )}
 
         {/* 個人鑑定への導線（全コラム共通） */}
         <section className="mb-6 rounded-2xl border border-[#d8cde7]/50 bg-[linear-gradient(160deg,rgba(250,246,255,0.88),rgba(244,236,252,0.82))] p-6 shadow-[0_12px_28px_-20px_rgba(95,79,128,0.18)] sm:p-8">

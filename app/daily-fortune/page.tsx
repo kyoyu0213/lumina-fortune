@@ -13,6 +13,7 @@ import { pickHakuMessage } from "@/lib/haku-messages";
 import { ensureFortuneOutputFormat, parseDailyFortuneSections } from "@/lib/daily-fortune-output";
 import { runClientModerationCheck } from "@/lib/moderation/clientCheck";
 import { getOrCreateChatVisitorKey } from "@/lib/membership";
+import { trackEvent } from "@/lib/track-event";
 import type { FortuneSection } from "@/lib/types/content";
 
 type DrawnCard = TarotCardEntry & {
@@ -672,6 +673,12 @@ export default function DailyFortunePage() {
     }
   };
 
+  const fortuneTrackedRef = useRef(false);
+
+  useEffect(() => {
+    void trackEvent({ event_name: "page_view", page: "/daily-fortune", label: "daily_fortune" });
+  }, []);
+
   useEffect(() => {
     const saved = loadSavedDailyFortuneForToday();
     if (!saved) return;
@@ -685,6 +692,10 @@ export default function DailyFortunePage() {
   useEffect(() => {
     if (flipFinished && selectedCard) {
       setShowResult(true);
+      if (!fortuneTrackedRef.current) {
+        fortuneTrackedRef.current = true;
+        void trackEvent({ event_name: "fortune_used", page: "/daily-fortune", label: "daily_fortune" });
+      }
     }
   }, [flipFinished, selectedCard]);
 
@@ -1283,13 +1294,15 @@ export default function DailyFortunePage() {
                         </p>
                         <p>ルミナが静かに読み解きます。</p>
                       </div>
-                      <LuminaLinkButton
-                        href="/consultation"
-                        tone="secondary"
-                        className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:w-auto"
-                      >
-                        個人鑑定を依頼する
-                      </LuminaLinkButton>
+                      <div onClick={() => void trackEvent({ event_name: "consultation_click", page: "/daily-fortune", label: "daily_fortune" })}>
+                        <LuminaLinkButton
+                          href="/consultation"
+                          tone="secondary"
+                          className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:w-auto"
+                        >
+                          個人鑑定を依頼する
+                        </LuminaLinkButton>
+                      </div>
                     </section>
                   ) : null}
                   {fortuneSections.todayHitokoto ? (
@@ -1298,13 +1311,15 @@ export default function DailyFortunePage() {
                       <div className="mt-2 text-sm leading-relaxed text-[#544c42]">
                         <p className="whitespace-pre-line">{fortuneSections.todayHitokoto}</p>
                       </div>
-                      <LuminaLinkButton
-                        href="/consultation"
-                        tone="primary"
-                        className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:mx-auto sm:w-auto"
-                      >
-                        個人鑑定を依頼する
-                      </LuminaLinkButton>
+                      <div onClick={() => void trackEvent({ event_name: "consultation_click", page: "/daily-fortune", label: "daily_fortune" })}>
+                        <LuminaLinkButton
+                          href="/consultation"
+                          tone="primary"
+                          className="mt-4 w-full justify-center rounded-xl px-6 py-3 text-base sm:mx-auto sm:w-auto"
+                        >
+                          個人鑑定を依頼する
+                        </LuminaLinkButton>
+                      </div>
                     </section>
                   ) : null}
                   {fortuneSections.whiteHitokoto ? (

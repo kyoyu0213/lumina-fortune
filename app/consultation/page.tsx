@@ -1,11 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
 import CoconalaWidget from "@/components/coconala-widget";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import { trackEvent } from "@/lib/track-event";
 
 export default function ConsultationPage() {
+  useEffect(() => {
+    void trackEvent({ event_name: "page_view", page: "/consultation" });
+  }, []);
+
   return (
     <PageShell
       maxWidth="content"

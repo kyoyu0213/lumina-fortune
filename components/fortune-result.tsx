@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
+import { trackEvent } from "@/lib/track-event";
 import UnmeiVisual from "@/components/unmei/UnmeiVisual";
 import { LuminaButton, LuminaLinkButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -318,6 +319,7 @@ export default function FortuneResult({
               <div className="mt-3">
                 <Link
                   href="/consultation"
+                  onClick={() => void trackEvent({ event_name: "consultation_click", page: "/fortune-result", label: "coconala" })}
                   className="inline-flex items-center rounded-full border border-[#cfc2e2] bg-[linear-gradient(160deg,#ffffff,#f2eafb)] px-4 py-2 text-sm font-medium text-[#5f5472] shadow-[0_10px_24px_-20px_rgba(95,79,128,0.28)] transition hover:border-[#bdaed7] hover:bg-[#f8f2ff] hover:text-[#4f4660]"
                 >
                   個人鑑定を見る

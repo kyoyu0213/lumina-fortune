@@ -263,8 +263,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
 
   useEffect(() => {
     setFavoriteIds(readFavoriteGuidance().map((item) => item.id));
-    // テスト送信（確認後に削除）
-    void trackEvent({ event_name: "test_event", page: "/" });
+    void trackEvent({ event_name: "page_view", page: "/", label: "light_guidance" });
   }, []);
 
   useEffect(() => clearFortuneStageTimeouts, [clearFortuneStageTimeouts]);
@@ -570,6 +569,7 @@ export function HomeClient({ initialDailyWhisper, serverBirthdate }: HomeClientP
             prev.map((m) => (m.id === typingId ? { ...fortuneMessage } : m))
           );
           markDailyUsed("light_guidance_tarot");
+          void trackEvent({ event_name: "fortune_used", page: "/", label: "light_guidance" });
           revealFortuneMessageParts(messageId, normalizedMessageParts);
         } else {
           if (data.meta?.devMode) {

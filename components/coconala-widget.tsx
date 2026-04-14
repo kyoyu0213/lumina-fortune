@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { trackEvent } from "@/lib/track-event";
 
 const COCONALA_SERVICE_URL = "https://coconala.com/services/4121312";
 const COCONALA_WIDGET_SCRIPT_URL = "https://coconala.com/js/coconala_widget.js";
@@ -48,6 +49,7 @@ export default function CoconalaWidget() {
           href={COCONALA_SERVICE_URL}
           target="_blank"
           rel="noreferrer"
+          onClick={() => void trackEvent({ event_name: "consultation_click", page: "/consultation", label: "coconala" })}
           className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full bg-[#8f7a5a] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#7b684c]"
         >
           ココナラで鑑定を依頼する

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
+import { trackEvent } from "@/lib/track-event";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -13,6 +14,7 @@ import {
   type KareNoKimochiReading,
 } from "@/lib/kareNoKimochiReading";
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
+import { ConsultationCta } from "@/components/consultation-cta";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -97,6 +99,8 @@ function ResultView({ result }: { result: KareNoKimochiReading }) {
         <ResultSection eyebrow="FLOW" title="関係の流れ" paragraphs={splitParagraphs(result.relationshipFlow)} />
         <ResultSection eyebrow="MESSAGE" title="ルミナメッセージ" paragraphs={splitParagraphs(result.luminaMessage)} />
       </div>
+
+      <ConsultationCta page="/uranai/kare-no-kimochi" label="their_feelings" />
     </div>
   );
 }
@@ -123,9 +127,19 @@ export default function KareNoKimochiClient() {
     interpretationFrame: templateResult?.interpretationFrame,
   });
 
+  const fortuneTrackedRef = useRef(false);
+
+  useEffect(() => {
+    void trackEvent({ event_name: "page_view", page: "/uranai/kare-no-kimochi", label: "their_feelings" });
+  }, []);
+
   useEffect(() => {
     if (templateResult && resultRef.current) {
       resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (templateResult && !fortuneTrackedRef.current) {
+      fortuneTrackedRef.current = true;
+      void trackEvent({ event_name: "fortune_used", page: "/uranai/kare-no-kimochi", label: "their_feelings" });
     }
   }, [templateResult]);
 

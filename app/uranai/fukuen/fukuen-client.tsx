@@ -3,12 +3,15 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { isDailyLocked, markDailyUsed, DAILY_LIMIT_MESSAGE } from "@/lib/daily-limit";
+import { trackEvent } from "@/lib/track-event";
 import { LightTarotDisplay } from "@/components/light-tarot-display";
 import { LuminaButton } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
 import { FUKUEN_QUESTION_CHIPS, getFukuenReading, type FukuenReading } from "@/lib/fukuenReading";
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
+import { ConsultationCta } from "@/components/consultation-cta";
+import { FukuenCtaSection } from "@/components/fukuen-cta-section";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -118,6 +121,10 @@ function ResultView({ result }: { result: FukuenReading }) {
       </div>
 
       <ResultSection eyebrow="MESSAGE" title="ルミナメッセージ" paragraphs={splitParagraphs(result.luminaMessage)} />
+
+      <ConsultationCta page="/uranai/fukuen" label="reunion" />
+
+      <FukuenCtaSection />
     </div>
   );
 }
@@ -145,9 +152,19 @@ export default function FukuenClient() {
     interpretationFrame: templateResult?.interpretationFrame,
   });
 
+  const fortuneTrackedRef = useRef(false);
+
+  useEffect(() => {
+    void trackEvent({ event_name: "page_view", page: "/uranai/fukuen", label: "reunion" });
+  }, []);
+
   useEffect(() => {
     if (templateResult && resultRef.current) {
       resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (templateResult && !fortuneTrackedRef.current) {
+      fortuneTrackedRef.current = true;
+      void trackEvent({ event_name: "fortune_used", page: "/uranai/fukuen", label: "reunion" });
     }
   }, [templateResult]);
 
