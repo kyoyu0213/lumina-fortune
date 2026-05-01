@@ -8,6 +8,7 @@ import { TableOfContents } from "@/components/columns/table-of-contents";
 import { CardImageModal } from "@/components/columns/card-image-modal";
 import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
 import { CoconalaWidget } from "@/components/columns/coconala-widget";
+import { A8Banner } from "@/components/columns/a8-banner";
 import { FukuenCtaSection } from "@/components/fukuen-cta-section";
 
 const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
@@ -1795,6 +1796,9 @@ export default async function ColumnDetailPage({ params }: PageProps) {
             </div>
           </section>
         ) : null}
+
+        {/* A8アフィリエイトバナー（全コラム末尾） */}
+        <A8Banner />
 
         {/* Bottom navigation */}
         <div className="flex items-center justify-center gap-4 pb-1">

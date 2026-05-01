@@ -15,6 +15,7 @@ import {
 } from "@/lib/kataomoi-reading";
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
 import { ConsultationCta } from "@/components/consultation-cta";
+import { A8Banner } from "@/components/columns/a8-banner";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -130,6 +131,8 @@ function ResultView({ result }: { result: KataomoiReading }) {
       </section>
 
       <ConsultationCta page="/uranai/kataomoi" label="unrequited_love" />
+
+      <A8Banner />
     </div>
   );
 }

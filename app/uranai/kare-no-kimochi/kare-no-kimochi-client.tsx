@@ -15,6 +15,7 @@ import {
 } from "@/lib/kareNoKimochiReading";
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
 import { ConsultationCta } from "@/components/consultation-cta";
+import { A8Banner } from "@/components/columns/a8-banner";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -101,6 +102,8 @@ function ResultView({ result }: { result: KareNoKimochiReading }) {
       </div>
 
       <ConsultationCta page="/uranai/kare-no-kimochi" label="their_feelings" />
+
+      <A8Banner />
     </div>
   );
 }

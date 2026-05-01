@@ -14,6 +14,7 @@ import { ensureFortuneOutputFormat, parseDailyFortuneSections } from "@/lib/dail
 import { runClientModerationCheck } from "@/lib/moderation/clientCheck";
 import { getOrCreateChatVisitorKey } from "@/lib/membership";
 import { trackEvent } from "@/lib/track-event";
+import { A8Banner } from "@/components/columns/a8-banner";
 import type { FortuneSection } from "@/lib/types/content";
 
 type DrawnCard = TarotCardEntry & {
@@ -1550,6 +1551,8 @@ export default function DailyFortunePage() {
           </section>
         )}
       </GlassCard>
+
+      {showResult ? <A8Banner /> : null}
 
       <GlassCard className="mt-4 recent-guidance-card">
         <h2 className="text-base font-medium text-[#2e2a26]">最近のカード履歴</h2>

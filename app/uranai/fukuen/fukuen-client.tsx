@@ -12,6 +12,7 @@ import { FUKUEN_QUESTION_CHIPS, getFukuenReading, type FukuenReading } from "@/l
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
 import { ConsultationCta } from "@/components/consultation-cta";
 import { FukuenCtaSection } from "@/components/fukuen-cta-section";
+import { A8Banner } from "@/components/columns/a8-banner";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -125,6 +126,8 @@ function ResultView({ result }: { result: FukuenReading }) {
       <ConsultationCta page="/uranai/fukuen" label="reunion" />
 
       <FukuenCtaSection />
+
+      <A8Banner />
     </div>
   );
 }

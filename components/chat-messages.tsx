@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { FavoriteGuidanceItem } from "@/lib/chat-favorite-guidance";
 import type { ChatMessagePart } from "@/lib/chat-message-parts";
 import { trackEvent } from "@/lib/track-event";
+import { A8Banner } from "@/components/columns/a8-banner";
 
 import type { TarotCardData } from "./tarot-card";
 import { AssistantMessagePart } from "./chat-message-parts";
@@ -303,6 +304,12 @@ export function ChatMessages({ messages, onDrawCards, onSaveFavorite }: ChatMess
                             onSaveFavorite={onSaveFavorite}
                           />
                         </div>
+
+                        {msg.cards?.length ? (
+                          <div className="mx-auto w-full max-w-2xl">
+                            <A8Banner />
+                          </div>
+                        ) : null}
 
                         {msg.gateLinks?.length ? (
                           <div className="mt-4 space-y-2 rounded-xl border border-[#e7dcc8]/90 bg-white/60 p-3">
