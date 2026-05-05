@@ -36,45 +36,49 @@ function stripTitleEmoji(title: string): string {
 
 /**
  * 1ページ目に全カテゴリのコラムをバランスよく配置する。
- * 非恋愛コラム（仕事・不安・願い・占い）を全て1ページ目に入れ、
- * 残りの枠を恋愛コラムで埋める。恋愛一色に見えないようにする。
+ * - 入力は最新→古い順を想定（articles[0] が最新）。
+ * - 1ページ目の先頭には必ず最新コラムを置く。
+ * - 残りの枠は非恋愛コラムを散らして、恋愛一色に見えないようにする。
  */
 function balanceFirstPage(articles: ColumnArticle[]): ColumnArticle[] {
-  const nonLove = articles.filter((a) => a.category !== "失恋");
-  const love = articles.filter((a) => a.category === "失恋");
+  if (articles.length === 0) return [];
+
+  // 最新コラムは必ず先頭に置く
+  const latest = articles[0];
+  const rest = articles.slice(1);
+
+  const nonLove = rest.filter((a) => a.category !== "失恋");
+  const love = rest.filter((a) => a.category === "失恋");
 
   if (nonLove.length === 0) return articles;
 
-  // 1ページ目: 非恋愛を全部入れて、残り枠を恋愛で埋める
-  const loveForFirstPage = Math.max(0, ITEMS_PER_PAGE - nonLove.length);
-  const result: ColumnArticle[] = [];
+  // 1ページ目の残り枠（最新分を除く）
+  const remainingSlots = ITEMS_PER_PAGE - 1;
+  const nonLoveForFirstPage = nonLove.slice(0, remainingSlots);
+  const loveForFirstPage = love.slice(0, Math.max(0, remainingSlots - nonLoveForFirstPage.length));
+  const loveRemaining = love.slice(loveForFirstPage.length);
+  const nonLoveRemaining = nonLove.slice(nonLoveForFirstPage.length);
+
+  const balanced: ColumnArticle[] = [latest];
 
   // 恋愛と非恋愛を交互に配置（非恋愛が均等に散らばるように）
-  const nonLoveCopy = [...nonLove];
-  const loveCopy = love.slice(0, loveForFirstPage);
-  const loveRemaining = love.slice(loveForFirstPage);
-
-  // 恋愛N件の間に非恋愛を均等に挟む
-  // 例: 恋愛5件 + 非恋愛7件 = 12件 → 1恋愛, 1非恋愛, 1恋愛, 1非恋愛...
   let li = 0;
   let ni = 0;
-  const ratio = nonLoveCopy.length > 0 ? loveCopy.length / nonLoveCopy.length : 999;
+  const ratio =
+    nonLoveForFirstPage.length > 0 ? loveForFirstPage.length / nonLoveForFirstPage.length : 999;
 
-  for (let i = 0; i < ITEMS_PER_PAGE; i++) {
-    // 恋愛と非恋愛を交互に、比率に応じて配置
-    if (ni < nonLoveCopy.length && (li >= loveCopy.length || (li / Math.max(ni, 0.5)) >= ratio)) {
-      result.push(nonLoveCopy[ni++]);
-    } else if (li < loveCopy.length) {
-      result.push(loveCopy[li++]);
-    } else if (ni < nonLoveCopy.length) {
-      result.push(nonLoveCopy[ni++]);
+  for (let i = 0; i < remainingSlots; i++) {
+    if (ni < nonLoveForFirstPage.length && (li >= loveForFirstPage.length || (li / Math.max(ni, 0.5)) >= ratio)) {
+      balanced.push(nonLoveForFirstPage[ni++]);
+    } else if (li < loveForFirstPage.length) {
+      balanced.push(loveForFirstPage[li++]);
+    } else if (ni < nonLoveForFirstPage.length) {
+      balanced.push(nonLoveForFirstPage[ni++]);
     }
   }
 
-  // 2ページ目以降: 残りの恋愛コラム
-  for (const a of loveRemaining) result.push(a);
-
-  return result;
+  // 2ページ目以降: 残りを通常順で
+  return [...balanced, ...nonLoveRemaining, ...loveRemaining];
 }
 
 export default function ColumnsPage() {

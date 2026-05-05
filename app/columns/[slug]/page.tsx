@@ -194,6 +194,13 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "dekiai-sareru-josei", title: "彼に溺愛される女性が絶対にしない5つのこと" },
     { slug: "suuhijutsu-aishou", title: "数秘術で見る恋愛相性｜誕生日でわかる、二人の本質的なつながり" },
   ],
+  "nagai-kataomoi": [
+    { slug: "sukinanoni-renraku-shinai", title: "好きなのに連絡してこない男性は、何を考えているのか" },
+    { slug: "uranai-ataru-chigai", title: "占いが当たる人と当たらない人の違い" },
+    { slug: "kataomoi-nagai", title: "片思いが長い人に共通する5つのこと" },
+    { slug: "kidoku-yoru", title: "既読がつかない夜に読んでほしい話" },
+    { slug: "renraku-matsu", title: "連絡を待つ時間は、無駄じゃない" },
+  ],
   "kataomoi-nagai": [
     { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
     { slug: "myakuari-sign", title: "男性が本気で好きな女性にだけ見せる7つの脈ありサイン" },
@@ -724,6 +731,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "nagai-kataomoi": {
+    title: "何年も同じ人を想い続けるあなたへ｜長く続く片思いを動かすために確かめたい3つのことを占い師が解説 - ルミナ",
+    description:
+      "何年も同じ人を想い続けて苦しい。長く続く片思いを動かすために、まず自分の心と向き合って確かめたい3つのことを占い師ルミナがお伝えします。",
+    openGraph: {
+      title: "何年も同じ人を想い続けるあなたへ｜長く続く片思いを動かすために確かめたい3つのこと",
+      description:
+        "何年も同じ人を想い続けて苦しい。長く続く片思いを動かすために、まず自分の心と向き合って確かめたい3つのことを占い師ルミナがお伝えします。",
+      type: "article",
+    },
+  },
   "kidoku-through": {
     title: "既読スルーされたときの対処法5つ｜追いメッセージの前に読んでほしいこと - ルミナ",
     description:
@@ -1112,6 +1130,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     headline: "片思いが長い人に共通する5つのこと｜動けないあなたへ、ルミナからの手紙",
     description:
       "片思いが長く続いている。進展しないのに諦められない。その理由と、ここから一歩踏み出すためのヒントを占い師ルミナがお伝えします。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
+  "nagai-kataomoi": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "何年も同じ人を想い続けるあなたへ｜長く続く片思いを動かすために確かめたい3つのこと",
+    description:
+      "何年も同じ人を想い続けて苦しい。長く続く片思いを動かすために、まず自分の心と向き合って確かめたい3つのことを占い師ルミナがお伝えします。",
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
@@ -1677,7 +1704,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through" || slug === "birthday-present" || slug === "kincho-shinai") && (
+          {(slug === "kidokumushi-dansei" || slug === "sukinanoni-renraku-shinai" || slug === "honki-koudou" || slug === "toshishita-dansei-honki-sign" || slug === "dansei-tsumetaku-naru-riyuu" || slug === "ishiki-shitemorau" || slug === "myakuari-sign" || slug === "aitai-josei" || slug === "dansei-chinmoku" || slug === "kenka-nakanaori" || slug === "taisetsu-ni-sareteinai" || slug === "shiawase-nanoni-fuan" || slug === "shokuba-renai" || slug === "enkyori-renai" || slug === "first-date" || slug === "umakuiku-hito" || slug === "kawaii-shunkan" || slug === "kidoku-through" || slug === "birthday-present" || slug === "kincho-shinai" || slug === "nagai-kataomoi") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kare-no-kimochi" tone="primary" className="px-5">
                 あの人の本音を読み解く（あの人の気持ち占い）
