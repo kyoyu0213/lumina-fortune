@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PageShell } from "@/components/ui/page-shell";
 
@@ -104,6 +105,20 @@ export default function VoicePage() {
             ルミナが信頼する電話鑑定
           </h1>
         </header>
+
+        {/* アイキャッチ画像 */}
+        <div className="relative overflow-hidden rounded-[1.6rem] border border-[#ebe1cf]/85 shadow-[0_14px_28px_-26px_rgba(82,69,53,0.24)]">
+          <Image
+            src="/gazou/denwakantei.png"
+            alt="ルミナが信頼する電話鑑定"
+            width={1200}
+            height={675}
+            priority
+            className="block h-auto w-full object-cover"
+            sizes="(max-width: 768px) 100vw, 900px"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,252,246,0)_55%,rgba(255,252,246,0.18))]" />
+        </div>
 
         {/* プロローグ */}
         <SectionCard>
