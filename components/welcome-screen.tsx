@@ -136,9 +136,20 @@ const consultationSection: SectionGroup = {
   backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,250,244,0.62),rgba(247,240,232,0.68))]",
 };
 
+const voiceSection = {
+  id: "voice",
+  eyebrow: "Voice",
+  title: "声で話したい夜に",
+  description: "声を必要とされる方のために、信頼できる場所をご案内します。",
+  card: { title: "ルミナが信頼する電話鑑定", description: "今夜すぐ声で話したい方へ。", href: "/voice" },
+  backgroundImage: "/gazou/phone.png",
+  backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,250,244,0.62),rgba(247,240,232,0.68))]",
+};
+
 const socialLinks = [
   { name: "TikTok", href: "https://www.tiktok.com/@luminousmagic0?_r=1&_t=ZS-94P8u7q3O5g", ariaLabel: "TikTokを開く" },
   { name: "Instagram", href: "https://www.instagram.com/luminousmagic0?igsh=MXZqNmtkazllZHpqNg%3D%3D&utm_source=qr", ariaLabel: "Instagramを開く" },
+  { name: "X", href: "https://x.com/lumina_uranai", ariaLabel: "Xを開く" },
   { name: "YouTube", href: "https://youtube.com/channel/UCgmijIrv50RWonl2XgO8fiA?si=k60PNOj1RXFB3wcG", ariaLabel: "YouTubeを開く" },
 ] as const;
 
@@ -161,6 +172,14 @@ function BridgeSocialIcon({ name }: { name: (typeof socialLinks)[number]["name"]
     return (
       <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
         <rect x="4" y="4" width="16" height="16" rx="4.2" />
+      </svg>
+    );
+  }
+
+  if (name === "X") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
       </svg>
     );
   }
@@ -335,6 +354,39 @@ function CardSection({ section, columns = "three", compact = false }: { section:
               </div>
             </>
           )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VoiceSection() {
+  const handleClick = () => {
+    void trackEvent("voice_card_clicked", "/", "voice_card");
+  };
+
+  return (
+    <section id={voiceSection.id} className="relative mx-auto w-full max-w-6xl px-4">
+      <div className="relative overflow-hidden rounded-[1.6rem] border border-[#ebe1cf]/80 bg-[rgba(255,252,247,0.58)] shadow-[0_14px_24px_-26px_rgba(82,69,53,0.22)] backdrop-blur-[1px] px-4 py-3 sm:px-6 sm:py-3.5">
+        <div className="pointer-events-none absolute inset-0">
+          <Image src={voiceSection.backgroundImage} alt="" fill className="object-cover opacity-[0.82]" sizes="(max-width: 768px) 100vw, 1200px" />
+          <div className={`absolute inset-0 ${voiceSection.backgroundOverlayClassName}`} />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(255,255,255,0.34),transparent_34%),radial-gradient(circle_at_86%_76%,rgba(231,214,181,0.18),transparent_28%)]" />
+        </div>
+        <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
+          <div className="min-w-0 sm:flex-1">
+            <p className="text-[11px] tracking-[0.22em] text-[#8b7e6b] uppercase">{voiceSection.eyebrow}</p>
+            <h2 className="mt-0.5 text-lg font-medium tracking-[0.04em] text-[#2f2a25] sm:text-xl">{voiceSection.title}</h2>
+            <p className="mt-1 text-[13px] leading-6 text-[#665d51]">{voiceSection.description}</p>
+          </div>
+          <Link
+            href={voiceSection.card.href}
+            onClick={handleClick}
+            className="group flex w-full shrink-0 flex-col justify-center rounded-[1.1rem] border border-[#d6c39d]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.7),rgba(245,236,219,0.62))] px-4 py-2.5 shadow-[0_10px_22px_-22px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 sm:w-[300px]"
+          >
+            <h3 className="text-[15px] font-medium leading-tight text-[#2e2a26] group-hover:text-[#5d513f]">{voiceSection.card.title}</h3>
+            <p className="mt-0.5 text-[12px] leading-5 text-[#7a7063]">{voiceSection.card.description}</p>
+          </Link>
         </div>
       </div>
     </section>
@@ -704,6 +756,7 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
           <CardSection section={recordsSection} columns="two" />
           <CardSection section={mansionSection} />
           <CardSection section={consultationSection} columns="two" />
+          <VoiceSection />
         </div>
 
         <section className="relative mx-auto mt-6 w-full max-w-6xl px-4 pb-3">
