@@ -56,6 +56,14 @@ const PROVIDERS: ReadonlyArray<{
     ],
     pull: "「単発ではなく、信頼できる占い師の方を見つけて、じっくり相談していきたい」——そう願う方の、長く続く相談相手に。",
     ctaLabel: "ヴェルニを覗いてみる",
+    affiliate: {
+      href: "https://px.a8.net/svt/ejp?a8mat=4B3NYS+7FX302+2H0Q+NUMHT",
+      imgSrc: "https://www20.a8.net/svt/bgt?aid=260511508450&wid=001&eno=01&mid=s00000011537004006000&mc=1",
+      imgAlt: "ヴェルニ",
+      width: 468,
+      height: 60,
+      pixelSrc: "https://www15.a8.net/0.gif?a8mat=4B3NYS+7FX302+2H0Q+NUMHT",
+    },
   },
   {
     number: "3",
