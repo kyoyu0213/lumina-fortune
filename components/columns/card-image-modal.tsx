@@ -6,19 +6,22 @@ import { useState } from "react";
 type CardImageModalProps = {
   src: string;
   alt: string;
-  /** "sm" = 180/220px (default), "md" = 270/330px */
-  size?: "sm" | "md";
+  /** "sm" = 180/220px (default), "md" = 270/330px, "wide" = 横長画像を全幅表示 */
+  size?: "sm" | "md" | "wide";
 };
 
 const SIZE_CLASSES = {
   sm: "w-[180px] sm:w-[220px]",
   md: "w-[270px] sm:w-[330px]",
+  wide: "w-full max-w-[640px]",
 } as const;
 
 export function CardImageModal({ src, alt, size = "sm" }: CardImageModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const sizeClass = SIZE_CLASSES[size];
-  const imgWidth = size === "md" ? 330 : 220;
+  const isWide = size === "wide";
+  const thumbWidth = isWide ? 640 : size === "md" ? 330 : 220;
+  const thumbHeight = isWide ? 426 : Math.round(thumbWidth * 1.5);
 
   return (
     <>
@@ -31,8 +34,8 @@ export function CardImageModal({ src, alt, size = "sm" }: CardImageModalProps) {
           <Image
             src={src}
             alt={alt}
-            width={imgWidth}
-            height={Math.round(imgWidth * 1.5)}
+            width={thumbWidth}
+            height={thumbHeight}
             className="h-auto w-full"
           />
         </div>
@@ -40,7 +43,7 @@ export function CardImageModal({ src, alt, size = "sm" }: CardImageModalProps) {
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         >
           <button
@@ -52,14 +55,16 @@ export function CardImageModal({ src, alt, size = "sm" }: CardImageModalProps) {
             ✕
           </button>
           <div
-            className="max-h-[85vh] w-[300px] overflow-hidden rounded-2xl border border-[#d8c8ab]/30 shadow-2xl sm:w-[360px]"
+            className={`overflow-hidden rounded-2xl border border-[#d8c8ab]/30 shadow-2xl ${
+              isWide ? "w-[96vw] max-w-[1000px]" : "max-h-[85vh] w-[300px] sm:w-[360px]"
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
             <Image
               src={src}
               alt={alt}
-              width={360}
-              height={612}
+              width={isWide ? 1000 : 360}
+              height={isWide ? 666 : 612}
               className="h-auto w-full"
             />
           </div>

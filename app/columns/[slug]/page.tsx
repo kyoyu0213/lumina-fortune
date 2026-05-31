@@ -8,6 +8,7 @@ import { TableOfContents } from "@/components/columns/table-of-contents";
 import { CardImageModal } from "@/components/columns/card-image-modal";
 import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
 import { CoconalaWidget } from "@/components/columns/coconala-widget";
+import { CoconalaArticleCard } from "@/components/columns/coconala-article-card";
 import { A8Banner } from "@/components/columns/a8-banner";
 import { FukuenCtaSection } from "@/components/fukuen-cta-section";
 
@@ -299,6 +300,45 @@ const RELATED_COLUMNS: Record<string, { slug: string; title: string }[]> = {
     { slug: "taisetsu-ni-sareteinai", title: "「大切にされていない」と感じたとき、本当に足りないのは彼の愛情ですか？" },
     { slug: "uranai-ataru-chigai", title: "占いが当たる人と当たらない人の決定的な違い" },
   ],
+  "numerology-aisho-81": [
+    { slug: "suuhijutsu-aishou", title: "数秘術で見る恋愛相性｜誕生日でわかる、二人の本質的なつながり" },
+    { slug: "aishou-couple", title: "相性がいいカップルの5つの共通点｜「似ている」より大切なこと" },
+    { slug: "suki-to-shuchaku-no-chigai", title: "「好き」と「執着」の違いに気づいたとき、恋は変わり始める" },
+    { slug: "sukisake-dansei", title: "好き避けする男性の5つの特徴｜嫌い避けとの見分け方を占い師が解説" },
+    { slug: "dansei-chinmoku", title: "男性が急に黙る5つの理由｜沈黙は「怒り」ではなく「整理」かもしれません" },
+    { slug: "tarot-renai", title: "恋愛占いでよく出るタロットカード7枚｜あなたの恋に寄り添うカードの意味" },
+  ],
+};
+
+/**
+ * 数秘術相性81コラム：特定の組み合わせの末尾（次の一歩）に差し込むココナラ記事カード。
+ * キーは該当する「次の一歩」段落の本文と完全一致させる。
+ */
+const NUMEROLOGY_AISHO_COCONALA_CARDS: Record<
+  string,
+  { href: string; title: string; description: string; image: string }
+> = {
+  "**次の一歩**　ご自身の「したいこと」を、ひとつだけあの人に伝えてみてください。": {
+    href: "https://coconala.com/contents_market/articles/cmpu1gm2g06a3610hmdkg7nem",
+    title: "あなた2 × 彼1――彼が前へ進めるのは、あなたがいるから。二人の恋の相性鑑定書",
+    description:
+      "「あの人との相性、本当に合っているのかな」「私のこの動き方で、合っているのかな」「私たち、このまま続いていくのかな」そんな問いを抱えて、",
+    image: "/gazou/column/suuhi/coconala/aisho-10.jpg",
+  },
+  "**次の一歩**　あの人に、これまで伝えていなかった本音をひとつだけ伝えてみてください。": {
+    href: "https://coconala.com/contents_market/articles/cmpu2bz9k06aa610hszrwzbd6",
+    title: "あなた2 × 彼2――相性は抜群なのに、なぜか恋が進まない二人の真実",
+    description:
+      "「あの人と一緒にいると、不思議なくらい安心する」「言葉にしなくても、通じ合っている気がする」「でも、お互いに本音を伝えられているのかな」そん",
+    image: "/gazou/column/suuhi/coconala/aisho-11.jpg",
+  },
+  "**次の一歩**　あの人の楽しい話に、「もっと聞かせて」と応じてみてください。": {
+    href: "https://coconala.com/contents_market/articles/cmpu2t7dv0741850hy4hjc5k7",
+    title: "あなた2 × 彼3――「好き」だけでは続かない。二人の恋に隠された課題とは",
+    description:
+      "「あの人の明るさに、いつも救われている」「でも、私の繊細さは伝わっているのかな」「楽しい関係だけど、深いところで通じ合えているのかな」そ",
+    image: "/gazou/column/suuhi/coconala/aisho-12.jpg",
+  },
 };
 
 const ARTICLE_METADATA: Record<string, Metadata> = {
@@ -797,6 +837,17 @@ const ARTICLE_METADATA: Record<string, Metadata> = {
       type: "article",
     },
   },
+  "numerology-aisho-81": {
+    title: "二人が出会った意味を知る本｜運命数が紐解く81通りの恋の物語 - ルミナ",
+    description:
+      "あの人との相性、本当に合っているのかな──そんな問いに、ピタゴラスから続く数秘術で答えを見つけていきます。運命数の出し方と、81通りの組み合わせ全てを白の魔女ルミナが解説します。",
+    openGraph: {
+      title: "二人が出会った意味を知る本──運命数が紐解く81通りの恋の物語",
+      description:
+        "あの人との相性、本当に合っているのかな──そんな問いに、ピタゴラスから続く数秘術で答えを見つけていきます。運命数の出し方と、81通りの組み合わせ全てを白の魔女ルミナが解説します。",
+      type: "article",
+    },
+  },
 };
 
 const ARTICLE_JSONLD: Record<string, object> = {
@@ -1205,6 +1256,15 @@ const ARTICLE_JSONLD: Record<string, object> = {
     author: { "@type": "Person", name: "ルミナ" },
     publisher: { "@type": "Organization", name: "ルミナ" },
   },
+  "numerology-aisho-81": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "二人が出会った意味を知る本──運命数が紐解く81通りの恋の物語",
+    description:
+      "あの人との相性、本当に合っているのかな──そんな問いに、ピタゴラスから続く数秘術で答えを見つけていきます。運命数の出し方と、81通りの組み合わせ全てを白の魔女ルミナが解説します。",
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  },
 };
 
 type PageProps = {
@@ -1448,14 +1508,44 @@ export default async function ColumnDetailPage({ params }: PageProps) {
       );
     }
 
+    // 相性81：組み合わせ見出しをバッジ付きで目立たせる
+    if (slug === "numerology-aisho-81") {
+      const cm = block.content.match(/^\*\*組み合わせ(\d+)：(.+?)\*\*$/);
+      if (cm) {
+        return (
+          <div
+            key={`${article.slug}-combo-${index}`}
+            className="mt-8 flex items-center gap-3 rounded-xl border border-[#dcbf8e]/70 bg-[linear-gradient(90deg,#f0e2c6,#f9f2e4_82%)] px-4 py-3 shadow-[0_6px_16px_-12px_rgba(120,92,46,0.4)]"
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c9a96e] text-[13px] font-bold text-white shadow-[0_2px_6px_-2px_rgba(120,92,46,0.6)]">
+              {cm[1]}
+            </span>
+            <span className="text-[1.02rem] font-bold tracking-wide text-[#7a5a2c]">{cm[2]}</span>
+          </div>
+        );
+      }
+    }
+
     if (block.type === "subheading") {
+      let numberCard: { src: string; alt: string } | null = null;
+      if (slug === "numerology-aisho-81") {
+        const m = block.content.match(/^あなたが運命数(\d)の方の組み合わせ/);
+        if (m) {
+          numberCard = {
+            src: `/gazou/column/suuhi/${m[1]}.png`,
+            alt: `運命数${m[1]}の組み合わせ──黄金に輝く数字${m[1]}`,
+          };
+        }
+      }
       return (
-        <h3
-          key={`${article.slug}-sub-${index}`}
-          className="rounded-lg border-l-[3px] border-[#d4c4a8] bg-[#f5eddf]/80 px-4 py-2.5 text-[1rem] font-semibold leading-relaxed text-[#3a332a]"
-        >
-          {block.content}
-        </h3>
+        <div key={`${article.slug}-sub-${index}`}>
+          {numberCard ? <CardImageModal src={numberCard.src} alt={numberCard.alt} size="md" /> : null}
+          <h3
+            className="rounded-lg border-l-[3px] border-[#d4c4a8] bg-[#f5eddf]/80 px-4 py-2.5 text-[1rem] font-semibold leading-relaxed text-[#3a332a]"
+          >
+            {block.content}
+          </h3>
+        </div>
       );
     }
 
@@ -1508,6 +1598,8 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           break;
         }
       }
+    } else if (slug === "numerology-aisho-81" && block.content.startsWith("たとえば、あなたが運命数3で、あの人が運命数7なら")) {
+      inlineCard = { src: "/gazou/column/suuhi/hayami.png", alt: "あなたとあの人の運命数で読み解く相性早見表（81通り）" };
     } else if (slug === "taisetsu-ni-sareteinai" && block.content.startsWith("男性は、表情だけでは気持ちを察しづらいところがあるかもしれません")) {
       inlineCard = { src: "/gazou/column/taisetu/1b4d5876-619c-412d-8ec7-f669343da74d.png", alt: "タロットカード「吊るされた男」──視点を変えることで見える光" };
     } else if (slug === "tarot-renai") {
@@ -1531,9 +1623,22 @@ export default async function ColumnDetailPage({ params }: PageProps) {
     return (
       <div key={`${article.slug}-p-${index}`}>
         {inlineCard ? (
-          <CardImageModal src={inlineCard.src} alt={inlineCard.alt} size={slug === "suuhijutsu-aishou" ? "md" : "sm"} />
+          <CardImageModal
+            src={inlineCard.src}
+            alt={inlineCard.alt}
+            size={
+              inlineCard.src.includes("/suuhi/hayami")
+                ? "wide"
+                : slug === "suuhijutsu-aishou" || slug === "numerology-aisho-81"
+                ? "md"
+                : "sm"
+            }
+          />
         ) : null}
         <p className="text-[1rem] leading-[2.2] text-[#3a342c]">{renderInlineMarkdown(block.content)}</p>
+        {slug === "numerology-aisho-81" && NUMEROLOGY_AISHO_COCONALA_CARDS[block.content] ? (
+          <CoconalaArticleCard {...NUMEROLOGY_AISHO_COCONALA_CARDS[block.content]} />
+        ) : null}
         {shouldShowConsultationButton(article.slug, block.content) ? (
           <div className="mt-3">
             <LuminaLinkButton href="/consultation" tone="secondary" className="px-5">
@@ -1734,7 +1839,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
               </LuminaLinkButton>
             </div>
           )}
-          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou" || slug === "kaiwa-wadai" || slug === "motto-nakayoku" || slug === "matching-app" || slug === "kokuhaku-mayou") && (
+          {(slug === "dekiai-sareru-josei" || slug === "aishou-couple" || slug === "kenntaiki-norikoeru" || slug === "suuhijutsu-aishou" || slug === "numerology-aisho-81" || slug === "kaiwa-wadai" || slug === "motto-nakayoku" || slug === "matching-app" || slug === "kokuhaku-mayou") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/compatibility" tone="primary" className="px-5">
                 ふたりの相性を見てみる（相性占い）
