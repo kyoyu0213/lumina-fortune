@@ -73,7 +73,11 @@
       "Bash(node *)",
       "WebFetch(domain:coconala.com)",
       "Bash(cd public/gazou/column/suuhi/coconala && for n in 10 11 12; do mv \"aisho-$n.png\" \"aisho-$n.jpg\"; done && ls)",
-      "Bash(xxd)"
+      "Bash(xxd)",
+      "Bash(bash scripts/fetch-ogp.sh)",
+      "Bash(sort -t- -k2 -n)",
+      "Bash(cd /c/Users/yuri3/lumina-fortune && pwd && ls scripts/ | head -20)",
+      "Read(//c/c/Users/yuri3/lumina-fortune/**)"
     ]
   }
 }
