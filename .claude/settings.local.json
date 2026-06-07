@@ -81,7 +81,8 @@
       "Bash(mkdir -p public/majyosindan public/kekka)",
       "Bash(cp public/gazou/majyosindan/majyosindan.png public/majyosindan/majyosindan.png)",
       "Bash(cp public/gazou/majyosindan/kekka/*.png public/kekka/)",
-      "PowerShell(npm run build 2>&1)"
+      "PowerShell(npm run build 2>&1)",
+      "Bash(npx eslint *)"
     ]
   }
 }

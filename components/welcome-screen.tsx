@@ -769,6 +769,24 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
 
           <CardSection section={fortuneSection} />
 
+          <section className="relative mx-auto w-full max-w-6xl px-4">
+            <Link
+              href="/bird"
+              onClick={() => void trackEvent("bird_banner_click", "/", "bird_banner")}
+              aria-label="鳥タイプ診断"
+              className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+            >
+              <Image
+                src="/gazou/bird/banner.png"
+                alt="鳥タイプ診断"
+                width={1774}
+                height={296}
+                className="h-auto w-full object-cover"
+                sizes="(max-width: 768px) 100vw, 1200px"
+              />
+            </Link>
+          </section>
+
           <ColumnShowcase />
 
           <CardSection section={recordsSection} columns="two" />
