@@ -2,9 +2,11 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton } from "@/components/ui/button";
+import { ShopBanner } from "@/components/shop-banner";
 import {
   witchQuestions,
   computeMBTI,
@@ -335,6 +337,25 @@ export default function MajyosindanClient() {
           ) : null}
         </section>
       ) : null}
+
+      <section className="relative mx-auto mt-8 w-full max-w-2xl">
+        <Link
+          href="/bird"
+          aria-label="鳥タイプ診断"
+          className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+        >
+          <Image
+            src="/gazou/bird/banner.png"
+            alt="鳥タイプ診断"
+            width={2544}
+            height={416}
+            className="h-auto w-full object-cover"
+            sizes="(max-width: 768px) 100vw, 1100px"
+          />
+        </Link>
+      </section>
+
+      <ShopBanner page="/majyosindan" className="mt-4" />
     </PageShell>
   );
 }

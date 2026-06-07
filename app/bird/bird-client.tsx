@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { birdQuestions, computeBirdResult, type BirdType } from "@/lib/bird/bird";
+import { ShopBanner } from "@/components/shop-banner";
 
 type Phase = "intro" | "quiz" | "result";
 
@@ -304,6 +305,25 @@ export default function BirdClient() {
             ) : null}
           </section>
         ) : null}
+
+        <section className="relative mt-8 w-full">
+          <Link
+            href="/majyosindan"
+            aria-label="魔女タイプ診断"
+            className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+          >
+            <Image
+              src="/majyosindan/majyosindan.png"
+              alt="魔女タイプ診断"
+              width={1774}
+              height={296}
+              className="h-auto w-full object-cover"
+              sizes="(max-width: 768px) 100vw, 1100px"
+            />
+          </Link>
+        </section>
+
+        <ShopBanner page="/bird" className="mt-4 px-0" />
       </div>
     </main>
   );
