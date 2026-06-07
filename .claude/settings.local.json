@@ -77,7 +77,11 @@
       "Bash(bash scripts/fetch-ogp.sh)",
       "Bash(sort -t- -k2 -n)",
       "Bash(cd /c/Users/yuri3/lumina-fortune && pwd && ls scripts/ | head -20)",
-      "Read(//c/c/Users/yuri3/lumina-fortune/**)"
+      "Read(//c/c/Users/yuri3/lumina-fortune/**)",
+      "Bash(mkdir -p public/majyosindan public/kekka)",
+      "Bash(cp public/gazou/majyosindan/majyosindan.png public/majyosindan/majyosindan.png)",
+      "Bash(cp public/gazou/majyosindan/kekka/*.png public/kekka/)",
+      "PowerShell(npm run build 2>&1)"
     ]
   }
 }
