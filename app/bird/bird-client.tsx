@@ -116,7 +116,12 @@ export default function BirdClient() {
 
         {phase === "intro" ? (
           <section className="rounded-[2rem] border border-white/70 bg-white/55 p-5 shadow-[0_24px_48px_-32px_rgba(60,83,64,0.45)] backdrop-blur-[2px] sm:p-7">
-            <div className="overflow-hidden rounded-[1.5rem] border border-white/70 shadow-[0_16px_34px_-26px_rgba(60,83,64,0.5)]">
+            <button
+              type="button"
+              onClick={handleStart}
+              aria-label="診断をはじめる"
+              className="block w-full cursor-pointer overflow-hidden rounded-[1.5rem] border border-white/70 shadow-[0_16px_34px_-26px_rgba(60,83,64,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5b8161]/70"
+            >
               <Image
                 src="/gazou/bird/Top.png"
                 alt="鳥タイプ診断 — 鳥たちの王国"
@@ -125,7 +130,7 @@ export default function BirdClient() {
                 className="h-auto w-full object-cover"
                 priority
               />
-            </div>
+            </button>
 
             <div className="mt-6 text-center">
               <p className="text-[11px] tracking-[0.3em] text-[#8a9a7d] uppercase">Bird Type</p>
