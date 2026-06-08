@@ -27,6 +27,24 @@ export default function BirdClient() {
     setPhase("quiz");
   };
 
+  // 診断TOPをシェア（スマホはOSのシェアシート、PCはX投稿へフォールバック）
+  const handleShareIntro = async () => {
+    const url = typeof window !== "undefined" ? `${window.location.origin}/bird` : "/bird";
+    const text = "12羽の鳥たちが教えてくれる、あなたの本当の性格🪶 あなたはどの鳥？【鳥タイプ診断】";
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "鳥タイプ診断", text, url });
+      } catch {
+        /* ユーザーがキャンセルした場合などは何もしない */
+      }
+      return;
+    }
+    const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      `${text}\n#鳥タイプ診断 #鳥たちの王国`,
+    )}&url=${encodeURIComponent(url)}`;
+    window.open(intentUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleAnswer = (optionIndex: number) => {
     const nextAnswers = [...answers, optionIndex];
     if (nextAnswers.length >= birdQuestions.length) {
@@ -159,13 +177,34 @@ export default function BirdClient() {
               </div>
             </div>
 
-            <div className="mt-7 flex justify-center">
+            <div className="mt-7 flex flex-col items-center gap-3">
               <button
                 type="button"
                 onClick={handleStart}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#7fa07d]/80 bg-[linear-gradient(135deg,#7fa07d,#5b8161)] px-9 text-sm font-medium tracking-[0.08em] text-white shadow-[0_16px_30px_-16px_rgba(60,83,64,0.7)] transition hover:-translate-y-0.5 hover:brightness-105"
               >
                 診断をはじめる
+              </button>
+              <button
+                type="button"
+                onClick={handleShareIntro}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#9bb592]/80 bg-white/70 px-6 text-[13px] font-medium tracking-[0.06em] text-[#4f6450] shadow-[0_10px_22px_-18px_rgba(60,83,64,0.4)] transition hover:-translate-y-0.5 hover:bg-white"
+              >
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 fill-none stroke-current"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+                  <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
+                </svg>
+                友達にこの診断をシェア
               </button>
             </div>
           </section>

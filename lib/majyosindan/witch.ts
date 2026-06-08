@@ -189,9 +189,6 @@ export type WitchResult = {
   detail?: WitchDetail;
 };
 
-// 画像が不足している魔女タイプのフォールバック用
-const FALLBACK_IMAGE = "/kekka/moon.png";
-
 // 魔女タイプごとの結果データ（鑑定文は仮）
 export const witchResults: Record<MBTIType, WitchResult> = {
   INTJ: {
@@ -1641,7 +1638,7 @@ export const witchResults: Record<MBTIType, WitchResult> = {
   ESTP: {
     mbti: "ESTP",
     name: "秘密の魔女",
-    image: FALLBACK_IMAGE, // ※ 専用画像が未用意のため仮で moon.png を使用
+    image: "/kekka/secret.png",
     catchCopy: "瞬間を駆け抜ける、大胆の魔女。",
     description:
       "あなたは、その場の流れを読み、大胆に動く秘密の魔女タイプです。鋭い直感と行動力で、チャンスを逃さずつかみ取ります。理屈より実践、考えるより動くことで道を切り拓く人。スリルや変化を楽しみ、まわりを惹きつける魅力の持ち主です。誰にも明かさない秘密のカードを胸に、あなたは今日も鮮やかに人生を遊びます。",

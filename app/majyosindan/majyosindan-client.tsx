@@ -37,6 +37,26 @@ export default function MajyosindanClient() {
     setPhase("quiz");
   };
 
+  // 診断TOPをシェア（スマホはOSのシェアシート、PCはX投稿へフォールバック）
+  const handleShareIntro = async () => {
+    const url =
+      typeof window !== "undefined" ? `${window.location.origin}/majyosindan` : "/majyosindan";
+    const text =
+      "白の魔女ルミナが導く、16の魔女の物語。あなたの中に眠る魔女タイプは？【魔女タイプ診断】";
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "魔女タイプ診断", text, url });
+      } catch {
+        /* ユーザーがキャンセルした場合などは何もしない */
+      }
+      return;
+    }
+    const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      `${text}\n#魔女タイプ診断 #LUMINA`,
+    )}&url=${encodeURIComponent(url)}`;
+    window.open(intentUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleAnswer = (pole: Pole) => {
     const nextAnswers = [...answers, pole];
     if (nextAnswers.length >= witchQuestions.length) {
@@ -135,10 +155,31 @@ export default function MajyosindanClient() {
               あなたの心の傾きから、16タイプの魔女のうち、いまのあなたに重なる一人を白の魔女ルミナがそっとお伝えします。
             </p>
           </div>
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex flex-col items-center gap-3">
             <LuminaButton type="button" tone="primary" onClick={handleStart}>
               診断をはじめる
             </LuminaButton>
+            <button
+              type="button"
+              onClick={handleShareIntro}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#d6c39d]/85 bg-white/70 px-6 text-[13px] font-medium tracking-[0.06em] text-[#6b6053] shadow-[0_10px_22px_-18px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:bg-white"
+            >
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="h-4 w-4 fill-none stroke-current"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+                <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
+              </svg>
+              友達にこの診断をシェア
+            </button>
           </div>
         </GlassCard>
       ) : null}
