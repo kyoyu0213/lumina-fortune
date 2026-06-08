@@ -13,6 +13,7 @@ import { useClaudeReading } from "@/lib/ai/use-claude-reading";
 import { ConsultationCta } from "@/components/consultation-cta";
 import { FukuenCtaSection } from "@/components/fukuen-cta-section";
 import { A8Banner } from "@/components/columns/a8-banner";
+import { DiagnosisBanners } from "@/components/diagnosis-banners";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -128,6 +129,8 @@ function ResultView({ result }: { result: FukuenReading }) {
       <FukuenCtaSection />
 
       <A8Banner />
+
+      <DiagnosisBanners page="/uranai/fukuen" />
     </div>
   );
 }

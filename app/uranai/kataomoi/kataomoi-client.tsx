@@ -16,6 +16,7 @@ import {
 import { useClaudeReading } from "@/lib/ai/use-claude-reading";
 import { ConsultationCta } from "@/components/consultation-cta";
 import { A8Banner } from "@/components/columns/a8-banner";
+import { DiagnosisBanners } from "@/components/diagnosis-banners";
 
 function splitParagraphs(text: string): string[] {
   return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
@@ -133,6 +134,8 @@ function ResultView({ result }: { result: KataomoiReading }) {
       <ConsultationCta page="/uranai/kataomoi" label="unrequited_love" />
 
       <A8Banner />
+
+      <DiagnosisBanners page="/uranai/kataomoi" />
     </div>
   );
 }
