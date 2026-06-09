@@ -381,6 +381,37 @@ export default function MajyosindanClient() {
 
       <section className="relative mx-auto mt-8 w-full max-w-2xl">
         <Link
+          href="/manga"
+          aria-label="魔女たちの日常"
+          className="group flex items-center gap-4 overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.92),rgba(248,242,231,0.84))] p-3 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-95"
+        >
+          <span className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#e6dac8]/80 bg-[#fdfaf3]">
+            <Image
+              src="/majyosindan/manga/ocyakai.png"
+              alt=""
+              fill
+              className="object-cover"
+              sizes="80px"
+            />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] tracking-[0.22em] text-[#a08f6a] uppercase">Comic</span>
+            <span className="mt-1 block text-base font-medium text-[#2e2a26]">魔女たちの日常</span>
+            <span className="mt-1 block text-sm leading-6 text-[#6b6053]">
+              白の庭に暮らす魔女たちの、小さな物語
+            </span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="shrink-0 pr-1 text-lg text-[#a08f6a] transition group-hover:translate-x-0.5"
+          >
+            →
+          </span>
+        </Link>
+      </section>
+
+      <section className="relative mx-auto mt-4 w-full max-w-2xl">
+        <Link
           href="/bird"
           aria-label="鳥タイプ診断"
           className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"

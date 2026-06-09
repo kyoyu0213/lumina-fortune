@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
 
@@ -79,6 +80,23 @@ export default function MangaPage() {
           </article>
         ))}
       </div>
+
+      <section className="mt-8">
+        <Link
+          href="/majyosindan"
+          aria-label="魔女タイプ診断"
+          className="group block overflow-hidden rounded-2xl border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+        >
+          <Image
+            src="/majyosindan/majyosindan.png"
+            alt="魔女タイプ診断"
+            width={1774}
+            height={296}
+            className="h-auto w-full object-cover"
+            sizes="(max-width: 768px) 100vw, 720px"
+          />
+        </Link>
+      </section>
     </PageShell>
   );
 }
