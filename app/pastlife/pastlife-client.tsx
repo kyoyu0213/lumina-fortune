@@ -10,6 +10,7 @@ import {
   type PastLifeResult,
 } from "@/lib/pastlife/pastlife";
 import { ShopBanner } from "@/components/shop-banner";
+import { DiagnosisBanners } from "@/components/diagnosis-banners";
 
 type Phase = "intro" | "quiz" | "result";
 
@@ -327,10 +328,9 @@ export default function PastLifeClient() {
 
               {storyOpen ? (
                 <div className="mt-2 space-y-2">
-                  <StoryChapter title="第一章 前世の物語" text={result.story.chapter1} />
-                  <StoryChapter title="第二章 残された想い" text={result.story.chapter2} />
-                  <StoryChapter title="第三章 今世への影響" text={result.story.chapter3} />
-                  <StoryChapter title="第四章 ルミナからのメッセージ" text={result.story.chapter4} />
+                  {result.chapters.map((chapter) => (
+                    <StoryChapter key={chapter.title} title={chapter.title} text={chapter.body} />
+                  ))}
                 </div>
               ) : null}
             </div>
@@ -375,7 +375,9 @@ export default function PastLifeClient() {
           </section>
         ) : null}
 
-        <ShopBanner page="/pastlife" className="mt-8 px-0" />
+        <DiagnosisBanners page="/pastlife" className="mt-8" />
+
+        <ShopBanner page="/pastlife" className="mt-4 px-0" />
       </div>
     </main>
   );
@@ -398,17 +400,23 @@ function PastLifeImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-/** イントロのメインビジュアル（画像未投入のため当面はプレースホルダー） */
+/**
+ * イントロのメインビジュアル。
+ * /public/images/pastlife/top.png を置くと自動で表示される。
+ * 未配置の場合は星空のプレースホルダーにフォールバックする。
+ */
 function IntroHero() {
+  const [errored, setErrored] = useState(false);
   return (
     <Image
-      src="/images/pastlife/results/placeholder.svg"
+      src={errored ? PLACEHOLDER_IMAGE : "/images/pastlife/top.png"}
       alt="前世診断 — あなたの魂はどんな人生を歩んできたのか"
       width={1024}
       height={1024}
       className="h-auto w-full object-cover"
+      onError={() => setErrored(true)}
       priority
-      unoptimized
+      unoptimized={errored}
     />
   );
 }
@@ -425,8 +433,9 @@ function ResultBlock({ title, emoji, text }: { title: string; emoji: string; tex
   );
 }
 
-/** 前世の物語の各章（個別アコーディオン） */
+/** 前世の物語の各章（個別アコーディオン）。本文は空行（\n\n）ごとに段落分けして表示する。 */
 function StoryChapter({ title, text }: { title: string; text: string }) {
+  const paragraphs = text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   return (
     <details className="group rounded-2xl border border-white/12 bg-white/5 px-4 py-3">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-medium text-[#f4ecd2]">
@@ -438,7 +447,13 @@ function StoryChapter({ title, text }: { title: string; text: string }) {
           ▼
         </span>
       </summary>
-      <p className="mt-3 whitespace-pre-line text-[14px] leading-7 text-[#d6cdf2]">{text}</p>
+      <div className="mt-3 space-y-3.5 text-[14px] leading-8 text-[#d6cdf2]">
+        {paragraphs.map((paragraph, i) => (
+          <p key={i} className="whitespace-pre-line">
+            {paragraph}
+          </p>
+        ))}
+      </div>
     </details>
   );
 }

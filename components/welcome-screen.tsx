@@ -619,6 +619,24 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
           </motion.div>
         </section>
 
+        <section className="relative mx-auto mt-5 w-full max-w-6xl px-4">
+          <Link
+            href="/majyosindan"
+            onClick={() => void trackEvent("majyosindan_banner_click", "/", "majyosindan_banner")}
+            aria-label="魔女タイプ診断"
+            className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+          >
+            <Image
+              src="/majyosindan/majyosindan.png"
+              alt="魔女タイプ診断"
+              width={1774}
+              height={296}
+              className="h-auto w-full object-cover"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+          </Link>
+        </section>
+
         {specialOccasion ? <SpecialOccasionCard event={specialOccasion} /> : null}
 
         {isFirstVisit ? (
@@ -749,16 +767,16 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
 
           <section className="relative mx-auto w-full max-w-6xl px-4">
             <Link
-              href="/majyosindan"
-              onClick={() => void trackEvent("majyosindan_banner_click", "/", "majyosindan_banner")}
-              aria-label="魔女タイプ診断"
+              href="/pastlife"
+              onClick={() => void trackEvent("pastlife_banner_click", "/", "pastlife_banner")}
+              aria-label="前世診断"
               className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
             >
               <Image
-                src="/majyosindan/majyosindan.png"
-                alt="魔女タイプ診断"
-                width={1774}
-                height={296}
+                src="/images/pastlife/zensebanner.png"
+                alt="前世診断"
+                width={2544}
+                height={416}
                 className="h-auto w-full object-cover"
                 sizes="(max-width: 768px) 100vw, 1200px"
               />

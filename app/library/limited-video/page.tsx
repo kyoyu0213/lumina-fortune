@@ -17,6 +17,8 @@ type VideoItem = {
   category: VideoCategory;
   youtubeId: string;
   watchUrl: string;
+  /** 動画の向き（縦型ショート or 横型通常動画）。表示比率の切り替えに使う。 */
+  orientation: "portrait" | "landscape";
 };
 
 const videos: VideoItem[] = [
@@ -26,6 +28,23 @@ const videos: VideoItem[] = [
     category: "恋愛",
     youtubeId: "KutxJ6Y2Q4c",
     watchUrl: "https://youtube.com/shorts/KutxJ6Y2Q4c?si=jrLkQo5HB1fzi83N",
+    orientation: "portrait",
+  },
+  {
+    title: "あの人が隠し続けてきた本当の想い",
+    note: "公開中",
+    category: "恋愛",
+    youtubeId: "KC8axs5b9GA",
+    watchUrl: "https://youtu.be/KC8axs5b9GA",
+    orientation: "landscape",
+  },
+  {
+    title: "3日以内にモテ期が訪れる人へ",
+    note: "公開中",
+    category: "恋愛",
+    youtubeId: "GZ4-LwnuX5U",
+    watchUrl: "https://youtu.be/GZ4-LwnuX5U",
+    orientation: "landscape",
   },
 ];
 
@@ -66,12 +85,19 @@ export default function LimitedVideoPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {items.map((video) => (
+                {items.map((video) => {
+                  const isPortrait = video.orientation === "portrait";
+
+                  return (
                   <article key={video.youtubeId} className="rounded-xl border border-[#dccfb8]/75 bg-white/65 p-3">
                     <p className="text-xs font-medium tracking-[0.12em] text-[#847967]">{video.note}</p>
                     <h3 className="mt-2 text-lg font-medium text-[#2e2a26]">{video.title}</h3>
-                    <div className="mt-4 mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-[#dccfb8]/80 bg-[#f8f3e8] shadow-[0_12px_30px_-18px_rgba(60,45,35,0.55)]">
-                      <div className="relative aspect-[9/16] w-full">
+                    <div
+                      className={`mt-4 mx-auto w-full overflow-hidden rounded-2xl border border-[#dccfb8]/80 bg-[#f8f3e8] shadow-[0_12px_30px_-18px_rgba(60,45,35,0.55)] ${
+                        isPortrait ? "max-w-[360px]" : "max-w-[640px]"
+                      }`}
+                    >
+                      <div className={`relative w-full ${isPortrait ? "aspect-[9/16]" : "aspect-video"}`}>
                         <iframe
                           className="absolute left-0 top-0 h-full w-full"
                           src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`}
@@ -93,7 +119,8 @@ export default function LimitedVideoPage() {
                       </a>
                     </div>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             </GlassCard>
           );
