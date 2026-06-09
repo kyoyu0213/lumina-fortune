@@ -121,6 +121,7 @@ const recordsSection: SectionGroup = {
     { title: "羽根ペンの部屋（コラム）", description: "心を落ち着ける読み物", href: "/columns", ctaLabel: "" },
     { title: "光の待ち受け", description: "静かな光を受け取る待ち受け", href: "/lucky-wallpapers", ctaLabel: "" },
     { title: "月灯りの間", description: "限定動画を公開", href: "/library/limited-video", ctaLabel: "" },
+    { title: "魔女たちの日常", description: "白の庭に暮らす魔女たちの、小さな物語", href: "/manga", ctaLabel: "" },
   ],
 };
 

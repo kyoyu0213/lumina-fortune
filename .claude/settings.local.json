@@ -82,7 +82,17 @@
       "Bash(cp public/gazou/majyosindan/majyosindan.png public/majyosindan/majyosindan.png)",
       "Bash(cp public/gazou/majyosindan/kekka/*.png public/kekka/)",
       "PowerShell(npm run build 2>&1)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(echo \"--- exit: $? ---\")",
+      "Bash(echo \"--- eslint exit: $? ---\")",
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(git add *)",
+      "Bash(git commit -m '@ *)",
+      "Bash(git commit --amend -m 前世診断の鑑定文・画像追加と各ページへの導線設置 -m '- 前世診断13タイプの結果イラスト・TOP画像・バナー画像を追加 *)",
+      "Bash(git push *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\yuri3\\.claude\\projects\\c--Users-yuri3-lumina-fortune\\memory"
     ]
   }
 }
