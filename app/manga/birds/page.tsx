@@ -8,41 +8,38 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { ShopBanner } from "@/components/shop-banner";
 
 export const metadata: Metadata = {
-  title: "魔女たちの日常 | 白の書庫 | LUMINA",
-  description: "白の庭に暮らす魔女たちの、小さな物語。今日もどこかで、魔女たちは少しだけ不思議で、少しだけ賑やかな時間を過ごしています。",
+  title: "羽根の広場｜鳥タイプ診断キャラクター漫画 | 白の書庫 | LUMINA",
+  description:
+    "鳥タイプ診断のキャラクターたちが集まる小さな広場。ハクや文鳥、セキセイインコ、カラスたちのにぎやかな日常漫画をお楽しみください。",
   alternates: {
-    canonical: "/manga",
+    canonical: "/manga/birds",
   },
   openGraph: {
-    title: "魔女たちの日常 | 白の書庫 | LUMINA",
-    description: "白の庭に暮らす魔女たちの、小さな物語。",
-    url: "/manga",
+    title: "羽根の広場｜鳥タイプ診断キャラクター漫画",
+    description: "鳥タイプ診断のキャラクターたちが集まる小さな広場。にぎやかな日常漫画をお楽しみください。",
+    url: "/manga/birds",
     type: "website",
   },
 };
 
-// 漫画画像は /public/majyosindan/manga/ に保存する。
+// 漫画画像は /public/gazou/bird/manga/ に保存する。
 // このフォルダに画像を追加するだけで、自動でこのページに掲載される（ビルド時にフォルダを読み取る）。
-const MANGA_DIR = path.join(process.cwd(), "public/majyosindan/manga");
-const PUBLIC_PREFIX = "/majyosindan/manga";
+const MANGA_DIR = path.join(process.cwd(), "public/gazou/bird/manga");
+const PUBLIC_PREFIX = "/gazou/bird/manga";
 
 // 各話のタイトル（ファイル名 → 表示名）。
 // ここに無いファイルはファイル名がそのまま表示名になる。
 // 並び順もこの定義順を優先し、未定義ファイルは末尾にファイル名順で追加する。
 const TITLES: Record<string, string> = {
-  "ocyakai.png": "お茶会",
-  "ohanami.png": "お花見",
-  "ohanami2.png": "お花見ふたたび",
-  "majyokaigi.png": "魔女会議",
-  "majyokaigiaruaru.png": "魔女会議あるある",
-  "hoshimikai.png": "星見会",
-  "tanabatanonegai.png": "七夕の願い",
-  "takarasagasi.png": "宝探し",
-  "ri-da-taiketu.png": "リーダー対決",
-  "sirotohana.png": "白と花",
-  "sironomajyonokoe.png": "白の魔女の声",
-  "morinomajyonokurou.png": "森の魔女の苦労",
-  "tokinomajyonogekido.png": "時の魔女の激怒",
+  "torikaigi.png": "鳥会議",
+  "asanokaigi.png": "朝の会議",
+  "oyatukaigi.png": "おやつ会議",
+  "oyatunowakekata.png": "おやつの分け方",
+  "sekiseiinkoaruaru.png": "セキセイインコあるある",
+  "sekiseinotomodati.png": "セキセイの友達",
+  "sirohukurounojyogen.png": "シロフクロウの助言",
+  "oukookunokaigi.png": "王国の会議",
+  "oukokuanke-to.png": "王国アンケート",
 };
 
 type MangaItem = {
@@ -82,7 +79,7 @@ function loadMangaList(): MangaItem[] {
     const { width, height } = readPngSize(fs.readFileSync(path.join(MANGA_DIR, file)));
     const name = TITLES[file] ?? file.replace(/\.[^.]+$/, "");
     return {
-      title: `魔女たちの日常${circledNumber(index + 1)} ${name}`,
+      title: `羽根の広場${circledNumber(index + 1)} ${name}`,
       src: `${PUBLIC_PREFIX}/${file}`,
       width,
       height,
@@ -90,19 +87,19 @@ function loadMangaList(): MangaItem[] {
   });
 }
 
-export default function MangaPage() {
+export default function BirdsMangaPage() {
   const mangaList = loadMangaList();
 
   return (
     <PageShell
       maxWidth="content"
-      title="魔女たちの日常"
+      title="羽根の広場"
       backHref="/"
       backLabel="トップへ戻る"
     >
       <GlassCard>
         <p className="whitespace-pre-line text-sm leading-7 text-[#544c42] sm:text-base">
-          {"白の庭に暮らす魔女たちの、小さな物語。\n今日もどこかで、魔女たちは少しだけ不思議で、少しだけ賑やかな時間を過ごしています。"}
+          {"鳥タイプ診断の鳥たちが集まる、小さな広場。\n今日もにぎやかなおしゃべりが始まります。"}
         </p>
       </GlassCard>
 
@@ -128,22 +125,22 @@ export default function MangaPage() {
 
       <section className="mt-8">
         <Link
-          href="/majyosindan"
-          aria-label="魔女タイプ診断"
+          href="/bird"
+          aria-label="鳥タイプ診断"
           className="group block overflow-hidden rounded-2xl border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
         >
           <Image
-            src="/majyosindan/majyosindan.png"
-            alt="魔女タイプ診断"
-            width={1774}
-            height={296}
+            src="/gazou/bird/banner.png"
+            alt="鳥タイプ診断"
+            width={2544}
+            height={416}
             className="h-auto w-full object-cover"
             sizes="(max-width: 768px) 100vw, 720px"
           />
         </Link>
       </section>
 
-      <ShopBanner page="/manga" className="mt-4 px-0" />
+      <ShopBanner page="/manga/birds" className="mt-4 px-0" />
     </PageShell>
   );
 }

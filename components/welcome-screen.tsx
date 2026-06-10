@@ -33,6 +33,8 @@ type NavigationCard = {
   href: string;
   ctaLabel: string;
   badge?: string;
+  /** 新着・更新カードに「NEW!」バッジを表示する */
+  isNew?: boolean;
   ctaStyle?: "default" | "gold-button";
 };
 
@@ -120,8 +122,9 @@ const recordsSection: SectionGroup = {
     { title: "白の庭の記録", description: "白の館とルミナについて", href: "/library/records", ctaLabel: "" },
     { title: "羽根ペンの部屋（コラム）", description: "心を落ち着ける読み物", href: "/columns", ctaLabel: "" },
     { title: "光の待ち受け", description: "静かな光を受け取る待ち受け", href: "/lucky-wallpapers", ctaLabel: "" },
-    { title: "月灯りの間", description: "限定動画を公開", href: "/library/limited-video", ctaLabel: "" },
-    { title: "魔女たちの日常", description: "白の庭に暮らす魔女たちの、小さな物語", href: "/manga", ctaLabel: "" },
+    { title: "月灯りの間", description: "限定動画を公開", href: "/library/limited-video", ctaLabel: "", isNew: true },
+    { title: "魔女たちの日常", description: "白の庭に暮らす魔女たちの、小さな物語", href: "/manga", ctaLabel: "", isNew: true },
+    { title: "羽根の広場", description: "今日も鳥たちが集まって、おしゃべりをしている。", href: "/manga/birds", ctaLabel: "", isNew: true },
   ],
 };
 
@@ -268,7 +271,7 @@ function NavigationCardItem({ item, featured = false, compact = false }: { item:
     <div onClick={handleCardClick} className="h-full">
       <SmartLink
         href={item.href}
-        className={`group flex h-full flex-col justify-between rounded-[1.35rem] border shadow-[0_14px_28px_-24px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 ${
+        className={`group relative flex h-full flex-col justify-between rounded-[1.35rem] border shadow-[0_14px_28px_-24px_rgba(82,69,53,0.24)] transition hover:-translate-y-0.5 hover:border-[#d2bd96] hover:bg-white/72 ${
           compact ? "min-h-0 px-4 py-2.5" : "min-h-[5.6rem] px-4 py-4 sm:min-h-[6rem]"
         } ${
           featured
@@ -276,6 +279,11 @@ function NavigationCardItem({ item, featured = false, compact = false }: { item:
             : "border-[#e6dbc8]/85 bg-white/60"
         }`}
       >
+        {item.isNew ? (
+          <span className="absolute -right-1.5 -top-1.5 z-10 inline-flex items-center rounded-full border border-white/70 bg-[linear-gradient(135deg,#e3b85a,#c1a062)] px-2 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white shadow-[0_5px_12px_-4px_rgba(150,110,40,0.7)]">
+            NEW!
+          </span>
+        ) : null}
         <div className={compact ? "flex items-center gap-3" : "flex flex-col"}>
           {!compact && item.badge ? <p className="mb-1.5 text-[11px] tracking-[0.16em] text-[#8d816f] uppercase">{item.badge}</p> : null}
           <h3 className={`font-medium leading-tight text-[#2e2a26] group-hover:text-[#5d513f] ${compact ? "text-sm" : "text-base sm:text-lg"}`}>{item.title}</h3>

@@ -347,6 +347,35 @@ export default function BirdClient() {
 
         <section className="relative mt-8 w-full">
           <Link
+            href="/manga/birds"
+            aria-label="羽根の広場"
+            className="group flex items-center gap-4 overflow-hidden rounded-[1.6rem] border border-white/70 bg-white/65 p-3 shadow-[0_16px_30px_-26px_rgba(60,83,64,0.45)] backdrop-blur-[2px] transition hover:-translate-y-0.5 hover:bg-white/80"
+          >
+            <span className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/70 bg-[#eef5ea]">
+              <Image
+                src="/gazou/bird/manga/torikaigi.png"
+                alt=""
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[10px] tracking-[0.22em] text-[#8a9a7d] uppercase">Comic</span>
+              <span className="mt-1 block text-base font-medium text-[#33493a]">羽根の広場</span>
+              <span className="mt-1 block text-sm leading-6 text-[#4f6450]">鳥たちの漫画を読む</span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="shrink-0 pr-1 text-lg text-[#7fa07d] transition group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </Link>
+        </section>
+
+        <section className="relative mt-4 w-full">
+          <Link
             href="/majyosindan"
             aria-label="魔女タイプ診断"
             className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
