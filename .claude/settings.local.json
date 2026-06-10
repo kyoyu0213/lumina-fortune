@@ -89,7 +89,9 @@
       "Bash(git add *)",
       "Bash(git commit -m '@ *)",
       "Bash(git commit --amend -m 前世診断の鑑定文・画像追加と各ページへの導線設置 -m '- 前世診断13タイプの結果イラスト・TOP画像・バナー画像を追加 *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(sort -k6)"
     ],
     "additionalDirectories": [
       "c:\\Users\\yuri3\\.claude\\projects\\c--Users-yuri3-lumina-fortune\\memory"

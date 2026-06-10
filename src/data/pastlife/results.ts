@@ -56,7 +56,12 @@ export type PastLifeResult = {
 /** 画像未実装時のプレースホルダー */
 export const PLACEHOLDER_IMAGE = "/images/pastlife/results/placeholder.svg";
 
-const resultImage = (id: PastLifeId) => `/images/pastlife/results/${id}.png`;
+// 画像のキャッシュバージョン。結果画像を差し替えたら、この数値を1つ上げると
+// Next.js / CDN の画像最適化キャッシュが更新され、新しい画像が確実に表示される。
+const IMAGE_VERSION = "2";
+
+const resultImage = (id: PastLifeId) =>
+  `/images/pastlife/results/${id}.png?v=${IMAGE_VERSION}`;
 
 // === 13タイプ定義 ===
 export const pastLifeResults: Record<PastLifeId, PastLifeResult> = {
