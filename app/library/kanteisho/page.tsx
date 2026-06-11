@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
+import { DiagnosisBanners } from "@/components/diagnosis-banners";
+import { ShopBanner } from "@/components/shop-banner";
 
 export const metadata: Metadata = {
   title: "ルミナの鑑定書 | 白の書庫 | LUMINA",
@@ -200,6 +202,9 @@ export default function KanteishoPage() {
           </a>
         </div>
       </GlassCard>
+
+      <DiagnosisBanners page="/library/kanteisho" className="mt-8" />
+      <ShopBanner page="/library/kanteisho" className="mt-4 px-0" />
     </PageShell>
   );
 }
