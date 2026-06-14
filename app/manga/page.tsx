@@ -43,6 +43,12 @@ const TITLES: Record<string, string> = {
   "sironomajyonokoe.png": "白の魔女の声",
   "morinomajyonokurou.png": "森の魔女の苦労",
   "tokinomajyonogekido.png": "時の魔女の激怒",
+  "morinomajyonokurou2.png": "森の魔女の苦労ふたたび",
+  "tokinomajyonogekido2.png": "時の魔女の激怒ふたたび",
+  "sironomajyonokokoronokoe.png": "白の魔女の心の声",
+  "hanatoumi.png": "花と海",
+  "kurotoakatuki.png": "黒と暁",
+  "mondaijikaigi.png": "問題児会議",
 };
 
 type MangaItem = {
