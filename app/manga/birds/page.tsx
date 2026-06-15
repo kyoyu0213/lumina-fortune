@@ -40,6 +40,13 @@ const TITLES: Record<string, string> = {
   "sirohukurounojyogen.png": "シロフクロウの助言",
   "oukookunokaigi.png": "王国の会議",
   "oukokuanke-to.png": "王国アンケート",
+  "8.png": "",
+  "9.png": "",
+  "10.png": "",
+  "11.png": "",
+  "12.png": "",
+  "13.png": "",
+  "14.png": "",
 };
 
 type MangaItem = {
