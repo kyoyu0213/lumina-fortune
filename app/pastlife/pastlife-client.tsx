@@ -377,6 +377,23 @@ export default function PastLifeClient() {
 
         <DiagnosisBanners page="/pastlife" className="mt-8" />
 
+        <section className="relative mt-4 w-full">
+          <Link
+            href="/aura"
+            aria-label="オーラカラー診断"
+            className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+          >
+            <Image
+              src="/gazou/aura/banner.png"
+              alt="オーラカラー診断"
+              width={2544}
+              height={416}
+              className="h-auto w-full object-cover"
+              sizes="(max-width: 768px) 100vw, 1100px"
+            />
+          </Link>
+        </section>
+
         <ShopBanner page="/pastlife" className="mt-4 px-0" />
       </div>
     </main>

@@ -151,6 +151,60 @@ const voiceSection = {
   backgroundOverlayClassName: "bg-[linear-gradient(135deg,rgba(255,250,244,0.62),rgba(247,240,232,0.68))]",
 };
 
+// 診断コンテンツ（「今日のおすすめ診断」「人気の診断」で共通利用）
+type Diagnosis = {
+  id: string;
+  name: string;
+  /** カード・おすすめ用の短い説明 */
+  short: string;
+  href: string;
+  /** バナー画像（/public からの絶対パス） */
+  image: string;
+  /** 計測イベント名 */
+  event: string;
+  /** 計測ラベル */
+  label: string;
+};
+
+const DIAGNOSES: Diagnosis[] = [
+  {
+    id: "witch",
+    name: "魔女タイプ診断",
+    short: "あなたの魂に宿る魔女の物語",
+    href: "/majyosindan",
+    image: "/majyosindan/majyosindan.png",
+    event: "majyosindan_banner_click",
+    label: "majyosindan_banner",
+  },
+  {
+    id: "bird",
+    name: "鳥タイプ診断",
+    short: "あなたによく似た鳥を見つけよう",
+    href: "/bird",
+    image: "/gazou/bird/banner.png",
+    event: "bird_banner_click",
+    label: "bird_banner",
+  },
+  {
+    id: "pastlife",
+    name: "前世診断",
+    short: "魂に刻まれた過去の物語",
+    href: "/pastlife",
+    image: "/images/pastlife/zensebanner.png",
+    event: "pastlife_banner_click",
+    label: "pastlife_banner",
+  },
+  {
+    id: "aura",
+    name: "オーラカラー診断",
+    short: "あなたを包む光は何色？",
+    href: "/aura",
+    image: "/gazou/aura/Top.png",
+    event: "aura_banner_click",
+    label: "aura_banner",
+  },
+];
+
 const socialLinks = [
   { name: "TikTok", href: "https://www.tiktok.com/@luminousmagic0?_r=1&_t=ZS-94P8u7q3O5g", ariaLabel: "TikTokを開く" },
   { name: "Instagram", href: "https://www.instagram.com/luminousmagic0?igsh=MXZqNmtkazllZHpqNg%3D%3D&utm_source=qr", ariaLabel: "Instagramを開く" },
@@ -503,6 +557,46 @@ function ColumnShowcase() {
   );
 }
 
+// 🔮 人気の診断（PC: 4列 / スマホ: 2×2 のカード）
+function PopularDiagnosesSection() {
+  return (
+    <section className="relative mx-auto w-full max-w-6xl px-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-2xl">
+          <p className="text-[11px] tracking-[0.22em] text-[#8b7e6b] uppercase">Popular</p>
+          <h2 className="mt-1 text-2xl font-medium tracking-[0.04em] text-[#2f2a25] sm:text-[1.8rem]">🔮 人気の診断</h2>
+        </div>
+        <p className="max-w-xl text-sm leading-7 text-[#665d51] sm:text-right">白の魔女ルミナが導く4つの診断</p>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {DIAGNOSES.map((diagnosis) => (
+          <Link
+            key={diagnosis.id}
+            href={diagnosis.href}
+            onClick={() => void trackEvent(diagnosis.event, "/", `popular_${diagnosis.label}`)}
+            aria-label={diagnosis.name}
+            className="group flex flex-col overflow-hidden rounded-2xl border border-[#e6dac7]/85 bg-white/70 shadow-[0_14px_28px_-24px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:bg-[#fff8ed]/85"
+          >
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#f6efe1]">
+              <Image
+                src={diagnosis.image}
+                alt={diagnosis.name}
+                fill
+                className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                sizes="(max-width: 768px) 50vw, 280px"
+              />
+            </div>
+            <div className="flex flex-1 flex-col px-3 py-3 text-center">
+              <h3 className="text-sm font-medium text-[#2e2a26] sm:text-base">{diagnosis.name}</h3>
+              <p className="mt-1 text-[12px] leading-5 text-[#7a7063] sm:text-[13px]">{diagnosis.short}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onStartTarot }: WelcomeScreenProps) {
   const dailyWhisper = initialDailyWhisper?.trim() || DEFAULT_WHISPER_MESSAGE;
   const [featherNotice, setFeatherNotice] = useState<string | null>(null);
@@ -631,16 +725,16 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
 
         <section className="relative mx-auto mt-5 w-full max-w-6xl px-4">
           <Link
-            href="/majyosindan"
-            onClick={() => void trackEvent("majyosindan_banner_click", "/", "majyosindan_banner")}
-            aria-label="魔女タイプ診断"
+            href="/aura"
+            onClick={() => void trackEvent("aura_banner_click", "/", "aura_banner")}
+            aria-label="オーラカラー診断"
             className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
           >
             <Image
-              src="/majyosindan/majyosindan.png"
-              alt="魔女タイプ診断"
-              width={1774}
-              height={296}
+              src="/gazou/aura/banner.png"
+              alt="オーラカラー診断"
+              width={2544}
+              height={416}
               className="h-auto w-full object-cover"
               sizes="(max-width: 768px) 100vw, 1200px"
             />
@@ -775,45 +869,11 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
             </motion.div>
           </section>
 
-          <section className="relative mx-auto w-full max-w-6xl px-4">
-            <Link
-              href="/pastlife"
-              onClick={() => void trackEvent("pastlife_banner_click", "/", "pastlife_banner")}
-              aria-label="前世診断"
-              className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
-            >
-              <Image
-                src="/images/pastlife/zensebanner.png"
-                alt="前世診断"
-                width={2544}
-                height={416}
-                className="h-auto w-full object-cover"
-                sizes="(max-width: 768px) 100vw, 1200px"
-              />
-            </Link>
-          </section>
-
           <CardSection section={loveFortuneSection} columns="two" />
 
           <CardSection section={fortuneSection} />
 
-          <section className="relative mx-auto w-full max-w-6xl px-4">
-            <Link
-              href="/bird"
-              onClick={() => void trackEvent("bird_banner_click", "/", "bird_banner")}
-              aria-label="鳥タイプ診断"
-              className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
-            >
-              <Image
-                src="/gazou/bird/banner.png"
-                alt="鳥タイプ診断"
-                width={1774}
-                height={296}
-                className="h-auto w-full object-cover"
-                sizes="(max-width: 768px) 100vw, 1200px"
-              />
-            </Link>
-          </section>
+          <PopularDiagnosesSection />
 
           <ColumnShowcase />
 
