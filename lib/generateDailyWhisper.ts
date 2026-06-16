@@ -182,7 +182,7 @@ async function generateWhisperText(dateKey: string, monthlyMessages: string[]): 
     const anthropic = new Anthropic({ apiKey });
     const userPrompt = buildUserPromptWithHistory(dateKey, monthlyMessages);
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 256,
       system: `${DAILY_WHISPER_SYSTEM_PROMPT}\n\n必ずJSONのみを返してください。説明文やマークダウンのコードブロック記法は使わないでください。スキーマ: ${JSON.stringify(getSchema())}`,
       messages: [

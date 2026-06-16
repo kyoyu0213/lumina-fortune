@@ -127,7 +127,7 @@ async function callClaude(
     : systemPrompt;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     system: finalSystem,
     messages: nonSystemMessages.map((m) => ({

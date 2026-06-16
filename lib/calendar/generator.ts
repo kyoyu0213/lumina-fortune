@@ -175,7 +175,7 @@ async function generateCalendarMonthDataInternal(month: string): Promise<Calenda
 
   const response = await Promise.race([
     anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 16384,
       system: systemPrompt,
       messages: [
