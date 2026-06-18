@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { saveConsultationLetter } from "@/lib/consultation-letters";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
+import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
 
 type Body = {
   nickname?: string;
@@ -71,6 +72,9 @@ async function buildLuminaLetterReply(nickname: string, message: string): Promis
 
 export async function POST(request: Request) {
   try {
+    const rateLimited = await enforceClaudeRateLimit(request, { daily: true });
+    if (rateLimited) return rateLimited;
+
     const body = (await request.json()) as Body;
     const message = typeof body.message === "string" ? body.message : "";
     const nickname = typeof body.nickname === "string" ? body.nickname : "";

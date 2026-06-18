@@ -42,6 +42,7 @@ import {
   type LightGuidanceOneCardSections,
 } from "@/lib/tarot/light-guidance-one-card-output";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
+import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
 import { validateModerationText } from "@/lib/moderation/validateText";
 import { PRESET_FORTUNE_QUESTIONS } from "@/lib/preset-fortune-questions";
 import { hasUsedLightGuidanceToday, markLightGuidanceUsed } from "@/lib/light-guidance-usage";
@@ -821,6 +822,9 @@ function toRecentHistoryMessages(history: ChatHistoryItem[]) {
 
 export async function POST(request: Request) {
   try {
+    const rateLimited = await enforceClaudeRateLimit(request, { daily: true });
+    if (rateLimited) return rateLimited;
+
     const body = (await request.json()) as RequestBody;
     const { message, cards: existingCards, mode = "chat", profile } = body;
     const history = Array.isArray(body.history) ? body.history : [];

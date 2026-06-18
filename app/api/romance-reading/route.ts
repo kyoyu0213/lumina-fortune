@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildLuminaPrompt, type RomanceFeature, type InterpretationFrameInput } from "@/lib/ai/lumina-prompts";
+import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
 
 type RequestBody = {
   feature: RomanceFeature;
@@ -23,6 +24,9 @@ const anthropic = new Anthropic({
 
 export async function POST(request: Request) {
   try {
+    const rateLimited = await enforceClaudeRateLimit(request, { daily: true });
+    if (rateLimited) return rateLimited;
+
     const body = (await request.json()) as RequestBody;
     const { feature, templateReading, context, interpretationFrame } = body;
 

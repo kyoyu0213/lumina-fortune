@@ -239,7 +239,11 @@ function buildFallbackCalendarMonthData(month: string): CalendarMonthData {
   };
 }
 
-export async function getOrGenerateCalendarMonth(month: string, forceRegenerate = false): Promise<CalendarMonthData> {
+export async function getOrGenerateCalendarMonth(
+  month: string,
+  forceRegenerate = false,
+  options?: { onBeforeGenerate?: () => Promise<void> },
+): Promise<CalendarMonthData> {
   if (!isValidMonthKey(month)) {
     throw new Error("Invalid month key. Expected YYYY-MM.");
   }
@@ -252,6 +256,12 @@ export async function getOrGenerateCalendarMonth(month: string, forceRegenerate 
   const lockKey = `${month}:${forceRegenerate ? "force" : "normal"}`;
   const current = generationLocks.get(lockKey);
   if (current) return current;
+
+  // ここから先は実際にカレンダーを生成する経路（キャッシュミス or force）。
+  // Claude生成が走る直前のフックでレート制限を判定する（超過時は throw され伝播する）。
+  if (options?.onBeforeGenerate) {
+    await options.onBeforeGenerate();
+  }
 
   const promise = (async () => {
     try {

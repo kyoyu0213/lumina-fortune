@@ -8,8 +8,41 @@ import {
   saveDailyWhisper,
   type DailyWhisperRecord,
 } from "@/lib/daily-whispers";
+import { getRedis, secondsUntilNextJstMidnight } from "@/lib/redis";
 
 const generationLocks = new Map<string, Promise<DailyWhisperRecord>>();
+
+// 本番の正キャッシュ（Redis）。キーは JST 当日の YYYY-MM-DD、
+// TTL は「次の JST 午前0時まで」。JST 0時をまたぐと自動失効し新しい囁きが生成される。
+const WHISPER_CACHE_PREFIX = "whisper:";
+
+async function readWhisperCache(dateKey: string): Promise<DailyWhisperRecord | null> {
+  const redis = getRedis();
+  if (!redis) return null;
+  try {
+    const cached = await redis.get<DailyWhisperRecord>(`${WHISPER_CACHE_PREFIX}${dateKey}`);
+    if (cached && typeof cached.message === "string" && cached.message.trim()) {
+      return cached;
+    }
+    return null;
+  } catch (error) {
+    // キャッシュは fail-open（落ちても生成にフォールバック）。障害はログに残す。
+    console.error("[whisper-cache] Redis read failed:", error);
+    return null;
+  }
+}
+
+async function writeWhisperCache(dateKey: string, record: DailyWhisperRecord): Promise<void> {
+  const redis = getRedis();
+  if (!redis) return;
+  try {
+    await redis.set(`${WHISPER_CACHE_PREFIX}${dateKey}`, record, {
+      ex: secondsUntilNextJstMidnight(),
+    });
+  } catch (error) {
+    console.error("[whisper-cache] Redis write failed:", error);
+  }
+}
 
 /**
  * ルミナらしい「今日のひとこと」──前向きな気づきや人生のヒントを
@@ -225,9 +258,10 @@ async function createDailyWhisper(dateKey: string): Promise<DailyWhisperRecord> 
 }
 
 export async function getOrCreateDailyWhisper(dateKey = getJstDateKey()): Promise<DailyWhisperRecord> {
-  const existing = await getDailyWhisperByDate(dateKey);
-  if (existing) {
-    return existing;
+  // 1. 本番の正キャッシュ（Redis）。ヒットすれば Claude を呼ばずに即返却。
+  const cached = await readWhisperCache(dateKey);
+  if (cached) {
+    return cached;
   }
 
   const inFlight = generationLocks.get(dateKey);
@@ -235,9 +269,16 @@ export async function getOrCreateDailyWhisper(dateKey = getJstDateKey()): Promis
     return inFlight;
   }
 
-  const pending = createDailyWhisper(dateKey).finally(() => {
-    generationLocks.delete(dateKey);
-  });
+  // 2. キャッシュミス時のみ生成（内部で FS フォールバック確認 → Claude 生成 → FS保存）。
+  //    生成結果は Redis にも保存する（TTL = 次の JST 0時まで）。
+  const pending = createDailyWhisper(dateKey)
+    .then(async (record) => {
+      await writeWhisperCache(dateKey, record);
+      return record;
+    })
+    .finally(() => {
+      generationLocks.delete(dateKey);
+    });
 
   generationLocks.set(dateKey, pending);
   return pending;
