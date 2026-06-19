@@ -11,10 +11,16 @@ import {
 } from "@/lib/pastlife/pastlife";
 import { ShopBanner } from "@/components/shop-banner";
 import { DiagnosisBanners } from "@/components/diagnosis-banners";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { pastlifeUI, questionTexts, localizePastLifeResult } from "./translations";
 
 type Phase = "intro" | "quiz" | "result";
 
 export default function PastLifeClient() {
+  const { lang, setLang } = useLanguage();
+  const t = pastlifeUI[lang];
+
   const [phase, setPhase] = useState<Phase>("intro");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -28,6 +34,14 @@ export default function PastLifeClient() {
     return computePastLifeResult(answers);
   }, [phase, answers]);
 
+  // 日本語の結果に、選択言語のオーバーライドを合成（未訳は ja フォールバック）
+  const localizedResult = useMemo(
+    () => (result ? localizePastLifeResult(result, lang) : null),
+    [result, lang],
+  );
+
+  const currentQuestionText = questionTexts[lang][pastLifeQuestions[current].id];
+
   const handleStart = () => {
     setAnswers([]);
     setCurrent(0);
@@ -38,17 +52,17 @@ export default function PastLifeClient() {
   // 診断TOPをシェア（スマホはOSのシェアシート、PCはX投稿へフォールバック）
   const handleShareIntro = async () => {
     const url = typeof window !== "undefined" ? `${window.location.origin}/pastlife` : "/pastlife";
-    const text = "あなたの魂は、どんな人生を歩んできたのか。前世診断であなたの過去世の物語を見てみよう🌙";
+    const text = t.shareIntroText;
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: "前世診断", text, url });
+        await navigator.share({ title: t.introTitle, text, url });
       } catch {
         /* ユーザーがキャンセルした場合などは何もしない */
       }
       return;
     }
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      `${text}\n#前世診断 #ルミナ`,
+      text,
     )}&url=${encodeURIComponent(url)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
@@ -85,13 +99,10 @@ export default function PastLifeClient() {
     if (!result) return;
     const shareUrl =
       typeof window !== "undefined" ? `${window.location.origin}/pastlife` : "/pastlife";
-    const shareText = [
-      `私の前世は「${result.name}」でした🌙`,
-      "",
-      result.subtitle,
-      "",
-      "あなたの魂は、どんな人生を歩んできた？ #前世診断 #ルミナ",
-    ].join("\n");
+    const shareText = t.shareResultText(
+      localizedResult?.name ?? result.name,
+      localizedResult?.subtitle ?? result.subtitle,
+    );
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       shareText,
     )}&url=${encodeURIComponent(shareUrl)}`;
@@ -113,9 +124,9 @@ export default function PastLifeClient() {
       anchor.href = dataUrl;
       anchor.download = `pastlife-${result.id}.png`;
       anchor.click();
-      setDownloadStatus("画像を保存しました。");
+      setDownloadStatus(t.imageSaved);
     } catch {
-      setDownloadStatus("画像の生成に失敗しました。時間をおいて再度お試しください。");
+      setDownloadStatus(t.imageFailed);
     } finally {
       setIsDownloading(false);
     }
@@ -136,12 +147,14 @@ export default function PastLifeClient() {
             href="/"
             className="text-sm text-[#c9bdf0] underline-offset-4 transition hover:text-white hover:underline"
           >
-            ← トップへ戻る
+            {t.backTop}
           </Link>
           <span className="text-[11px] tracking-[0.28em] text-[#a99cd6] uppercase">
             Past Life
           </span>
         </div>
+
+        <LanguageSwitcher lang={lang} onChange={setLang} className="mb-5" />
 
         {phase === "intro" ? (
           <section className="rounded-[2rem] border border-white/15 bg-white/5 p-5 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.7)] backdrop-blur-[2px] sm:p-7">
@@ -149,7 +162,7 @@ export default function PastLifeClient() {
             <button
               type="button"
               onClick={handleStart}
-              aria-label="診断をはじめる"
+              aria-label={t.startButton}
               className="relative block w-full cursor-pointer overflow-hidden rounded-[1.5rem] border border-white/15 shadow-[0_16px_34px_-24px_rgba(0,0,0,0.8)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c9bdf0]/70"
             >
               <IntroHero />
@@ -158,26 +171,20 @@ export default function PastLifeClient() {
             <div className="mt-6 text-center">
               <p className="text-[11px] tracking-[0.3em] text-[#b3a6e0] uppercase">Past Life</p>
               <h1 className="mt-2 font-[var(--font-playfair-display)] text-3xl tracking-[0.06em] text-[#f4ecd2] sm:text-4xl">
-                前世診断
+                {t.introTitle}
               </h1>
-              <p className="mt-3 text-sm leading-7 text-[#d6cdf2] sm:text-base">
-                あなたの魂は、
-                <br />
-                どんな人生を歩んできたのか。
+              <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#d6cdf2] sm:text-base">
+                {t.introLead}
               </p>
 
               <div className="mx-auto mt-5 max-w-md rounded-2xl border border-white/12 bg-white/5 px-5 py-4">
-                <p className="text-sm leading-7 text-[#cfc6ec]">
-                  16の質問から、あなたの魂が
-                  <br />
-                  かつて歩んだ前世の物語を読み解きます。
+                <p className="whitespace-pre-line text-sm leading-7 text-[#cfc6ec]">
+                  {t.introInfo1}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-[#cfc6ec]">
-                  あなたは悲劇の王女？
-                  <br />
-                  それとも星を巡ってきた旅人？
+                <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#cfc6ec]">
+                  {t.introInfo2}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-[#cfc6ec]">さっそく診断してみましょう。</p>
+                <p className="mt-3 text-sm leading-7 text-[#cfc6ec]">{t.introInfo3}</p>
               </div>
             </div>
 
@@ -187,7 +194,7 @@ export default function PastLifeClient() {
                 onClick={handleStart}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b7a6ef]/60 bg-[linear-gradient(135deg,#8d76e0,#5b4aa8)] px-9 text-sm font-medium tracking-[0.08em] text-white shadow-[0_16px_30px_-16px_rgba(80,60,160,0.9)] transition hover:-translate-y-0.5 hover:brightness-110"
               >
-                診断をはじめる
+                {t.startButton}
               </button>
               <button
                 type="button"
@@ -208,7 +215,7 @@ export default function PastLifeClient() {
                   <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
                   <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
                 </svg>
-                友達にこの診断をシェア
+                {t.shareIntroButton}
               </button>
             </div>
           </section>
@@ -218,14 +225,14 @@ export default function PastLifeClient() {
           <section className="rounded-[2rem] border border-white/15 bg-white/5 p-5 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.7)] backdrop-blur-[2px] sm:p-7">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium tracking-[0.16em] text-[#b3a6e0]">
-                QUESTION {current + 1} / {pastLifeQuestions.length}
+                {t.questionLabel(current + 1, pastLifeQuestions.length)}
               </span>
               <button
                 type="button"
                 onClick={handleBack}
                 className="text-sm text-[#c9bdf0] underline-offset-4 transition hover:text-white hover:underline"
               >
-                ← 戻る
+                {t.backButton}
               </button>
             </div>
 
@@ -237,7 +244,7 @@ export default function PastLifeClient() {
             </div>
 
             <h2 className="mt-6 text-lg font-medium leading-relaxed text-[#f4ecd2] sm:text-xl">
-              {pastLifeQuestions[current].text}
+              {currentQuestionText.text}
             </h2>
 
             <div className="mt-5 space-y-3">
@@ -254,21 +261,21 @@ export default function PastLifeClient() {
                   >
                     ✦
                   </span>
-                  <span>{option.label}</span>
+                  <span>{currentQuestionText.options[optionIndex]}</span>
                 </button>
               ))}
             </div>
           </section>
         ) : null}
 
-        {phase === "result" && result ? (
+        {phase === "result" && localizedResult ? (
           <section className="space-y-4">
             <div ref={resultCardRef} className="space-y-4">
               {/* ① 結果画像 ② タイトル ③ サブタイトル ④ 概要 */}
               <div className="overflow-hidden rounded-[2rem] border border-white/15 bg-white/5 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.7)] backdrop-blur-[2px]">
                 <div className="relative">
-                  <PastLifeImage src={result.image} alt={`${result.name}のイラスト`} />
-                  {result.secret ? (
+                  <PastLifeImage src={localizedResult.image} alt={localizedResult.name} />
+                  {localizedResult.secret ? (
                     <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-white/30 bg-[#2a1f55]/85 px-3 py-1 text-[11px] font-medium tracking-[0.2em] text-[#f4ecd2]">
                       SECRET
                     </span>
@@ -277,29 +284,29 @@ export default function PastLifeClient() {
 
                 <div className="p-5 text-center sm:p-7">
                   <p className="text-[11px] tracking-[0.3em] text-[#b3a6e0] uppercase">
-                    Your Past Life
+                    {t.resultEyebrow}
                   </p>
                   <h1 className="mt-2 text-3xl font-medium tracking-[0.06em] text-[#f4ecd2] sm:text-4xl">
-                    【{result.name}】
+                    【{localizedResult.name}】
                   </h1>
-                  <p className="mt-3 text-sm leading-7 text-[#cfb6f0]">{result.subtitle}</p>
+                  <p className="mt-3 text-sm leading-7 text-[#cfb6f0]">{localizedResult.subtitle}</p>
                   <p className="mt-4 whitespace-pre-line text-[15px] leading-8 text-[#e7e0fa]">
-                    {result.overview}
+                    {localizedResult.overview}
                   </p>
                 </div>
               </div>
 
               {/* ⑤ 今世に残る特徴 ⑥ 魂の課題 ⑦ ルミナからの一言 */}
-              <ResultBlock title="今世に残る特徴" emoji="🌿" text={result.traits} />
-              <ResultBlock title="魂の課題" emoji="🔮" text={result.soulTask} />
+              <ResultBlock title={t.traitsTitle} emoji="🌿" text={localizedResult.traits} />
+              <ResultBlock title={t.soulTaskTitle} emoji="🔮" text={localizedResult.soulTask} />
 
               <div className="rounded-[1.6rem] border-l-4 border-[#b7a6ef] bg-white/5 p-5 shadow-[0_16px_30px_-28px_rgba(0,0,0,0.6)] backdrop-blur-[2px]">
                 <h3 className="flex items-center gap-2 text-sm font-medium tracking-[0.04em] text-[#f4ecd2]">
                   <span aria-hidden>🌙</span>
-                  ルミナからの一言
+                  {t.luminaWordTitle}
                 </h3>
                 <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-[#e7e0fa]">
-                  {result.luminaWord}
+                  {localizedResult.luminaWord}
                 </p>
               </div>
             </div>
@@ -314,7 +321,7 @@ export default function PastLifeClient() {
               >
                 <span className="flex items-center gap-2 text-[15px] font-medium text-[#f4ecd2]">
                   <span aria-hidden>📖</span>
-                  前世の物語を読む
+                  {t.storyToggle}
                 </span>
                 <span
                   aria-hidden
@@ -328,7 +335,7 @@ export default function PastLifeClient() {
 
               {storyOpen ? (
                 <div className="mt-2 space-y-2">
-                  {result.chapters.map((chapter) => (
+                  {localizedResult.chapters.map((chapter) => (
                     <StoryChapter key={chapter.title} title={chapter.title} text={chapter.body} />
                   ))}
                 </div>
@@ -345,7 +352,7 @@ export default function PastLifeClient() {
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-                Xでシェアする
+                {t.shareButton}
               </button>
               <button
                 type="button"
@@ -353,20 +360,20 @@ export default function PastLifeClient() {
                 disabled={isDownloading}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b7a6ef]/60 bg-[linear-gradient(135deg,#8d76e0,#5b4aa8)] px-7 text-sm font-medium tracking-[0.06em] text-white shadow-[0_16px_30px_-16px_rgba(80,60,160,0.9)] transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isDownloading ? "画像を生成中…" : "画像を保存する"}
+                {isDownloading ? t.savingImage : t.saveImageButton}
               </button>
               <button
                 type="button"
                 onClick={handleRetry}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-medium tracking-[0.06em] text-[#e7e0fa] shadow-[0_10px_22px_-18px_rgba(0,0,0,0.6)] transition hover:-translate-y-0.5 hover:bg-white/15"
               >
-                もう一度診断する
+                {t.retryButton}
               </button>
               <Link
                 href="/"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-medium tracking-[0.06em] text-[#e7e0fa] shadow-[0_10px_22px_-18px_rgba(0,0,0,0.6)] transition hover:-translate-y-0.5 hover:bg-white/15"
               >
-                トップへ戻る
+                {t.backTop}
               </Link>
             </div>
             {downloadStatus ? (

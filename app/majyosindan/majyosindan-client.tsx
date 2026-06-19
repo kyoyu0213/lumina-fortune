@@ -7,18 +7,24 @@ import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LuminaButton } from "@/components/ui/button";
 import { ShopBanner } from "@/components/shop-banner";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/useLanguage";
 import {
   witchQuestions,
   computeMBTI,
   getWitchResult,
   type WitchResult,
 } from "@/lib/majyosindan/witch";
+import { majyosindanUI, questionTexts, localizeResult } from "./translations";
 
 type Pole = (typeof witchQuestions)[number]["options"][number]["pole"];
 
 type Phase = "intro" | "quiz" | "result";
 
 export default function MajyosindanClient() {
+  const { lang, setLang } = useLanguage();
+  const t = majyosindanUI[lang];
+
   const [phase, setPhase] = useState<Phase>("intro");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Pole[]>([]);
@@ -31,6 +37,14 @@ export default function MajyosindanClient() {
     return getWitchResult(computeMBTI(answers));
   }, [phase, answers]);
 
+  // 日本語の結果に、選択言語のオーバーライドを合成（未訳は ja フォールバック）
+  const localizedResult = useMemo(
+    () => (result ? localizeResult(result, lang) : null),
+    [result, lang],
+  );
+
+  const currentQuestionText = questionTexts[lang][witchQuestions[current].id];
+
   const handleStart = () => {
     setAnswers([]);
     setCurrent(0);
@@ -41,18 +55,17 @@ export default function MajyosindanClient() {
   const handleShareIntro = async () => {
     const url =
       typeof window !== "undefined" ? `${window.location.origin}/majyosindan` : "/majyosindan";
-    const text =
-      "白の魔女ルミナが導く、16の魔女の物語。あなたの中に眠る魔女タイプは？【魔女タイプ診断】";
+    const text = t.shareIntroText;
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: "魔女タイプ診断", text, url });
+        await navigator.share({ title: t.pageTitle, text, url });
       } catch {
         /* ユーザーがキャンセルした場合などは何もしない */
       }
       return;
     }
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      `${text}\n#魔女タイプ診断 #LUMINA`,
+      text,
     )}&url=${encodeURIComponent(url)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
@@ -98,26 +111,23 @@ export default function MajyosindanClient() {
       anchor.href = dataUrl;
       anchor.download = `lumina-majyosindan-${result.mbti}.png`;
       anchor.click();
-      setDownloadStatus("画像を保存しました。");
+      setDownloadStatus(t.imageSaved);
     } catch {
-      setDownloadStatus("画像の生成に失敗しました。時間をおいて再度お試しください。");
+      setDownloadStatus(t.imageFailed);
     } finally {
       setIsDownloading(false);
     }
   };
 
   const handleShare = () => {
-    if (!result) return;
+    if (!localizedResult) return;
     const shareUrl =
       typeof window !== "undefined" ? `${window.location.origin}/majyosindan` : "/majyosindan";
-    const shareText = [
-      `私の魔女タイプは「${result.name}」でした。`,
-      `（${result.mbti}）`,
-      "",
-      result.catchCopy,
-      "",
-      "あなたの魔女タイプは？ #魔女タイプ診断 #LUMINA",
-    ].join("\n");
+    const shareText = t.shareResultText(
+      localizedResult.name,
+      localizedResult.mbti,
+      localizedResult.catchCopy,
+    );
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       shareText,
     )}&url=${encodeURIComponent(shareUrl)}`;
@@ -127,37 +137,38 @@ export default function MajyosindanClient() {
   return (
     <PageShell
       maxWidth="narrow"
-      title="魔女タイプ診断"
-      description="白の魔女ルミナが導く、16の魔女の物語"
+      title={t.pageTitle}
+      description={t.pageDescription}
       backHref="/"
-      backLabel="トップへ戻る"
+      backLabel={t.backLabel}
+      bottomButtonLabel={t.bottomButtonLabel}
     >
+      <LanguageSwitcher lang={lang} onChange={setLang} className="mb-5" />
+
       {phase === "intro" ? (
         <GlassCard>
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 w-full overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
               <Image
                 src="/majyosindan/Top.png"
-                alt="魔女タイプ診断"
+                alt={t.pageTitle}
                 width={1536}
                 height={1024}
                 className="h-auto w-full object-cover"
                 priority
               />
             </div>
-            <p className="text-[11px] tracking-[0.24em] text-[#8d7f69] uppercase">Witch Type</p>
+            <p className="text-[11px] tracking-[0.24em] text-[#8d7f69] uppercase">{t.introEyebrow}</p>
             <h2 className="mt-2 text-xl font-medium tracking-[0.04em] text-[#2f2a25] sm:text-2xl">
-              あなたの中に眠る魔女を見つけましょう
+              {t.introHeading}
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-7 text-[#5d5346]">
-              {witchQuestions.length}つの質問に直感で答えるだけ。
-              <br />
-              あなたの心の傾きから、16タイプの魔女のうち、いまのあなたに重なる一人を白の魔女ルミナがそっとお伝えします。
+            <p className="mt-4 max-w-md whitespace-pre-line text-sm leading-7 text-[#5d5346]">
+              {t.introLead(witchQuestions.length)}
             </p>
           </div>
           <div className="mt-6 flex flex-col items-center gap-3">
             <LuminaButton type="button" tone="primary" onClick={handleStart}>
-              診断をはじめる
+              {t.startButton}
             </LuminaButton>
             <button
               type="button"
@@ -178,7 +189,7 @@ export default function MajyosindanClient() {
                 <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
                 <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
               </svg>
-              友達にこの診断をシェア
+              {t.shareIntroButton}
             </button>
           </div>
         </GlassCard>
@@ -188,14 +199,14 @@ export default function MajyosindanClient() {
         <GlassCard>
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium tracking-[0.16em] text-[#847967]">
-              QUESTION {current + 1} / {witchQuestions.length}
+              {t.questionLabel(current + 1, witchQuestions.length)}
             </span>
             <button
               type="button"
               onClick={handleBack}
               className="lumina-link text-sm underline-offset-4 hover:underline"
             >
-              ← 戻る
+              {t.backButton}
             </button>
           </div>
 
@@ -207,11 +218,11 @@ export default function MajyosindanClient() {
           </div>
 
           <h2 className="mt-6 text-lg font-medium leading-relaxed text-[#2e2a26] sm:text-xl">
-            {witchQuestions[current].text}
+            {currentQuestionText.text}
           </h2>
 
           <div className="mt-5 space-y-3">
-            {witchQuestions[current].options.map((option) => (
+            {witchQuestions[current].options.map((option, idx) => (
               <button
                 key={option.pole + option.label}
                 type="button"
@@ -224,33 +235,33 @@ export default function MajyosindanClient() {
                 >
                   ✦
                 </span>
-                <span>{option.label}</span>
+                <span>{currentQuestionText.options[idx]}</span>
               </button>
             ))}
           </div>
         </GlassCard>
       ) : null}
 
-      {phase === "result" && result ? (
+      {phase === "result" && localizedResult ? (
         <section className="space-y-4">
           <div ref={resultCardRef}>
           <GlassCard>
             <div className="flex flex-col items-center text-center">
               <p className="text-[11px] tracking-[0.24em] text-[#8d7f69] uppercase">
-                Your Witch Type
+                {t.resultEyebrow}
               </p>
               <h2 className="mt-2 text-3xl font-medium tracking-[0.06em] text-[#2e2a26] sm:text-4xl">
-                {result.name}
+                {localizedResult.name}
               </h2>
               <span className="mt-3 inline-flex items-center rounded-full border border-[#d2c4e7] bg-white/70 px-3 py-1 text-xs font-medium tracking-[0.18em] text-[#75658f]">
-                {result.mbti}
+                {localizedResult.mbti}
               </span>
-              <p className="mt-3 text-sm leading-7 text-[#6b6053]">{result.catchCopy}</p>
+              <p className="mt-3 text-sm leading-7 text-[#6b6053]">{localizedResult.catchCopy}</p>
 
               <div className="mt-5 w-full overflow-hidden rounded-2xl border border-[#e1d5bf]/74 shadow-[0_14px_30px_-24px_rgba(82,69,53,0.24)]">
                 <Image
-                  src={result.image}
-                  alt={`${result.name}のイラスト`}
+                  src={localizedResult.image}
+                  alt={localizedResult.name}
                   width={1024}
                   height={1024}
                   className="h-auto w-full object-cover"
@@ -261,29 +272,29 @@ export default function MajyosindanClient() {
           </GlassCard>
           </div>
 
-          {result.detail ? (
+          {localizedResult.detail ? (
             <>
               <GlassCard>
                 <p className="whitespace-pre-line text-[15px] leading-relaxed text-[#544c42]">
-                  {result.detail.body}
+                  {localizedResult.detail.body}
                 </p>
               </GlassCard>
 
               <GlassCard>
                 <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">
-                  {result.name}の恋愛
+                  {t.loveHeading(localizedResult.name)}
                 </h3>
                 <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[#544c42]">
-                  {result.detail.love}
+                  {localizedResult.detail.love}
                 </p>
               </GlassCard>
 
               <GlassCard>
                 <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">
-                  相性の良い魔女
+                  {t.compatHeading}
                 </h3>
                 <div className="mt-4 space-y-3">
-                  {result.detail.compatibility.map((item) => (
+                  {localizedResult.detail.compatibility.map((item) => (
                     <div
                       key={item.mbti}
                       className="rounded-xl border border-[#e1d5bf]/72 bg-white/70 p-4"
@@ -305,39 +316,39 @@ export default function MajyosindanClient() {
 
               <GlassCard>
                 <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">
-                  少し刺激的な相手
+                  {t.rivalHeading}
                 </h3>
                 <div className="mt-4 rounded-xl border border-[#d2c4e7]/70 bg-[#f5f0ff]/55 p-4">
                   <p className="flex items-center gap-2 text-[15px] font-medium text-[#2e2a26]">
-                    <span aria-hidden="true">{result.detail.rival.emoji}</span>
+                    <span aria-hidden="true">{localizedResult.detail.rival.emoji}</span>
                     <span>
-                      {result.detail.rival.name}
+                      {localizedResult.detail.rival.name}
                       <span className="ml-1 text-xs font-normal tracking-[0.12em] text-[#847967]">
-                        （{result.detail.rival.mbti}）
+                        （{localizedResult.detail.rival.mbti}）
                       </span>
                     </span>
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-[#544c42]">
-                    {result.detail.rival.text}
+                    {localizedResult.detail.rival.text}
                   </p>
                 </div>
               </GlassCard>
 
               <GlassCard>
                 <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">
-                  {result.name}からのメッセージ
+                  {t.messageHeading(localizedResult.name)}
                 </h3>
                 <blockquote className="mt-3 rounded-xl border-l-4 border-[#c4b8da] bg-[#f5f0ff]/55 p-4">
                   <p className="whitespace-pre-line text-[15px] leading-relaxed text-[#544c42]">
-                    {result.detail.message}
+                    {localizedResult.detail.message}
                   </p>
                 </blockquote>
               </GlassCard>
 
               <GlassCard>
-                <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">キーワード</h3>
+                <h3 className="text-sm font-medium tracking-[0.04em] text-[#2e2a26]">{t.keywordsHeading}</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {result.detail.keywords.map((keyword) => (
+                  {localizedResult.detail.keywords.map((keyword) => (
                     <span
                       key={keyword}
                       className="inline-flex items-center rounded-full border border-[#d2c4e7] bg-white/70 px-3 py-1 text-xs font-medium tracking-[0.04em] text-[#75658f]"
@@ -350,16 +361,16 @@ export default function MajyosindanClient() {
             </>
           ) : (
             <GlassCard>
-              <h3 className="text-sm font-medium tracking-wide text-[#2e2a26]">魔女からのことば</h3>
+              <h3 className="text-sm font-medium tracking-wide text-[#2e2a26]">{t.fallbackHeading}</h3>
               <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[#544c42]">
-                {result.description}
+                {localizedResult.description}
               </p>
             </GlassCard>
           )}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <LuminaButton type="button" tone="primary" onClick={handleShare}>
-              Xでシェアする
+              {t.shareButton}
             </LuminaButton>
             <LuminaButton
               type="button"
@@ -367,10 +378,10 @@ export default function MajyosindanClient() {
               onClick={handleDownloadImage}
               disabled={isDownloading}
             >
-              {isDownloading ? "画像を生成中…" : "画像を保存する"}
+              {isDownloading ? t.savingImage : t.saveImageButton}
             </LuminaButton>
             <LuminaButton type="button" tone="secondary" onClick={handleRetry}>
-              もう一度診断する
+              {t.retryButton}
             </LuminaButton>
           </div>
           {downloadStatus ? (
@@ -382,7 +393,7 @@ export default function MajyosindanClient() {
       <section className="relative mx-auto mt-8 w-full max-w-2xl">
         <Link
           href="/manga"
-          aria-label="魔女たちの日常"
+          aria-label={t.mangaTitle}
           className="group flex items-center gap-4 overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 bg-[linear-gradient(160deg,rgba(255,252,246,0.92),rgba(248,242,231,0.84))] p-3 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-95"
         >
           <span className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#e6dac8]/80 bg-[#fdfaf3]">
@@ -395,10 +406,10 @@ export default function MajyosindanClient() {
             />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[10px] tracking-[0.22em] text-[#a08f6a] uppercase">Comic</span>
-            <span className="mt-1 block text-base font-medium text-[#2e2a26]">魔女たちの日常</span>
+            <span className="block text-[10px] tracking-[0.22em] text-[#a08f6a] uppercase">{t.mangaEyebrow}</span>
+            <span className="mt-1 block text-base font-medium text-[#2e2a26]">{t.mangaTitle}</span>
             <span className="mt-1 block text-sm leading-6 text-[#6b6053]">
-              白の庭に暮らす魔女たちの、小さな物語
+              {t.mangaDescription}
             </span>
           </span>
           <span

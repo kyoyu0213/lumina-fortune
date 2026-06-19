@@ -5,10 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { birdQuestions, computeBirdResult, type BirdType } from "@/lib/bird/bird";
 import { ShopBanner } from "@/components/shop-banner";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { birdUI, questionTexts, localizeBirdResult } from "./translations";
 
 type Phase = "intro" | "quiz" | "result";
 
 export default function BirdClient() {
+  const { lang, setLang } = useLanguage();
+  const t = birdUI[lang];
+
   const [phase, setPhase] = useState<Phase>("intro");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -21,6 +27,14 @@ export default function BirdClient() {
     return computeBirdResult(answers);
   }, [phase, answers]);
 
+  // 日本語の結果に、選択言語のオーバーライドを合成（未訳は ja フォールバック）
+  const localizedResult = useMemo(
+    () => (result ? localizeBirdResult(result, lang) : null),
+    [result, lang],
+  );
+
+  const currentQuestionText = questionTexts[lang][birdQuestions[current].id];
+
   const handleStart = () => {
     setAnswers([]);
     setCurrent(0);
@@ -30,17 +44,17 @@ export default function BirdClient() {
   // 診断TOPをシェア（スマホはOSのシェアシート、PCはX投稿へフォールバック）
   const handleShareIntro = async () => {
     const url = typeof window !== "undefined" ? `${window.location.origin}/bird` : "/bird";
-    const text = "12羽の鳥たちが教えてくれる、あなたの本当の性格🪶 あなたはどの鳥？【鳥タイプ診断】";
+    const text = t.shareIntroText;
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: "鳥タイプ診断", text, url });
+        await navigator.share({ title: t.introTitle, text, url });
       } catch {
         /* ユーザーがキャンセルした場合などは何もしない */
       }
       return;
     }
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      `${text}\n#鳥タイプ診断 #鳥たちの王国`,
+      text,
     )}&url=${encodeURIComponent(url)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
@@ -75,13 +89,10 @@ export default function BirdClient() {
     if (!result) return;
     const shareUrl =
       typeof window !== "undefined" ? `${window.location.origin}/bird` : "/bird";
-    const shareText = [
-      `私の鳥タイプは「${result.name}」でした🪶`,
-      "",
-      result.catchCopy,
-      "",
-      "あなたはどの鳥？ #鳥タイプ診断 #鳥たちの王国",
-    ].join("\n");
+    const shareText = t.shareResultText(
+      localizedResult?.name ?? result.name,
+      localizedResult?.catchCopy ?? result.catchCopy,
+    );
     const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       shareText,
     )}&url=${encodeURIComponent(shareUrl)}`;
@@ -103,9 +114,9 @@ export default function BirdClient() {
       anchor.href = dataUrl;
       anchor.download = `bird-type-${result.id}.png`;
       anchor.click();
-      setDownloadStatus("画像を保存しました。");
+      setDownloadStatus(t.imageSaved);
     } catch {
-      setDownloadStatus("画像の生成に失敗しました。時間をおいて再度お試しください。");
+      setDownloadStatus(t.imageFailed);
     } finally {
       setIsDownloading(false);
     }
@@ -126,24 +137,26 @@ export default function BirdClient() {
             href="/"
             className="text-sm text-[#5a6b58] underline-offset-4 transition hover:text-[#3c5340] hover:underline"
           >
-            ← トップへ戻る
+            {t.backTop}
           </Link>
           <span className="text-[11px] tracking-[0.28em] text-[#7e8a72] uppercase">
             Bird Kingdom
           </span>
         </div>
 
+        <LanguageSwitcher lang={lang} onChange={setLang} className="mb-5" />
+
         {phase === "intro" ? (
           <section className="rounded-[2rem] border border-white/70 bg-white/55 p-5 shadow-[0_24px_48px_-32px_rgba(60,83,64,0.45)] backdrop-blur-[2px] sm:p-7">
             <button
               type="button"
               onClick={handleStart}
-              aria-label="診断をはじめる"
+              aria-label={t.startButton}
               className="block w-full cursor-pointer overflow-hidden rounded-[1.5rem] border border-white/70 shadow-[0_16px_34px_-26px_rgba(60,83,64,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5b8161]/70"
             >
               <Image
                 src="/gazou/bird/Top.png"
-                alt="鳥タイプ診断 — 鳥たちの王国"
+                alt={t.introTitle}
                 width={1536}
                 height={1024}
                 className="h-auto w-full object-cover"
@@ -154,26 +167,20 @@ export default function BirdClient() {
             <div className="mt-6 text-center">
               <p className="text-[11px] tracking-[0.3em] text-[#8a9a7d] uppercase">Bird Type</p>
               <h1 className="mt-2 font-[var(--font-playfair-display)] text-3xl tracking-[0.06em] text-[#33493a] sm:text-4xl">
-                鳥タイプ診断
+                {t.introTitle}
               </h1>
-              <p className="mt-3 text-sm leading-7 text-[#4f6450] sm:text-base">
-                12羽の鳥たちが教えてくれる、
-                <br />
-                あなたの本当の性格
+              <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#4f6450] sm:text-base">
+                {t.introLead}
               </p>
 
               <div className="mx-auto mt-5 max-w-md rounded-2xl border border-white/60 bg-white/45 px-5 py-4">
-                <p className="text-sm leading-7 text-[#52614f]">
-                  あなたの考え方や行動パターンから、
-                  <br />
-                  12羽の鳥の中で最も近いタイプを診断します。
+                <p className="whitespace-pre-line text-sm leading-7 text-[#52614f]">
+                  {t.introInfo1}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-[#52614f]">
-                  あなたは愛されるシマエナガ？
-                  <br />
-                  それとも知性派のヨウム？
+                <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#52614f]">
+                  {t.introInfo2}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-[#52614f]">さっそく診断してみましょう。</p>
+                <p className="mt-3 text-sm leading-7 text-[#52614f]">{t.introInfo3}</p>
               </div>
             </div>
 
@@ -183,7 +190,7 @@ export default function BirdClient() {
                 onClick={handleStart}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#7fa07d]/80 bg-[linear-gradient(135deg,#7fa07d,#5b8161)] px-9 text-sm font-medium tracking-[0.08em] text-white shadow-[0_16px_30px_-16px_rgba(60,83,64,0.7)] transition hover:-translate-y-0.5 hover:brightness-105"
               >
-                診断をはじめる
+                {t.startButton}
               </button>
               <button
                 type="button"
@@ -204,7 +211,7 @@ export default function BirdClient() {
                   <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
                   <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
                 </svg>
-                友達にこの診断をシェア
+                {t.shareIntroButton}
               </button>
             </div>
           </section>
@@ -214,14 +221,14 @@ export default function BirdClient() {
           <section className="rounded-[2rem] border border-white/70 bg-white/60 p-5 shadow-[0_24px_48px_-32px_rgba(60,83,64,0.45)] backdrop-blur-[2px] sm:p-7">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium tracking-[0.16em] text-[#6f7f68]">
-                QUESTION {current + 1} / {birdQuestions.length}
+                {t.questionLabel(current + 1, birdQuestions.length)}
               </span>
               <button
                 type="button"
                 onClick={handleBack}
                 className="text-sm text-[#5a6b58] underline-offset-4 transition hover:text-[#3c5340] hover:underline"
               >
-                ← 戻る
+                {t.backButton}
               </button>
             </div>
 
@@ -233,7 +240,7 @@ export default function BirdClient() {
             </div>
 
             <h2 className="mt-6 text-lg font-medium leading-relaxed text-[#33493a] sm:text-xl">
-              {birdQuestions[current].text}
+              {currentQuestionText.text}
             </h2>
 
             <div className="mt-5 space-y-3">
@@ -250,27 +257,27 @@ export default function BirdClient() {
                   >
                     🪶
                   </span>
-                  <span>{option.label}</span>
+                  <span>{currentQuestionText.options[optionIndex]}</span>
                 </button>
               ))}
             </div>
           </section>
         ) : null}
 
-        {phase === "result" && result ? (
+        {phase === "result" && localizedResult ? (
           <section className="space-y-4">
             <div ref={resultCardRef} className="space-y-4">
             <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/65 shadow-[0_24px_48px_-30px_rgba(60,83,64,0.5)] backdrop-blur-[2px]">
               <div className="relative">
                 <Image
-                  src={result.image}
-                  alt={`${result.name}のイラスト`}
+                  src={localizedResult.image}
+                  alt={localizedResult.name}
                   width={1024}
                   height={1024}
                   className="h-auto w-full object-cover"
                   priority
                 />
-                {result.secret ? (
+                {localizedResult.secret ? (
                   <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-white/70 bg-[#3c5340]/85 px-3 py-1 text-[11px] font-medium tracking-[0.2em] text-white">
                     SECRET
                   </span>
@@ -279,29 +286,29 @@ export default function BirdClient() {
 
               <div className="p-5 text-center sm:p-7">
                 <p className="text-[11px] tracking-[0.3em] text-[#8a9a7d] uppercase">
-                  Your Bird Type
+                  {t.resultEyebrow}
                 </p>
                 <h1 className="mt-2 text-3xl font-medium tracking-[0.06em] text-[#33493a] sm:text-4xl">
-                  【{result.name}】
+                  【{localizedResult.name}】
                 </h1>
-                <p className="mt-3 text-sm leading-7 text-[#4f6450]">{result.catchCopy}</p>
+                <p className="mt-3 text-sm leading-7 text-[#4f6450]">{localizedResult.catchCopy}</p>
                 <p className="mt-4 whitespace-pre-line text-[15px] leading-7 text-[#46563f]">
-                  {result.description}
+                  {localizedResult.description}
                 </p>
               </div>
             </div>
 
-            <ResultBlock title="恋愛傾向" emoji="💕" text={result.love} />
-            <ResultBlock title="仕事傾向" emoji="🌿" text={result.work} />
-            <ResultBlock title="相性の良い鳥" emoji="🪺" text={result.compatible} />
+            <ResultBlock title={t.loveTitle} emoji="💕" text={localizedResult.love} />
+            <ResultBlock title={t.workTitle} emoji="🌿" text={localizedResult.work} />
+            <ResultBlock title={t.compatibleTitle} emoji="🪺" text={localizedResult.compatible} />
 
             <div className="rounded-[1.6rem] border-l-4 border-[#7fa07d] bg-white/65 p-5 shadow-[0_16px_30px_-28px_rgba(60,83,64,0.4)] backdrop-blur-[2px]">
               <h3 className="flex items-center gap-2 text-sm font-medium tracking-[0.04em] text-[#33493a]">
                 <span aria-hidden>🕊️</span>
-                {result.name}からのメッセージ
+                {t.messageHeading(localizedResult.name)}
               </h3>
               <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-[#46563f]">
-                {result.message}
+                {localizedResult.message}
               </p>
             </div>
             </div>
@@ -315,7 +322,7 @@ export default function BirdClient() {
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-                Xでシェアする
+                {t.shareButton}
               </button>
               <button
                 type="button"
@@ -323,20 +330,20 @@ export default function BirdClient() {
                 disabled={isDownloading}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#7fa07d]/80 bg-[linear-gradient(135deg,#7fa07d,#5b8161)] px-7 text-sm font-medium tracking-[0.06em] text-white shadow-[0_16px_30px_-16px_rgba(60,83,64,0.7)] transition hover:-translate-y-0.5 hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isDownloading ? "画像を生成中…" : "画像を保存する"}
+                {isDownloading ? t.savingImage : t.saveImageButton}
               </button>
               <button
                 type="button"
                 onClick={handleRetry}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#9bb592]/80 bg-white/70 px-7 text-sm font-medium tracking-[0.06em] text-[#4f6450] shadow-[0_10px_22px_-18px_rgba(60,83,64,0.4)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                もう一度診断する
+                {t.retryButton}
               </button>
               <Link
                 href="/"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#9bb592]/80 bg-white/70 px-7 text-sm font-medium tracking-[0.06em] text-[#4f6450] shadow-[0_10px_22px_-18px_rgba(60,83,64,0.4)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                トップへ戻る
+                {t.backTop}
               </Link>
             </div>
             {downloadStatus ? (
@@ -348,7 +355,7 @@ export default function BirdClient() {
         <section className="relative mt-8 w-full">
           <Link
             href="/manga/birds"
-            aria-label="羽根の広場"
+            aria-label={t.mangaTitle}
             className="group flex items-center gap-4 overflow-hidden rounded-[1.6rem] border border-white/70 bg-white/65 p-3 shadow-[0_16px_30px_-26px_rgba(60,83,64,0.45)] backdrop-blur-[2px] transition hover:-translate-y-0.5 hover:bg-white/80"
           >
             <span className="relative block h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/70 bg-[#eef5ea]">
@@ -362,8 +369,8 @@ export default function BirdClient() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-[10px] tracking-[0.22em] text-[#8a9a7d] uppercase">Comic</span>
-              <span className="mt-1 block text-base font-medium text-[#33493a]">羽根の広場</span>
-              <span className="mt-1 block text-sm leading-6 text-[#4f6450]">鳥たちの漫画を読む</span>
+              <span className="mt-1 block text-base font-medium text-[#33493a]">{t.mangaTitle}</span>
+              <span className="mt-1 block text-sm leading-6 text-[#4f6450]">{t.mangaDescription}</span>
             </span>
             <span
               aria-hidden="true"
