@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { getLightRecords, saveLightRecord } from "@/lib/light-records";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
 import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
+import { apiError } from "@/lib/api-error";
 
 // validateModerationText が throw しうるモデレーションUX文言集合。
 // 死リテラルとのズレで 500 に漏れないよう MODERATION_MESSAGES を直接参照する。
 const MODERATION_ERROR_MESSAGES = new Set<string>(Object.values(MODERATION_MESSAGES));
+
+// 想定外エラー時の環境診断（このルートは Claude を呼ばないため hasAnthropicKey は付けない）
+const errorDiag = () => ({ vercel: process.env.VERCEL === "1", nodeEnv: process.env.NODE_ENV });
 
 type SaveBody = {
   action: "save";
@@ -64,6 +68,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ error: "failed" }, { status: 500 });
+    return apiError(error, { route: "light-records", shape: "error", extra: errorDiag() });
   }
 }

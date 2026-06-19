@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { addWish, listLatestWishes } from "@/lib/wish-garden";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
 import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
+import { apiError } from "@/lib/api-error";
+
+// 想定外エラー時の環境診断（このルートは Claude を呼ばないため hasAnthropicKey は付けない）
+const errorDiag = () => ({ vercel: process.env.VERCEL === "1", nodeEnv: process.env.NODE_ENV });
 
 type CreateWishBody = {
   message?: string;
@@ -18,10 +22,7 @@ export async function GET() {
     const wishes = await listLatestWishes(24);
     return NextResponse.json({ wishes });
   } catch (error) {
-    console.error("[api/wish-garden][GET] failed to load wishes", {
-      message: error instanceof Error ? error.message : String(error),
-    });
-    return NextResponse.json({ error: "failed to load wishes" }, { status: 500 });
+    return apiError(error, { route: "wish-garden", shape: "error", extra: errorDiag() });
   }
 }
 
@@ -48,10 +49,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
     }
-    console.error("[api/wish-garden][POST] failed to save wish", {
-      message: error instanceof Error ? error.message : String(error),
-      name: error instanceof Error ? error.name : "unknown",
-    });
-    return NextResponse.json({ error: "failed to save wish" }, { status: 500 });
+    return apiError(error, { route: "wish-garden", shape: "error", extra: errorDiag() });
   }
 }

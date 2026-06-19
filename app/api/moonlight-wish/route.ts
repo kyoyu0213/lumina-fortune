@@ -7,6 +7,7 @@ import {
 } from "@/lib/moonlight-wishes";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
 import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
+import { apiError } from "@/lib/api-error";
 
 type Body = {
   user_id?: string;
@@ -16,6 +17,9 @@ type Body = {
 // validateModerationText が throw しうるモデレーションUX文言集合。
 // 死リテラルとのズレで 500 に漏れないよう MODERATION_MESSAGES を直接参照する。
 const MODERATION_ERROR_MESSAGES = new Set<string>(Object.values(MODERATION_MESSAGES));
+
+// 想定外エラー時の環境診断（このルートは Claude を呼ばないため hasAnthropicKey は付けない）
+const errorDiag = () => ({ vercel: process.env.VERCEL === "1", nodeEnv: process.env.NODE_ENV });
 
 export async function GET(request: Request) {
   try {
@@ -36,8 +40,8 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 500 });
+  } catch (error) {
+    return apiError(error, { route: "moonlight-wish", shape: "ok", extra: errorDiag() });
   }
 }
 
@@ -70,6 +74,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
       }
     }
-    return NextResponse.json({ ok: false, error: "failed to save moonlight wish" }, { status: 500 });
+    return apiError(error, { route: "moonlight-wish", shape: "ok", extra: errorDiag() });
   }
 }

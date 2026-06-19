@@ -6,6 +6,7 @@ import {
   enforceReadRateLimit,
   RateLimitError,
 } from "@/lib/security/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 export const runtime = "nodejs";
 
@@ -58,8 +59,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     if (error instanceof RateLimitError) return error.response;
-    console.error("[calendar] error", error);
-    return NextResponse.json({ error: "Failed to fetch calendar data." }, { status: 500 });
+    return apiError(error, { route: "calendar", shape: "error" });
   }
 }
 

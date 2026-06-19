@@ -3,6 +3,7 @@ import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildLuminaPrompt, type RomanceFeature, type InterpretationFrameInput } from "@/lib/ai/lumina-prompts";
 import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 type RequestBody = {
   feature: RomanceFeature;
@@ -142,7 +143,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, reading: templateReading });
     }
   } catch (error) {
-    console.error("[api/romance-reading] error:", error instanceof Error ? error.message : String(error));
-    return NextResponse.json({ ok: false, error: "reading generation failed" }, { status: 500 });
+    return apiError(error, { route: "romance-reading", shape: "ok" });
   }
 }

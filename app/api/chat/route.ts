@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
+import { apiError } from "@/lib/api-error";
 import { isLuminaDevMode, luminaDevLog, luminaDevWarn } from "@/lib/config/lumina-dev";
 import { pickRandomCards as pickDailyFortuneCards } from "@/lib/fortune-data";
 import {
@@ -1577,13 +1578,6 @@ export async function POST(request: Request) {
 
     return jsonChatResponse(responsePayload);
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    const errStack = error instanceof Error ? error.stack : undefined;
-    console.error("[lumina] Claude API error:", errMsg);
-    if (errStack) console.error("[lumina] Stack:", errStack);
-    return NextResponse.json(
-      { error: "ルミナさんとの通信に失敗しました。" },
-      { status: 500 }
-    );
+    return apiError(error, { route: "chat", shape: "error" });
   }
 }

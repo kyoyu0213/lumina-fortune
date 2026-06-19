@@ -5,6 +5,7 @@ import { saveConsultationLetter } from "@/lib/consultation-letters";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
 import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
 import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 // saveConsultationLetter が throw しうる「ユーザー起因のUXエラー文言」集合。
 // MODERATION_MESSAGES を直接参照することで、文言が変わってもリテラル不一致で
@@ -127,13 +128,14 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
       }
     }
-    console.error("[api/consultation-letter][POST] failed to save letter", {
-      message: error instanceof Error ? error.message : String(error),
-      name: error instanceof Error ? error.name : "unknown",
-      vercel: process.env.VERCEL === "1",
-      nodeEnv: process.env.NODE_ENV,
-      hasAnthropicKey: Boolean(process.env.ANTHROPIC_API_KEY),
+    return apiError(error, {
+      route: "consultation-letter",
+      shape: "ok",
+      extra: {
+        vercel: process.env.VERCEL === "1",
+        nodeEnv: process.env.NODE_ENV,
+        hasAnthropicKey: Boolean(process.env.ANTHROPIC_API_KEY),
+      },
     });
-    return NextResponse.json({ ok: false, error: "failed to save letter" }, { status: 500 });
   }
 }

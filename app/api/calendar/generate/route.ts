@@ -7,6 +7,7 @@ import {
   RateLimitError,
 } from "@/lib/security/rate-limit";
 import { isAdminRequest } from "@/lib/security/admin-auth";
+import { apiError } from "@/lib/api-error";
 
 export const runtime = "nodejs";
 
@@ -59,8 +60,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof RateLimitError) return error.response;
-    console.error("[calendar/generate] error", error);
-    return NextResponse.json({ error: "Failed to generate calendar data." }, { status: 500 });
+    return apiError(error, { route: "calendar/generate", shape: "error" });
   }
 }
 
