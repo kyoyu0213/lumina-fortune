@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { getLightRecords, saveLightRecord } from "@/lib/light-records";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
+import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
+
+// validateModerationText が throw しうるモデレーションUX文言集合。
+// 死リテラルとのズレで 500 に漏れないよう MODERATION_MESSAGES を直接参照する。
+const MODERATION_ERROR_MESSAGES = new Set<string>(Object.values(MODERATION_MESSAGES));
 
 type SaveBody = {
   action: "save";
@@ -55,14 +60,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ error: "invalid action" }, { status: 400 });
   } catch (error) {
-    if (
-      error instanceof Error &&
-      (error.message === "文章が長すぎます" ||
-        error.message.includes("リンクはここには置けない") ||
-        error.message.includes("その内容はここには置けない") ||
-        error.message.includes("庭には置けない") ||
-        error.message.includes("同じ言葉が続いている"))
-    ) {
+    if (error instanceof Error && MODERATION_ERROR_MESSAGES.has(error.message)) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 

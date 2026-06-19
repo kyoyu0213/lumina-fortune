@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import { addWish, listLatestWishes } from "@/lib/wish-garden";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
+import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
 
 type CreateWishBody = {
   message?: string;
   userKey?: string;
 };
+
+// validateModerationText が throw しうるモデレーションUX文言集合。
+// MODERATION_MESSAGES を直接参照し、死リテラルとのズレで 500 に漏れないようにする
+// （tooLong/url/ngWord/spamWord/spam を網羅）。
+const MODERATION_ERROR_MESSAGES = new Set<string>(Object.values(MODERATION_MESSAGES));
 
 export async function GET() {
   try {
@@ -37,11 +43,7 @@ export async function POST(request: Request) {
       if (
         error.message === "message is required" ||
         error.message === "message is too long" ||
-        error.message === "文章が長すぎます" ||
-        error.message.includes("リンクはここには置けない") ||
-        error.message.includes("その内容はここには置けない") ||
-        error.message.includes("庭には置けない") ||
-        error.message.includes("同じ言葉が続いている")
+        MODERATION_ERROR_MESSAGES.has(error.message)
       ) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
