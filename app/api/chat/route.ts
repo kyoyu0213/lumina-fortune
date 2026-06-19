@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
 import { isLuminaDevMode, luminaDevLog, luminaDevWarn } from "@/lib/config/lumina-dev";
 import { pickRandomCards as pickDailyFortuneCards } from "@/lib/fortune-data";
@@ -74,6 +75,55 @@ type RequestBody = {
     lastCard?: { name: string; reversed: boolean } | null;
   };
 };
+
+// 入力検証用Zodスキーマ（request.json()直後にsafeParseで前段検証する）。
+// 既存の型・正規化（normalizeTarotChatConversationState等）は壊さず、
+// 不正な形・極端な長さの入力を400で弾くための最小限のガードに留める。
+const chatCardSchema = z.object({
+  name: z.string().max(100),
+  reversed: z.boolean().optional(),
+});
+
+const chatRequestSchema = z.object({
+  message: z.string().max(500).optional(),
+  cards: z.array(chatCardSchema).max(20).optional(),
+  // クライアントが実際に送るのは "chat" / "daily-fortune"。
+  // "birthdate-2026" はルートが解釈する入力モードとして許容する。
+  mode: z.enum(["chat", "daily-fortune", "birthdate-2026"]).optional(),
+  profile: z
+    .object({
+      nickname: z.string().max(100).optional(),
+      birthdate: z.string().max(40).optional(),
+      job: z.string().max(100).optional(),
+      loveStatus: z.string().max(40).optional(),
+      membershipTier: z.string().max(40).optional(),
+      userKey: z.string().max(200).optional(),
+    })
+    .optional(),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().max(5000),
+      })
+    )
+    .max(100)
+    .optional(),
+  conversationState: z
+    .object({
+      phase: z.string().max(40).optional(),
+      topic: z.string().max(40).nullable().optional(),
+      awaitingConsent: z.boolean().optional(),
+      awaitingTheme: z.boolean().optional(),
+      questionStreak: z.number().optional(),
+      lastTopic: z.string().max(40).nullable().optional(),
+      offtopicStreak: z.number().optional(),
+      awaitingFortuneResult: z.boolean().optional(),
+      lightGuidanceCount: z.number().optional(),
+      lastCard: chatCardSchema.nullable().optional(),
+    })
+    .optional(),
+});
 
 type TarotChatPhase = "idle" | "intent_confirm" | "reading" | "followup";
 type TarotChatTheme =
@@ -825,7 +875,15 @@ export async function POST(request: Request) {
     const rateLimited = await enforceClaudeRateLimit(request, { daily: true });
     if (rateLimited) return rateLimited;
 
-    const body = (await request.json()) as RequestBody;
+    const rawBody = await request.json();
+    const parsedBody = chatRequestSchema.safeParse(rawBody);
+    if (!parsedBody.success) {
+      return NextResponse.json(
+        { error: "リクエストの形式が正しくありません。" },
+        { status: 400 }
+      );
+    }
+    const body = parsedBody.data as RequestBody;
     const { message, cards: existingCards, mode = "chat", profile } = body;
     const history = Array.isArray(body.history) ? body.history : [];
     const rawUserKey = profile?.userKey ?? profile?.nickname ?? "";

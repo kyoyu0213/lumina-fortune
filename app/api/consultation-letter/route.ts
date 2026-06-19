@@ -1,13 +1,35 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
 import { saveConsultationLetter } from "@/lib/consultation-letters";
 import { checkModerationPostInterval, resolveModerationUserKey } from "@/lib/moderation/rateLimit";
+import { MODERATION_MESSAGES } from "@/lib/moderation/messages";
 import { enforceClaudeRateLimit } from "@/lib/security/rate-limit";
+
+// saveConsultationLetter が throw しうる「ユーザー起因のUXエラー文言」集合。
+// MODERATION_MESSAGES を直接参照することで、文言が変わってもリテラル不一致で
+// 500 にフォールスルーしない（tooLong/url/ngWord/spamWord/spam を網羅）。
+const MODERATION_ERROR_MESSAGES = new Set<string>(Object.values(MODERATION_MESSAGES));
 
 type Body = {
   nickname?: string;
   message?: string;
 };
+
+// ── 入力検証用Zodスキーマ（形式の入口ガードに徹する）──
+// 既存の saveConsultationLetter 側の検証（message必須・300文字上限・NG語・URL・
+// 連続語チェックの意図的な日本語UX文言）は温存し、Zodはそれを preempt しない。
+// 役割分担:
+//   - nickname: 生値がプロンプト/モデレーションキーへ未切り詰めで流入するため上限を新設。
+//     クライアントは maxLength=40・保存時 slice(0,40) なので、≤100 なら正常系を一切弾かず
+//     巨大nicknameによる注入のみ締められる（実上限40に対し約2.5倍の余裕）。
+//   - message: 型(string)と「極端な長さ」のみ。既存の300文字UX判定を二重弾きしないよう、
+//     上限は機能上限300を大きく上回る5000（約16倍）に設定。301〜5000は従来どおり
+//     既存の "message is too long" / モデレーションUXに委ね、>5000の異常payloadのみ形式400。
+const consultationRequestSchema = z.object({
+  nickname: z.string().max(100).optional(),
+  message: z.string().max(5000).optional(),
+});
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -75,7 +97,15 @@ export async function POST(request: Request) {
     const rateLimited = await enforceClaudeRateLimit(request, { daily: true });
     if (rateLimited) return rateLimited;
 
-    const body = (await request.json()) as Body;
+    const rawBody = await request.json();
+    const parsed = consultationRequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { ok: false, error: "リクエストの形式が正しくありません。" },
+        { status: 400 }
+      );
+    }
+    const body: Body = parsed.data;
     const message = typeof body.message === "string" ? body.message : "";
     const nickname = typeof body.nickname === "string" ? body.nickname : "";
     const rateLimit = await checkModerationPostInterval(
@@ -92,11 +122,7 @@ export async function POST(request: Request) {
       if (
         error.message === "message is required" ||
         error.message === "message is too long" ||
-        error.message === "文章が長すぎます" ||
-        error.message.includes("リンクはここには置けない") ||
-        error.message.includes("その内容はここには置けない") ||
-        error.message.includes("庭には置けない") ||
-        error.message.includes("同じ言葉が続いている")
+        MODERATION_ERROR_MESSAGES.has(error.message)
       ) {
         return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
       }
