@@ -14,6 +14,16 @@ export function getRedis(): Redis | null {
   return cachedClient;
 }
 
+/** JST（日本時間）の YYYY-MM-DD 文字列を返す。固定窓レート制限などの日次キーに使う。 */
+export function jstDateKey(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
 /** 次の JST（日本時間）午前0時までの残り秒数を返す（1〜86400）。 */
 export function secondsUntilNextJstMidnight(now: Date = new Date()): number {
   const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
