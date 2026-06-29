@@ -5,7 +5,7 @@ import { AnalyticsProvider } from "@/components/analytics-provider";
 import { Geist_Mono, Noto_Serif_JP, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 import { StarfieldBackground } from "@/components/starfield-background";
-import { BRAND } from "@/lib/brand";
+import { BRAND, SITE_URL } from "@/lib/brand";
 import "./globals.css";
 
 const notoSerifJp = Noto_Serif_JP({
@@ -26,6 +26,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // 各ページの相対 canonical / OGP URL をこのドメイン基準で絶対URL化する。
+  metadataBase: new URL(SITE_URL),
   title: BRAND.seoTitle,
   description: BRAND.seoDescription,
   keywords: [
@@ -39,6 +41,20 @@ export const metadata: Metadata = {
     siteName: "白の館 LUMINA",
     locale: "ja_JP",
     type: "website",
+    images: [
+      {
+        url: "/lumina-icon.png",
+        width: 1024,
+        height: 1024,
+        alt: "白の館 LUMINA",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: BRAND.seoTitle,
+    description: BRAND.seoDescription,
+    images: ["/lumina-icon.png"],
   },
 };
 

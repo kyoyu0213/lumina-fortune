@@ -49,6 +49,9 @@ const TITLES: Record<string, string> = {
   "hanatoumi.png": "花と海",
   "kurotoakatuki.png": "黒と暁",
   "mondaijikaigi.png": "問題児会議",
+  "tokinomajyonokurou.png": "時の魔女の苦労",
+  "morinomajyonokurou3.png": "森の魔女の苦労みたび",
+  "sironomajyonokokoronokoe6.png": "白の魔女の心の声6",
 };
 
 type MangaItem = {

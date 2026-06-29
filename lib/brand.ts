@@ -1,3 +1,9 @@
+// 本番公開URL。Vercel等の環境変数 NEXT_PUBLIC_SITE_URL があれば優先。
+// 末尾スラッシュ無しに正規化（metadataBase / sitemap / canonical で使用）。
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.lumina-fortune.com"
+).replace(/\/$/, "");
+
 export const BRAND = {
   name: "白の館 LUMINA",
   tagline: "光と静寂のタロット占い",
