@@ -137,6 +137,14 @@ export default function LetterPage() {
         <div className="pointer-events-none absolute inset-0 bg-white/25" />
       </div>
 
+      <p className="mb-4 rounded-2xl border border-[#e1d5bf]/70 bg-white/55 px-4 py-3 text-xs leading-relaxed text-[#7d6d5a]">
+        この手紙は、心にあることをルミナにそっと届ける場所です。サイトへのお問い合わせ・不具合のご報告・ご要望などは、
+        <Link href="/contact" className="mx-0.5 font-medium text-[#6b5d49] underline underline-offset-2">
+          お問い合わせフォーム
+        </Link>
+        からお寄せください。
+      </p>
+
       {submitted ? (
         <GlassCard className="rounded-3xl space-y-4">
           <p className="text-base leading-relaxed text-[#544c42] whitespace-pre-line">
