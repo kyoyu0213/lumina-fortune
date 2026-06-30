@@ -14,7 +14,8 @@ const EXIT_LINKS = [
 
 const SUPPORT_LINKS = [
   { label: "鑑定できない内容", href: "/consultation#limits" },
-  { label: "お問い合わせ", href: "/letter" },
+  { label: "ルミナへの手紙", href: "/letter" },
+  { label: "お問い合わせ", href: "/contact" },
 ] as const;
 
 const SOCIAL_LINKS = [

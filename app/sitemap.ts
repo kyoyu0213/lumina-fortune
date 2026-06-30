@@ -16,6 +16,7 @@ const STATIC_PATHS: string[] = [
   "/columns",
   "/compatibility",
   "/consultation",
+  "/contact",
   "/daily-fortune",
   "/fortune-2026",
   "/fortune-monthly",

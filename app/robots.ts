@@ -9,6 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       // APIエンドポイントと個人向けの結果・履歴ページはクロール不要。
       disallow: [
         "/api/",
+        "/admin",
         "/aura/result",
         "/fortune-2026/result/",
         "/fortune-monthly/result",

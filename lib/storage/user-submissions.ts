@@ -25,19 +25,33 @@ export type StoredFutureLetterSubmission = {
   createdAt: string;
 };
 
+export type StoredContactSubmission = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+};
+
 type UserSubmissionStoreState = {
   wishes: StoredWishSubmission[];
   consultationLetters: StoredConsultationLetterSubmission[];
   futureLetters: StoredFutureLetterSubmission[];
+  contacts: StoredContactSubmission[];
 };
 
 type UserSubmissionStorageAdapter = {
   listWishes(): Promise<StoredWishSubmission[]>;
   saveWish(entry: StoredWishSubmission, limit: number): Promise<void>;
+  deleteWish(id: string): Promise<void>;
   listConsultationLetters(): Promise<StoredConsultationLetterSubmission[]>;
   saveConsultationLetter(entry: StoredConsultationLetterSubmission, limit: number): Promise<void>;
+  deleteConsultationLetter(id: string): Promise<void>;
   listFutureLetters(user: string, deliverDate: string): Promise<StoredFutureLetterSubmission[]>;
   saveFutureLetter(entry: StoredFutureLetterSubmission, limit: number): Promise<void>;
+  listContacts(): Promise<StoredContactSubmission[]>;
+  saveContact(entry: StoredContactSubmission, limit: number): Promise<void>;
+  deleteContact(id: string): Promise<void>;
 };
 
 type WishRow = {
@@ -61,10 +75,19 @@ type FutureLetterRow = {
   created_at: string;
 };
 
+type ContactRow = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  created_at: string;
+};
+
 const memoryState: UserSubmissionStoreState = {
   wishes: [],
   consultationLetters: [],
   futureLetters: [],
+  contacts: [],
 };
 
 let hasWarnedMemoryFallback = false;
@@ -104,11 +127,17 @@ function createMemoryAdapter(reason: string): UserSubmissionStorageAdapter {
     async saveWish(entry, limit) {
       memoryState.wishes = dedupeById([entry, ...memoryState.wishes]).slice(0, Math.max(1, limit));
     },
+    async deleteWish(id) {
+      memoryState.wishes = memoryState.wishes.filter((item) => item.id !== id);
+    },
     async listConsultationLetters() {
       return dedupeById(memoryState.consultationLetters);
     },
     async saveConsultationLetter(entry, limit) {
       memoryState.consultationLetters = dedupeById([entry, ...memoryState.consultationLetters]).slice(0, Math.max(1, limit));
+    },
+    async deleteConsultationLetter(id) {
+      memoryState.consultationLetters = memoryState.consultationLetters.filter((item) => item.id !== id);
     },
     async listFutureLetters(user, deliverDate) {
       return dedupeById(memoryState.futureLetters).filter(
@@ -117,6 +146,15 @@ function createMemoryAdapter(reason: string): UserSubmissionStorageAdapter {
     },
     async saveFutureLetter(entry, limit) {
       memoryState.futureLetters = dedupeById([entry, ...memoryState.futureLetters]).slice(0, Math.max(1, limit));
+    },
+    async listContacts() {
+      return dedupeById(memoryState.contacts);
+    },
+    async saveContact(entry, limit) {
+      memoryState.contacts = dedupeById([entry, ...memoryState.contacts]).slice(0, Math.max(1, limit));
+    },
+    async deleteContact(id) {
+      memoryState.contacts = memoryState.contacts.filter((item) => item.id !== id);
     },
   };
 }
@@ -175,6 +213,26 @@ function toFutureLetterInsertPayload(entry: StoredFutureLetterSubmission): Futur
   };
 }
 
+function mapContactRow(row: ContactRow): StoredContactSubmission {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    message: row.message,
+    createdAt: row.created_at,
+  };
+}
+
+function toContactInsertPayload(entry: StoredContactSubmission): ContactRow {
+  return {
+    id: entry.id,
+    name: entry.name,
+    email: entry.email,
+    message: entry.message,
+    created_at: entry.createdAt,
+  };
+}
+
 async function pruneSupabaseTable(
   client: SupabaseStorageClient,
   table: string,
@@ -209,6 +267,9 @@ function createSupabaseAdapter(client: SupabaseStorageClient): UserSubmissionSto
       await client.insertRow("wishes", toWishInsertPayload(entry));
       await pruneSupabaseTable(client, "wishes", limit);
     },
+    async deleteWish(id) {
+      await client.deleteRowsByIds("wishes", [id]);
+    },
     async listConsultationLetters() {
       const rows = await client.selectRows<ConsultationLetterRow>("consultation_letters", {
         columns: "id,nickname,message,created_at",
@@ -220,6 +281,9 @@ function createSupabaseAdapter(client: SupabaseStorageClient): UserSubmissionSto
     async saveConsultationLetter(entry, limit) {
       await client.insertRow("consultation_letters", toConsultationLetterInsertPayload(entry));
       await pruneSupabaseTable(client, "consultation_letters", limit);
+    },
+    async deleteConsultationLetter(id) {
+      await client.deleteRowsByIds("consultation_letters", [id]);
     },
     async listFutureLetters(user, deliverDate) {
       const rows = await client.selectRows<FutureLetterRow>("future_letters", {
@@ -236,6 +300,21 @@ function createSupabaseAdapter(client: SupabaseStorageClient): UserSubmissionSto
     async saveFutureLetter(entry, limit) {
       await client.insertRow("future_letters", toFutureLetterInsertPayload(entry));
       await pruneSupabaseTable(client, "future_letters", limit);
+    },
+    async listContacts() {
+      const rows = await client.selectRows<ContactRow>("contacts", {
+        columns: "id,name,email,message,created_at",
+        orderBy: "created_at.desc",
+        limit: 500,
+      });
+      return rows.map(mapContactRow);
+    },
+    async saveContact(entry, limit) {
+      await client.insertRow("contacts", toContactInsertPayload(entry));
+      await pruneSupabaseTable(client, "contacts", limit);
+    },
+    async deleteContact(id) {
+      await client.deleteRowsByIds("contacts", [id]);
     },
   };
 }
@@ -258,12 +337,20 @@ function createMissingConfigAdapter(configState: SupabaseStorageConfigState): Us
         console.error("[storage/user-submissions] durable storage is unavailable for wish saves", detail);
         throw new Error("wish storage is not configured");
       },
+      async deleteWish() {
+        console.error("[storage/user-submissions] durable storage is unavailable for wish deletes", detail);
+        throw new Error("wish storage is not configured");
+      },
       async listConsultationLetters() {
         console.error("[storage/user-submissions] durable storage is unavailable for consultation letters", detail);
         return [];
       },
       async saveConsultationLetter() {
         console.error("[storage/user-submissions] durable storage is unavailable for consultation letter saves", detail);
+        throw new Error("consultation letter storage is not configured");
+      },
+      async deleteConsultationLetter() {
+        console.error("[storage/user-submissions] durable storage is unavailable for consultation letter deletes", detail);
         throw new Error("consultation letter storage is not configured");
       },
       async listFutureLetters() {
@@ -273,6 +360,18 @@ function createMissingConfigAdapter(configState: SupabaseStorageConfigState): Us
       async saveFutureLetter() {
         console.error("[storage/user-submissions] durable storage is unavailable for future letter saves", detail);
         throw new Error("future letter storage is not configured");
+      },
+      async listContacts() {
+        console.error("[storage/user-submissions] durable storage is unavailable for contacts", detail);
+        return [];
+      },
+      async saveContact() {
+        console.error("[storage/user-submissions] durable storage is unavailable for contact saves", detail);
+        throw new Error("contact storage is not configured");
+      },
+      async deleteContact() {
+        console.error("[storage/user-submissions] durable storage is unavailable for contact deletes", detail);
+        throw new Error("contact storage is not configured");
       },
     };
   }
@@ -351,6 +450,51 @@ export async function saveStoredFutureLetter(
     await storageAdapter.saveFutureLetter(entry, limit);
   } catch (error) {
     logStorageFailure("failed to save future letter", error, { letterId: entry.id });
+    throw error;
+  }
+}
+
+export async function deleteStoredWish(id: string): Promise<void> {
+  try {
+    await storageAdapter.deleteWish(id);
+  } catch (error) {
+    logStorageFailure("failed to delete wish", error, { wishId: id });
+    throw error;
+  }
+}
+
+export async function deleteStoredConsultationLetter(id: string): Promise<void> {
+  try {
+    await storageAdapter.deleteConsultationLetter(id);
+  } catch (error) {
+    logStorageFailure("failed to delete consultation letter", error, { letterId: id });
+    throw error;
+  }
+}
+
+export async function listStoredContacts(): Promise<StoredContactSubmission[]> {
+  try {
+    return await storageAdapter.listContacts();
+  } catch (error) {
+    logStorageFailure("failed to load contacts", error);
+    throw error;
+  }
+}
+
+export async function saveStoredContact(entry: StoredContactSubmission, limit: number): Promise<void> {
+  try {
+    await storageAdapter.saveContact(entry, limit);
+  } catch (error) {
+    logStorageFailure("failed to save contact", error, { contactId: entry.id });
+    throw error;
+  }
+}
+
+export async function deleteStoredContact(id: string): Promise<void> {
+  try {
+    await storageAdapter.deleteContact(id);
+  } catch (error) {
+    logStorageFailure("failed to delete contact", error, { contactId: id });
     throw error;
   }
 }

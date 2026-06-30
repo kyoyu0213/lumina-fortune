@@ -16,3 +16,14 @@ create table if not exists public.consultation_letters (
 
 create index if not exists consultation_letters_created_at_idx
   on public.consultation_letters (created_at desc);
+
+create table if not exists public.contacts (
+  id text primary key,
+  name text not null,
+  email text not null,
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists contacts_created_at_idx
+  on public.contacts (created_at desc);
