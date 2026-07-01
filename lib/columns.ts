@@ -21,6 +21,8 @@ export type ColumnArticle = {
   requiresMembership: boolean;
   /** Hide from listing page but keep accessible via direct URL */
   hidden?: boolean;
+  /** カード（一覧・トップのショーケース）に「NEW!」バッジを表示する */
+  isNew?: boolean;
 };
 
 export type ColumnDisplayContent = {
@@ -5269,6 +5271,7 @@ const COLUMN_ARTICLES: ColumnArticle[] = [
   },
   {
     slug: "unmei-no-hito-sign",
+    isNew: true,
     title: "運命の人を見分ける、5つの魂のサイン——白の魔女ルミナが、あなたに告げる本当の運命",
     category: "失恋",
     lead: "運命の人は、あなたの体と魂が先に知っています。",

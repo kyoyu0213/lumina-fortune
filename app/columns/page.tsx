@@ -180,8 +180,13 @@ export default function ColumnsPage() {
           <Link
             key={article.slug}
             href={`/columns/${article.slug}`}
-            className="group flex overflow-hidden rounded-2xl border border-[#e1d5bf]/74 bg-white/60 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.18)] backdrop-blur transition hover:bg-[#fff8ed]/80"
+            className="group relative flex overflow-hidden rounded-2xl border border-[#e1d5bf]/74 bg-white/60 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.18)] backdrop-blur transition hover:bg-[#fff8ed]/80"
           >
+            {article.isNew ? (
+              <span className="absolute right-2 top-2 z-10 inline-flex items-center rounded-full border border-white/70 bg-[linear-gradient(135deg,#e3b85a,#c1a062)] px-2 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white shadow-[0_5px_12px_-4px_rgba(150,110,40,0.7)]">
+                NEW!
+              </span>
+            ) : null}
             {article.heroImage ? (
               <div className="relative h-auto w-[110px] shrink-0 sm:w-[130px]">
                 <Image

@@ -125,7 +125,7 @@ const recordsSection: SectionGroup = {
     { title: "光の待ち受け", description: "静かな光を受け取る待ち受け", href: "/lucky-wallpapers", ctaLabel: "" },
     { title: "月灯りの間", description: "限定動画を公開", href: "/library/limited-video", ctaLabel: "" },
     { title: "魔女たちの日常", description: "白の庭に暮らす魔女たちの、小さな物語", href: "/manga", ctaLabel: "", isNew: true },
-    { title: "羽根の広場", description: "今日も鳥たちが集まって、おしゃべりをしている。", href: "/manga/birds", ctaLabel: "", isNew: true },
+    { title: "羽根の広場", description: "今日も鳥たちが集まって、おしゃべりをしている。", href: "/manga/birds", ctaLabel: "" },
   ],
 };
 
@@ -494,8 +494,13 @@ function ColumnShowcase() {
               <Link
                 key={article.slug}
                 href={`/columns/${article.slug}`}
-                className="group flex overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
+                className="group relative flex overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
               >
+                {article.isNew ? (
+                  <span className="absolute right-2 top-2 z-10 inline-flex items-center rounded-full border border-white/70 bg-[linear-gradient(135deg,#e3b85a,#c1a062)] px-2 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white shadow-[0_5px_12px_-4px_rgba(150,110,40,0.7)]">
+                    NEW!
+                  </span>
+                ) : null}
                 {article.heroImage ? (
                   <div className="relative h-auto w-[100px] shrink-0">
                     <Image src={article.heroImage} alt="" fill className="object-cover" sizes="100px" />
@@ -523,8 +528,13 @@ function ColumnShowcase() {
               <Link
                 key={article.slug}
                 href={`/columns/${article.slug}`}
-                className="group flex w-[280px] shrink-0 overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
+                className="group relative flex w-[280px] shrink-0 overflow-hidden rounded-2xl border border-[#e1d5bf]/60 bg-white/65 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.14)] transition hover:bg-[#fff8ed]/80"
               >
+                {article.isNew ? (
+                  <span className="absolute right-2 top-2 z-10 inline-flex items-center rounded-full border border-white/70 bg-[linear-gradient(135deg,#e3b85a,#c1a062)] px-2 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white shadow-[0_5px_12px_-4px_rgba(150,110,40,0.7)]">
+                    NEW!
+                  </span>
+                ) : null}
                 {article.heroImage ? (
                   <div className="relative h-auto w-[90px] shrink-0">
                     <Image src={article.heroImage} alt="" fill className="object-cover" sizes="90px" />
