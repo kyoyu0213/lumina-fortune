@@ -1943,7 +1943,7 @@ export default async function ColumnDetailPage({ params }: PageProps) {
           <p className="mt-4 text-center text-[1rem] italic leading-[2] text-[#5a4f42]">{affirmation}</p>
 
           {/* CTA buttons integrated */}
-          {(slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "renai-tenki" || slug === "shitsuren-anata" || slug === "enkyori-aenai-fuan" || slug === "kataomoi-nagai" || slug === "suki-yume") && (
+          {(slug === "kidoku-yoru" || slug === "renraku-matsu" || slug === "unmei-sign" || slug === "unmei-no-hito-sign" || slug === "renai-tenki" || slug === "shitsuren-anata" || slug === "enkyori-aenai-fuan" || slug === "kataomoi-nagai" || slug === "suki-yume") && (
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <LuminaLinkButton href="/uranai/kataomoi" tone="primary" className="px-5">
                 あなたの恋の流れを見てみる（片思い占い）
