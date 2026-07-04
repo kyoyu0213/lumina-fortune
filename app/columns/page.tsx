@@ -93,27 +93,36 @@ export default function ColumnsPage() {
     仕事: "仕事", 不安: "不安", 願い: "願い", 占い: "占い",
   };
 
-  const articles = useMemo(() => {
-    let raw = listColumnArticles("すべて").filter((a) => !a.hidden);
-    // カテゴリフィルター適用（カテゴリ一致 OR タグにカテゴリ名を含む）
+  // SEO要件: 全コラムの <a href> を初期HTML（SSR）に必ず含める。
+  // 全記事を常にDOMへ描画し、フィルタ／ページネーションは display の
+  // 切替だけで行う（非表示のリンクもDOMに残す）。クリック時にJSで
+  // リンクをDOMへ挿入する方式は使わない。
+  const allArticles = useMemo(
+    () => balanceFirstPage(listColumnArticles("すべて").filter((a) => !a.hidden)),
+    []
+  );
+
+  // 現在のフィルタ・タグ条件に一致するか
+  const matchesFilter = (article: ColumnArticle): boolean => {
     if (filter !== "すべて") {
       const tagName = CATEGORY_TO_TAG[filter];
-      raw = raw.filter((a) =>
-        a.category === filter || (tagName && a.tags?.includes(tagName))
-      );
+      if (!(article.category === filter || (tagName && article.tags?.includes(tagName)))) {
+        return false;
+      }
     }
-    // タグフィルター適用（選択タグを1つでも持っていれば表示）
     if (selectedTags.length > 0) {
-      raw = raw.filter((a) => selectedTags.some((tag) => a.tags?.includes(tag)));
+      if (!selectedTags.some((tag) => article.tags?.includes(tag))) return false;
     }
-    // フィルタが「すべて」かつタグ未選択のときだけバランス調整
-    return filter === "すべて" && selectedTags.length === 0 ? balanceFirstPage(raw) : raw;
-  }, [filter, selectedTags]);
+    return true;
+  };
 
-  const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
-  const paginatedArticles = articles.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
+  const filteredArticles = allArticles.filter(matchesFilter);
+  const totalPages = Math.max(1, Math.ceil(filteredArticles.length / ITEMS_PER_PAGE));
+  // 現在ページに表示する記事の slug。これ以外は display:none でDOMに残す。
+  const visibleSlugs = new Set(
+    filteredArticles
+      .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+      .map((a) => a.slug)
   );
 
   const handleFilterChange = (newFilter: FilterValue) => {
@@ -176,10 +185,11 @@ export default function ColumnsPage() {
       </GlassCard>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {paginatedArticles.map((article) => (
+        {allArticles.map((article) => (
           <Link
             key={article.slug}
             href={`/columns/${article.slug}`}
+            style={{ display: visibleSlugs.has(article.slug) ? undefined : "none" }}
             className="group relative flex overflow-hidden rounded-2xl border border-[#e1d5bf]/74 bg-white/60 shadow-[0_8px_20px_-16px_rgba(82,69,53,0.18)] backdrop-blur transition hover:bg-[#fff8ed]/80"
           >
             {article.isNew ? (

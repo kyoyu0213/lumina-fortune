@@ -5397,7 +5397,7 @@ const TAG_MAP: Record<string, ColumnTag[]> = {
   "negai-kanawanai": ["願い"],
   "fuan-yoru": ["不安"],
   "shigoto-shippai": ["仕事"],
-  "shitsuren-anata": ["恋愛"],
+  "shitsuren-anata": ["恋愛", "不安"],
   "renraku-matsu": ["恋愛", "片思い", "不安"],
   "motokare-kimochi": ["恋愛", "男性心理", "復縁"],
   "motokare-renraku-zenchou": ["恋愛", "復縁"],
@@ -5418,6 +5418,7 @@ const TAG_MAP: Record<string, ColumnTag[]> = {
   "kincho-shinai": ["恋愛", "片思い"],
   "kokuhaku-mayou": ["恋愛", "片思い"],
   "fukuen-couple": ["恋愛", "復縁"],
+  "fukuen-shitai": ["恋愛", "復縁"],
   "numerology-aisho-81": ["占い", "恋愛", "カップル"],
 };
 
@@ -5444,6 +5445,57 @@ export function listColumnArticles(category: ColumnCategory | "すべて" = "す
 
 export function listColumnArticlesByTag(tag: ColumnTag): ColumnArticle[] {
   return getResolvedArticles().filter((a) => !a.hidden && a.tags?.includes(tag)).slice().reverse();
+}
+
+/**
+ * 関連コラムの自動選出（内部リンク補完用）。
+ * 共有タグ数 → 同カテゴリ → 新しさ の優先度でスコアリングする。
+ * 手動指定（RELATED_COLUMNS）が無い／不足している記事にも
+ * 関連リンクが必ず付くようにするためのハイブリッドの土台。
+ * hidden 記事は候補から除外（sitemap非掲載のため）。
+ */
+// 全記事の関連グラフを一度だけ構築してキャッシュする。
+// スコア（共有タグ数 → 同カテゴリ）で候補を並べ、同スコアの候補は
+// 「ここまでに割り当てた被リンクが少ない記事」を優先する（動的balance）。
+// 割り当てながらカウンタを更新するので自己補正し、関連性を崩さずに
+// 被リンクの偏りを平準化できる（無関係な機械リンクは入れない）。
+const RELATED_GRAPH_SIZE = 8;
+let cachedRelatedGraph: Map<string, ColumnArticle[]> | null = null;
+
+function buildRelatedGraph(): Map<string, ColumnArticle[]> {
+  if (cachedRelatedGraph) return cachedRelatedGraph;
+  // 古い→新しい順。index が大きいほど新しい。
+  const visible = getResolvedArticles().filter((a) => !a.hidden);
+  const inboundSoFar = new Map<string, number>();
+  for (const a of visible) inboundSoFar.set(a.slug, 0);
+
+  const graph = new Map<string, ColumnArticle[]>();
+  for (const source of visible) {
+    const currentTags = new Set(source.tags ?? []);
+    const scored = visible
+      .filter((a) => a.slug !== source.slug)
+      .map((article, index) => {
+        const sharedTags = (article.tags ?? []).filter((t) => currentTags.has(t)).length;
+        const sameCategory = article.category === source.category ? 1 : 0;
+        return { article, index, score: sharedTags * 100 + sameCategory * 10 };
+      });
+    scored.sort((x, y) => {
+      if (y.score !== x.score) return y.score - x.score; // 関連性（スコア）最優先
+      const bx = inboundSoFar.get(x.article.slug) ?? 0;
+      const by = inboundSoFar.get(y.article.slug) ?? 0;
+      if (bx !== by) return bx - by; // 同スコアなら被リンクが少ない記事を優先
+      return y.index - x.index; // 最終同点は新しい記事
+    });
+    const picks = scored.slice(0, RELATED_GRAPH_SIZE).map((s) => s.article);
+    graph.set(source.slug, picks);
+    for (const p of picks) inboundSoFar.set(p.slug, (inboundSoFar.get(p.slug) ?? 0) + 1);
+  }
+  cachedRelatedGraph = graph;
+  return graph;
+}
+
+export function getRelatedColumns(slug: string, limit = 5): ColumnArticle[] {
+  return (buildRelatedGraph().get(slug) ?? []).slice(0, limit);
 }
 
 export function listAllTags(): ColumnTag[] {

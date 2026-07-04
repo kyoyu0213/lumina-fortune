@@ -6,7 +6,7 @@ import { LuminaLinkButton } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
 import { TableOfContents } from "@/components/columns/table-of-contents";
 import { CardImageModal } from "@/components/columns/card-image-modal";
-import { getColumnArticle, getColumnDisplayContent, listColumnArticles } from "@/lib/columns";
+import { getColumnArticle, getColumnDisplayContent, getRelatedColumns } from "@/lib/columns";
 import { CoconalaWidget } from "@/components/columns/coconala-widget";
 import { CoconalaArticleCard } from "@/components/columns/coconala-article-card";
 import { A8Banner } from "@/components/columns/a8-banner";
@@ -1623,9 +1623,13 @@ export default async function ColumnDetailPage({ params }: PageProps) {
   }
 
   const readMinutes = article.readMinutes ?? estimateReadMinutes(paragraphs.length > 0 ? paragraphs : rawParagraphs);
-  const related = listColumnArticles(article.category)
-    .filter((item) => item.slug !== article.slug)
-    .slice(0, 3);
+  // 手動「関連コラム」と重複しない範囲で、類似度の高い記事を最大5本出す。
+  const manualRelatedSlugs = new Set(
+    (RELATED_COLUMNS[article.slug] ?? []).map((r) => r.slug)
+  );
+  const related = getRelatedColumns(article.slug, 8)
+    .filter((item) => !manualRelatedSlugs.has(item.slug))
+    .slice(0, 5);
 
   const jsonLd = ARTICLE_JSONLD[slug];
 
