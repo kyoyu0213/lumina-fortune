@@ -144,7 +144,16 @@ export default function WishGardenPage() {
       headerClassName="border-[#e1d5bf]/78 bg-[linear-gradient(160deg,rgba(255,252,246,0.52),rgba(248,242,231,0.42))]"
       headerBackground={
         <>
-          <div className="h-full w-full bg-[url('/gazou/negainoniwa.png')] bg-cover bg-center opacity-82 [filter:blur(0.5px)_contrast(1.05)_saturate(1.05)]" />
+          <div className="absolute inset-0 opacity-82 [filter:blur(0.5px)_contrast(1.05)_saturate(1.05)]">
+            <Image
+              src="/gazou/negainoniwa.png"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </div>
           <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(255,252,246,0.3),rgba(248,242,231,0.22))]" />
         </>
       }
@@ -208,7 +217,15 @@ export default function WishGardenPage() {
 
       <section className="relative mt-4 overflow-hidden rounded-3xl border border-[#e1d5bf]/75 bg-[rgba(255,252,246,0.45)] p-4 sm:p-6">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="h-full w-full bg-[url('/gazou/negainoniwa.png')] bg-cover bg-center opacity-90 [filter:contrast(1.02)_saturate(1.02)]" />
+          <div className="absolute inset-0 opacity-90 [filter:contrast(1.02)_saturate(1.02)]">
+            <Image
+              src="/gazou/negainoniwa.png"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </div>
           <div className="absolute inset-0 bg-[linear-gradient(165deg,rgba(255,252,246,0.18),rgba(248,242,231,0.12))]" />
         </div>
         <h2 className="px-1 text-lg font-medium text-[#2e2a26]">最新の願い</h2>
