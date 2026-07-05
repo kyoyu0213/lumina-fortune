@@ -940,6 +940,26 @@ export function WelcomeScreen({ initialDailyWhisper, serverBirthdate = null, onS
             </div>
           </motion.div>
         </section>
+
+        <section className="relative mx-auto mt-6 w-full max-w-6xl px-4 pb-3">
+          <a
+            href="https://mbti-lab-drab.vercel.app/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => void trackEvent("mbti_banner_click", "/", "mbti_banner")}
+            aria-label="MBTI性格診断ラボ（外部サイト）"
+            className="group block overflow-hidden rounded-[1.6rem] border border-[#e6dac7]/85 shadow-[0_14px_28px_-22px_rgba(82,69,53,0.3)] transition hover:-translate-y-0.5 hover:opacity-90"
+          >
+            <Image
+              src="/gazou/MBTI.webp"
+              alt="MBTI性格診断ラボ"
+              width={1200}
+              height={151}
+              className="h-auto w-full object-cover"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+          </a>
+        </section>
       </div>
     </TarotContext.Provider>
   );
