@@ -1,6 +1,20 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import type { Metadata } from "next";
 import { LuminaLinkButton } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "新月の小さな儀式｜願いを置く時間 | 白の館 LUMINA",
+  description:
+    "新月の夜に、整える・書く・願いをひとこと。やさしい順番で願いをそっと置くための新月の過ごし方をご案内します。",
+  alternates: { canonical: "/moon-rituals/new" },
+  openGraph: {
+    title: "新月の小さな儀式｜願いを置く時間 | 白の館 LUMINA",
+    description: "新月の夜に、整える・書く・願いをひとこと。願いをそっと置く時間。",
+    url: "/moon-rituals/new",
+    type: "website",
+  },
+};
 
 export default function NewMoonRitualPage() {
   return (

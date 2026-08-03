@@ -3,6 +3,20 @@ import Link from "next/link";
 import { lightWorks } from "@/lib/light-work";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "光のワーク｜心を整えるセルフワーク | 白の館 LUMINA",
+  description:
+    "気分や目的に合わせて選べる、短時間でできるセルフワーク。呼吸とイメージで心と空気感を静かに整えます。",
+  alternates: { canonical: "/light-work" },
+  openGraph: {
+    title: "光のワーク｜心を整えるセルフワーク | 白の館 LUMINA",
+    description: "気分や目的に合わせて選べる、短時間でできるセルフワーク。",
+    url: "/light-work",
+    type: "website",
+  },
+};
 
 export default function LightWorkPage() {
   return (

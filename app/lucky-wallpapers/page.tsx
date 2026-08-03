@@ -3,6 +3,20 @@ import Link from "next/link";
 import { luckyWallpapers } from "@/lib/lucky-wallpapers";
 import { PageShell } from "@/components/ui/page-shell";
 import { GlassCard } from "@/components/ui/glass-card";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "光の待ち受けお守り｜開運スマホ壁紙 | 白の館 LUMINA",
+  description:
+    "気分や願いに合わせて選べる、ルミナのやわらかな開運待ち受け。スマホに添えるお守りとしてお使いいただけます。",
+  alternates: { canonical: "/lucky-wallpapers" },
+  openGraph: {
+    title: "光の待ち受けお守り｜開運スマホ壁紙 | 白の館 LUMINA",
+    description: "気分や願いに合わせて選べる、ルミナのやわらかな開運待ち受け。",
+    url: "/lucky-wallpapers",
+    type: "website",
+  },
+};
 
 export default function LuckyWallpapersPage() {
   return (

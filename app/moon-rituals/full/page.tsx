@@ -1,6 +1,20 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import type { Metadata } from "next";
 import { LuminaLinkButton } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "満月の小さな儀式｜手放しと振り返り | 白の館 LUMINA",
+  description:
+    "満月の夜に、受け取り・手放し・次へ進むための静かな振り返りの時間。心を整える満月の過ごし方をご案内します。",
+  alternates: { canonical: "/moon-rituals/full" },
+  openGraph: {
+    title: "満月の小さな儀式｜手放しと振り返り | 白の館 LUMINA",
+    description: "満月の夜に、受け取り・手放し・次へ進むための静かな振り返りの時間。",
+    url: "/moon-rituals/full",
+    type: "website",
+  },
+};
 
 export default function FullMoonRitualPage() {
   return (

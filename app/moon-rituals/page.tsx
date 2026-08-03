@@ -1,6 +1,20 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageShell } from "@/components/ui/page-shell";
+import type { Metadata } from "next";
 import { LuminaLinkButton } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "新月・満月の小さな儀式 | 白の館 LUMINA",
+  description:
+    "月の節目に心をやわらかく整えるための静かなガイド。新月と満月それぞれの過ごし方を、白の魔女ルミナがご案内します。",
+  alternates: { canonical: "/moon-rituals" },
+  openGraph: {
+    title: "新月・満月の小さな儀式 | 白の館 LUMINA",
+    description: "月の節目に心を整えるための静かなガイド。新月と満月の過ごし方をご案内します。",
+    url: "/moon-rituals",
+    type: "website",
+  },
+};
 
 export default function MoonRitualsPage() {
   return (

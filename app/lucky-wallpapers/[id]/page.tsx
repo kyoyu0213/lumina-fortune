@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getLuckyWallpaper } from "@/lib/lucky-wallpapers";
 
 type PageProps = {
@@ -8,6 +9,23 @@ type PageProps = {
     id: string;
   }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const wallpaper = getLuckyWallpaper(id);
+  if (!wallpaper) return {};
+  return {
+    title: `${wallpaper.title}｜光の待ち受けお守り | 白の館 LUMINA`,
+    description: `${wallpaper.title}。気分や願いに合わせて選べる、ルミナのやわらかな開運待ち受けお守りです。`,
+    alternates: { canonical: `/lucky-wallpapers/${id}` },
+    openGraph: {
+      title: `${wallpaper.title}｜光の待ち受けお守り | 白の館 LUMINA`,
+      description: `${wallpaper.title}。ルミナのやわらかな開運待ち受けお守り。`,
+      url: `/lucky-wallpapers/${id}`,
+      type: "article",
+    },
+  };
+}
 
 export default async function LuckyWallpaperDetailPage({ params }: PageProps) {
   const { id } = await params;

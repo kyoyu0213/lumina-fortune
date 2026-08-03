@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getLightWork } from "@/lib/light-work";
 
 type PageProps = {
@@ -7,6 +8,23 @@ type PageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const work = getLightWork(slug);
+  if (!work) return {};
+  return {
+    title: `${work.title}｜光のワーク | 白の館 LUMINA`,
+    description: `${work.title}。呼吸とイメージで心と空気感を静かに整える、白の館の光のワークです。`,
+    alternates: { canonical: `/light-work/${slug}` },
+    openGraph: {
+      title: `${work.title}｜光のワーク | 白の館 LUMINA`,
+      description: `${work.title}。心と空気感を静かに整える、白の館の光のワーク。`,
+      url: `/light-work/${slug}`,
+      type: "article",
+    },
+  };
+}
 
 export default async function LightWorkDetailPage({ params }: PageProps) {
   const { slug } = await params;
