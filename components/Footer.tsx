@@ -116,6 +116,9 @@ export function Footer() {
             <Link href="/terms" className="underline-offset-4 hover:underline">
               利用規約
             </Link>
+            <Link href="/about" className="underline-offset-4 hover:underline">
+              運営者情報
+            </Link>
           </div>
         </div>
       </div>

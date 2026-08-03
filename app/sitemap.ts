@@ -9,6 +9,7 @@ import { luckyWallpapers } from "@/lib/lucky-wallpapers";
 // インデックス価値が低いため意図的に除外している。
 const STATIC_PATHS: string[] = [
   "/",
+  "/about",
   "/aura",
   "/basic-personality",
   "/bird",
