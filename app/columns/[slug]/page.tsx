@@ -1631,7 +1631,16 @@ export default async function ColumnDetailPage({ params }: PageProps) {
     .filter((item) => !manualRelatedSlugs.has(item.slug))
     .slice(0, 5);
 
-  const jsonLd = ARTICLE_JSONLD[slug];
+  // 個別に定義された JSON-LD があればそれを使い、無ければ記事データ（title/lead）から
+  // Article 構造化データを自動生成する。これにより全記事に JSON-LD が出力される。
+  const jsonLd = ARTICLE_JSONLD[slug] ?? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.lead,
+    author: { "@type": "Person", name: "ルミナ" },
+    publisher: { "@type": "Organization", name: "ルミナ" },
+  };
 
   // Group body paragraphs into intro (before first h2) and sections (each h2 + its content)
   const { intro, sections } = groupIntoSections(bodyParagraphs);
