@@ -7,6 +7,15 @@ import { RecordsClient } from "./records-client";
 export const metadata: Metadata = {
   title: "白の庭の記録（物語） | 光の書庫 | LUMINA",
   description: "白の庭の記録を章ごとに辿る目次ページ。ルミナの物語を静かに読み解けます。",
+  alternates: {
+    canonical: "/library/records",
+  },
+  openGraph: {
+    title: "白の庭の記録（物語） | 光の書庫 | LUMINA",
+    description: "白の庭の記録を章ごとに辿る目次ページ。ルミナの物語を静かに読み解けます。",
+    url: "/library/records",
+    type: "website",
+  },
 };
 
 export default function RecordsPage() {
