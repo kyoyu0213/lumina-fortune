@@ -46,6 +46,30 @@ const videos: VideoItem[] = [
     watchUrl: "https://youtu.be/GZ4-LwnuX5U",
     orientation: "landscape",
   },
+  {
+    title: "あの人があなたとの結婚を考え始めた本音",
+    note: "公開中",
+    category: "恋愛",
+    youtubeId: "J_tYGsxkH5I",
+    watchUrl: "https://youtu.be/J_tYGsxkH5I",
+    orientation: "landscape",
+  },
+  {
+    title: "あの人から連絡が来る前に現れるサイン",
+    note: "公開中",
+    category: "恋愛",
+    youtubeId: "8QE6TKzrosY",
+    watchUrl: "https://youtu.be/8QE6TKzrosY",
+    orientation: "landscape",
+  },
+  {
+    title: "これから運命が大きく変わるあなたへ",
+    note: "公開中",
+    category: "心の整え",
+    youtubeId: "Ha5P6JbEzA8",
+    watchUrl: "https://youtu.be/Ha5P6JbEzA8",
+    orientation: "landscape",
+  },
 ];
 
 export default function LimitedVideoPage() {
