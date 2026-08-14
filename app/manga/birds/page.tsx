@@ -47,7 +47,20 @@ const TITLES: Record<string, string> = {
   "12.png": "",
   "13.png": "",
   "14.png": "",
+  "oukokunoatarasiikakari.png": "王国の新しい係",
+  "kozaakuranoorusuban.png": "コザクラのお留守番",
+  "karasunotakarabako.png": "カラスの宝箱",
+  "hkunodaijinaosirase.png": "ハクの大事なお知らせ",
+  "sekiseinohimitu.png": "セキセイの秘密",
+  "sirohukurounouranai.png": "シロフクロウの占い",
+  "oukokunoomaturi.png": "王国のお祭り",
+  "bunsyonooyasumi.png": "文鳥のおやすみ",
+  "hakunootodokebin2.png": "ハクのお届け便",
+  "karasuunotasuuketu.png": "カラスの多数決",
 };
+
+// Windowsの複製ファイル（「〇〇 - コピー.png」）は同じ話が二重に並ぶため除外する。
+const DUPLICATE_FILE_PATTERN = / - (コピー|Copy)(\s*\(\d+\))?\.png$/i;
 
 type MangaItem = {
   title: string;
@@ -64,15 +77,19 @@ function readPngSize(buffer: Buffer): { width: number; height: number } {
   return { width: 1200, height: 1400 };
 }
 
-// 丸囲み数字（①②③…）。20件を超えたら "(n)" で表記。
+// 丸囲み数字（①②③…㉟）。35件を超えたら "(n)" で表記。
 function circledNumber(n: number): string {
-  return n >= 1 && n <= 20 ? String.fromCodePoint(0x2460 + (n - 1)) : `(${n})`;
+  if (n >= 1 && n <= 20) return String.fromCodePoint(0x2460 + (n - 1));
+  if (n <= 35) return String.fromCodePoint(0x3251 + (n - 21));
+  return `(${n})`;
 }
 
 function loadMangaList(): MangaItem[] {
   let files: string[] = [];
   try {
-    files = fs.readdirSync(MANGA_DIR).filter((file) => /\.png$/i.test(file));
+    files = fs
+      .readdirSync(MANGA_DIR)
+      .filter((file) => /\.png$/i.test(file) && !DUPLICATE_FILE_PATTERN.test(file));
   } catch {
     return [];
   }
